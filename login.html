@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Phronesis Sunesis School of Excellence — Admin Management System" />
+  <title>Sign In · Phronesis Sunesis Admin ERP</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/images/icons/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+  <link rel="stylesheet" href="./assets/css/global.css" />
+  <link rel="stylesheet" href="./assets/css/components.css" />
+</head>
+<body class="bg-warm-white text-text-dark font-sans antialiased">
+
+  <div class="min-h-screen bg-warm-white flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+      <!-- Header card -->
+      <div class="text-center mb-8">
+        <div class="w-20 h-20 mx-auto mb-4">
+          <img src="./assets/images/logo/logo.png" alt="Phronesis Logo" class="w-full h-full object-contain" />
+        </div>
+        <h1 class="text-2xl font-bold text-text-dark">Phronesis Sunesis</h1>
+        <p class="text-text-soft text-sm mt-1">School of Excellence — Admin Portal</p>
+      </div>
+
+      <!-- Login card -->
+      <div class="card p-8">
+        <div class="mb-6">
+          <h2 class="text-lg font-bold text-text-dark">Sign In</h2>
+          <p class="text-text-soft text-sm">Enter your admin credentials to continue</p>
+        </div>
+
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label class="form-label" for="emailInput">Email Address</label>
+            <input
+              id="emailInput"
+              type="email"
+              required
+              placeholder="admin@phronesis.com"
+              class="form-input"
+            />
+          </div>
+          <div>
+            <label class="form-label" for="passwordInput">Password</label>
+            <input
+              id="passwordInput"
+              type="password"
+              required
+              placeholder="••••••••"
+              class="form-input"
+            />
+          </div>
+
+          <button
+            id="submitBtn"
+            type="submit"
+            class="btn-primary w-full justify-center py-3 mt-2 text-sm"
+          >
+            <span id="btnText">Sign In to Admin Panel</span>
+            <span id="btnSpinner" class="hidden flex items-center gap-2">
+              <span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              Signing in...
+            </span>
+          </button>
+        </form>
+      </div>
+
+      <p class="text-center text-xs text-text-soft mt-6">
+        Phronesis Sunesis School ERP · 2025/2026
+      </p>
+    </div>
+  </div>
+
+  <script src="./assets/js/toast.js"></script>
+  <script type="module" src="./assets/js/pages/login.js"></script>
+</body>
+</html>

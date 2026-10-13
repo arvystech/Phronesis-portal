@@ -1,0 +1,11 @@
+/* admin/assets/css/page-specific.css */
+/* Specific page overrides and print layouts */
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+  }
+}
