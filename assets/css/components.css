@@ -1,5 +1,6 @@
 /* admin/assets/css/components.css */
 /* Common component styles and enhancements */
+@import url('./staffs.css');
 
 .sidebar-item {
   display: flex;

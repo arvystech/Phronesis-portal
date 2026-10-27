@@ -7,11 +7,13 @@ import {
   saveStaffApplications,
   getOrders,
   saveOrders,
+  getStaff,
+  saveStaff,
   getMockAdmin,
   getDashboardData,
 } from './mockData.js';
 
-const API_BASE_URL = '/api/v1';
+const API_BASE_URL = 'https://api.phronesis-sunesis.com.ng';
 
 function parseBodyData(body) {
   if (!body) return {};
@@ -236,7 +238,71 @@ function handleMockResponse(url, method = 'GET', params = {}, rawBody = null) {
     }
   }
 
-  // 4. Staff Applications
+  // 4. Staff roster
+  if (cleanUrl === '/staff') {
+    if (method === 'GET') {
+      let list = getStaff();
+      if (params.department) list = list.filter(s => s.department === params.department);
+      if (params.search) {
+        const q = params.search.toLowerCase();
+        list = list.filter(s =>
+          (s.firstName + ' ' + s.lastName).toLowerCase().includes(q) ||
+          (s.staffNo || '').toLowerCase().includes(q) ||
+          (s.role || '').toLowerCase().includes(q)
+        );
+      }
+      return { data: { data: list }, status: 200, ok: true };
+    }
+    if (method === 'POST') {
+      const staffList = getStaff();
+      const count = String(staffList.length + 1).padStart(3, '0');
+      const newStaff = {
+        staffNo: `STF${count}`,
+        firstName: body.firstName || 'New',
+        lastName: body.lastName || 'Staff',
+        otherNames: body.otherNames || '',
+        biometricEnrollmentNo: body.biometricEnrollmentNo || '',
+        email: body.email || '',
+        phoneNo: body.phoneNo || '',
+        department: body.department || 'Teaching',
+        role: body.role || '',
+        joinedDate: body.joinedDate || new Date().toISOString().split('T')[0],
+        gender: body.gender || 'Male',
+        qualification: body.qualification || '',
+        stateOfOrigin: body.stateOfOrigin || '',
+        address: body.address || '',
+        status: 'Active',
+      };
+      staffList.unshift(newStaff);
+      saveStaff(staffList);
+      return { data: { data: newStaff }, status: 201, ok: true };
+    }
+  }
+
+  if (cleanUrl.startsWith('/staff/') && !cleanUrl.startsWith('/staff/applications')) {
+    const parts = cleanUrl.split('/').filter(Boolean);
+    const staffId = parts[1];
+    const staffList = getStaff();
+    let sIdx = staffList.findIndex(s => s.staffNo && s.staffNo.toLowerCase() === staffId.toLowerCase());
+    if (sIdx === -1) sIdx = 0;
+    const target = staffList[sIdx];
+    if (method === 'GET') {
+      return { data: { data: target }, status: 200, ok: true };
+    }
+    if (method === 'PUT' || method === 'PATCH') {
+      Object.assign(target, body);
+      staffList[sIdx] = target;
+      saveStaff(staffList);
+      return { data: { data: target }, status: 200, ok: true };
+    }
+    if (method === 'DELETE') {
+      staffList.splice(sIdx, 1);
+      saveStaff(staffList);
+      return { data: { message: 'Staff deleted' }, status: 200, ok: true };
+    }
+  }
+
+  // 4b. Staff Applications
   if (cleanUrl === '/staff/applications') {
     if (method === 'GET') {
       return { data: { data: getStaffApplications() }, status: 200, ok: true };

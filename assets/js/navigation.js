@@ -41,6 +41,8 @@ export function getRouteParam(paramName = 'id', segmentIndexFromEnd = 1) {
   const reservedWords = [
     'admin', 'dashboard', 'students', 'registrations', 'orders',
     'settings', 'profile', 'login', 'apply', 'staff-applications',
+    'staffs', 'staff-details.html', 'staff-details', 'staff-attendance', 'staff-attendance.html',
+    'register-staff', 'register-staff.html',
     'student-detail.html', 'student-details.html', 'staff-application-detail.html'
   ];
 

@@ -4,9 +4,33 @@
 const STORAGE_KEYS = {
   STUDENTS: 'ps_mock_students_v1',
   STAFF_APPS: 'ps_mock_staff_apps_v1',
+  STAFF: 'ps_mock_staff_v1',
   ORDERS: 'ps_mock_orders_v1',
   ADMIN: 'ps_mock_admin_v1',
 };
+
+const INITIAL_STAFF = [
+  { staffNo: 'STF001', firstName: 'John', lastName: 'Okafor', otherNames: 'Chukwuemeka', biometricEnrollmentNo: '000123', email: 'john.okafor@phronesis.edu', phoneNo: '08012345678', department: 'Teaching', role: 'Senior Mathematics Teacher', joinedDate: '2021-09-15', gender: 'Male', qualification: 'M.Sc Mathematics', stateOfOrigin: 'Anambra State', address: '14 Unity Road, Surulere, Lagos', status: 'Active' },
+  { staffNo: 'STF002', firstName: 'Ngozi', lastName: 'Amadi', otherNames: 'Blessing', biometricEnrollmentNo: '000124', email: 'ngozi.amadi@phronesis.edu', phoneNo: '08023456789', department: 'Teaching', role: 'English Language & Literature Teacher', joinedDate: '2020-01-10', gender: 'Female', qualification: 'B.Ed English', stateOfOrigin: 'Rivers State', address: '7 Palm Avenue, Ikeja, Lagos', status: 'Active' },
+  { staffNo: 'STF003', firstName: 'David', lastName: 'Ekanem', otherNames: 'Michael', biometricEnrollmentNo: '000125', email: 'david.ekanem@phronesis.edu', phoneNo: '08034567890', department: 'Non-teaching', role: 'School Bursar & Accounts Officer', joinedDate: '2019-05-20', gender: 'Male', qualification: 'B.Sc Accounting', stateOfOrigin: 'Akwa Ibom State', address: '22 Broad Street, Lagos Island', status: 'Active' },
+  { staffNo: 'STF004', firstName: 'Grace', lastName: 'Bassey', otherNames: '', biometricEnrollmentNo: '000126', email: 'grace.bassey@phronesis.edu', phoneNo: '08045678901', department: 'Non-teaching', role: 'Administrative Officer & Records Manager', joinedDate: '2021-02-14', gender: 'Female', qualification: 'HND Business Administration', stateOfOrigin: 'Cross River State', address: '18 Adeola Odeku, Victoria Island', status: 'Active' },
+  { staffNo: 'STF005', firstName: 'Chioma', lastName: 'Eze', otherNames: 'Vivian', biometricEnrollmentNo: '000127', email: 'chioma.eze@phronesis.edu', phoneNo: '08056789012', department: 'Non-teaching', role: 'Administrative Officer & Registrar', joinedDate: '2021-11-04', gender: 'Female', qualification: 'HND Business Administration', stateOfOrigin: 'Imo State', address: '10 Awolowo Road, Ikoyi, Lagos', status: 'Active' },
+  { staffNo: 'STF006', firstName: 'Babatunde', lastName: 'Fashina', otherNames: 'Oluwatobi', biometricEnrollmentNo: '000128', email: 'babatunde.fashina@phronesis.edu', phoneNo: '08067890123', department: 'Teaching', role: 'Chemistry & Biology Instructor', joinedDate: '2021-08-18', gender: 'Male', qualification: 'B.Sc Biochemistry', stateOfOrigin: 'Lagos State', address: '45 Bode Thomas, Surulere, Lagos', status: 'Active' },
+  { staffNo: 'STF007', firstName: 'Fatima', lastName: 'Mohammed', otherNames: 'Amina', biometricEnrollmentNo: '000129', email: 'fatima.mohammed@phronesis.edu', phoneNo: '08078901234', department: 'Teaching', role: 'Social Studies & Civic Education', joinedDate: '2023-01-09', gender: 'Female', qualification: 'B.Ed Social Studies', stateOfOrigin: 'Kano State', address: '8 Jibowu Street, Yaba, Lagos', status: 'Active' },
+  { staffNo: 'STF008', firstName: 'Emmanuel', lastName: 'Okonkwo', otherNames: 'Chinedu', biometricEnrollmentNo: '000130', email: 'emmanuel.okonkwo@phronesis.edu', phoneNo: '08089012345', department: 'Non-teaching', role: 'Head of Facilities & Maintenance', joinedDate: '2018-06-12', gender: 'Male', qualification: 'OND Electrical Engineering', stateOfOrigin: 'Enugu State', address: '2 Eko Hotel Way, Victoria Island', status: 'Active' },
+  { staffNo: 'STF009', firstName: 'Grace', lastName: 'Bassey', otherNames: 'Edidiong', biometricEnrollmentNo: '000131', email: 'grace.bassey@phronesis.edu', phoneNo: '08090123456', department: 'Teaching', role: 'Music & Creative Arts Instructor', joinedDate: '2022-09-01', gender: 'Female', qualification: 'B.A Fine Arts', stateOfOrigin: 'Akwa Ibom State', address: '29 Marina Road, Lagos Island', status: 'Active' },
+  { staffNo: 'STF010', firstName: 'Yusuf', lastName: 'Aliyu', otherNames: '', biometricEnrollmentNo: '000132', email: 'yusuf.aliyu@phronesis.edu', phoneNo: '07011223344', department: 'Non-teaching', role: 'ICT Systems Administrator', joinedDate: '2020-03-15', gender: 'Male', qualification: 'B.Sc Computer Science', stateOfOrigin: 'Sokoto State', address: '17 Opebi Road, Ikeja, Lagos', status: 'Active' },
+  { staffNo: 'STF011', firstName: 'Kelechi', lastName: 'Nnamdi', otherNames: 'Patrick', biometricEnrollmentNo: '000133', email: 'kelechi.nnamdi@phronesis.edu', phoneNo: '07022334455', department: 'Teaching', role: 'Computer Science & Robotics Teacher', joinedDate: '2022-11-20', gender: 'Male', qualification: 'B.Sc Computer Science', stateOfOrigin: 'Abia State', address: '5 Oduduwa Crescent, GRA Ikeja', status: 'Active' },
+  { staffNo: 'STF012', firstName: 'Folashade', lastName: 'Alabi', otherNames: 'Abimbola', biometricEnrollmentNo: '000134', email: 'folashade.alabi@phronesis.edu', phoneNo: '07033445566', department: 'Teaching', role: 'French & Foreign Languages Teacher', joinedDate: '2021-02-14', gender: 'Female', qualification: 'B.A French Language', stateOfOrigin: 'Ekiti State', address: '33 Toyin Street, Ikeja, Lagos', status: 'Active' },
+  { staffNo: 'STF013', firstName: 'Anthony', lastName: 'Chukwu', otherNames: 'Emeka', biometricEnrollmentNo: '000135', email: 'anthony.chukwu@phronesis.edu', phoneNo: '07044556677', department: 'Non-teaching', role: 'School Health Nurse', joinedDate: '2019-10-01', gender: 'Male', qualification: 'RN, BNSc Nursing Science', stateOfOrigin: 'Delta State', address: '6 Saka Tinubu, Victoria Island', status: 'Active' },
+  { staffNo: 'STF014', firstName: 'Aisha', lastName: 'Bello', otherNames: 'Zahra', biometricEnrollmentNo: '000136', email: 'aisha.bello@phronesis.edu', phoneNo: '07055667788', department: 'Teaching', role: 'Economics & Commerce Teacher', joinedDate: '2023-04-10', gender: 'Female', qualification: 'B.Sc Economics', stateOfOrigin: 'Niger State', address: '12 Allen Avenue, Ikeja, Lagos', status: 'Active' },
+  { staffNo: 'STF015', firstName: 'Sunday', lastName: 'Peters', otherNames: 'Akpan', biometricEnrollmentNo: '000137', email: 'sunday.peters@phronesis.edu', phoneNo: '07066778899', department: 'Non-teaching', role: 'Chief Security Officer', joinedDate: '2018-01-22', gender: 'Male', qualification: 'Diploma Security Management', stateOfOrigin: 'Akwa Ibom State', address: '19 Brickfield Road, Ebute Metta', status: 'Active' },
+  { staffNo: 'STF016', firstName: 'Mary', lastName: 'Udoh', otherNames: 'Ifeoma', biometricEnrollmentNo: '000138', email: 'mary.udoh@phronesis.edu', phoneNo: '07077889900', department: 'Teaching', role: 'Agricultural Science Teacher', joinedDate: '2022-05-18', gender: 'Female', qualification: 'B.Sc Agriculture', stateOfOrigin: 'Abia State', address: '4 Commercial Road, Apapa, Lagos', status: 'Active' },
+  { staffNo: 'STF017', firstName: 'David', lastName: 'Olanrewaju', otherNames: 'Oluwafemi', biometricEnrollmentNo: '000139', email: 'david.olanrewaju@phronesis.edu', phoneNo: '07088990011', department: 'Teaching', role: 'Physical & Health Education (PHE) Coach', joinedDate: '2020-08-30', gender: 'Male', qualification: 'B.Ed Physical Education', stateOfOrigin: 'Osun State', address: '28 Ladipo Street, Mushin, Lagos', status: 'Active' },
+  { staffNo: 'STF018', firstName: 'Zainab', lastName: 'Suleiman', otherNames: '', biometricEnrollmentNo: '000140', email: 'zainab.suleiman@phronesis.edu', phoneNo: '07099001122', department: 'Non-teaching', role: 'Head Librarian & Resource Officer', joinedDate: '2021-06-15', gender: 'Female', qualification: 'M.LIS Library & Information Science', stateOfOrigin: 'Kogi State', address: '9 Randle Avenue, Surulere, Lagos', status: 'Active' },
+  { staffNo: 'STF019', firstName: 'Chukwuebuka', lastName: 'Nwosu', otherNames: 'Kingsley', biometricEnrollmentNo: '000141', email: 'chukwuebuka.nwosu@phronesis.edu', phoneNo: '08111234567', department: 'Teaching', role: 'History & Government Teacher', joinedDate: '2023-08-01', gender: 'Male', qualification: 'B.A History', stateOfOrigin: 'Imo State', address: '6 Eric Moore Road, Surulere, Lagos', status: 'Active' },
+  { staffNo: 'STF020', firstName: 'Halima', lastName: 'Usman', otherNames: 'Khadijah', biometricEnrollmentNo: '000142', email: 'halima.usman@phronesis.edu', phoneNo: '08122345678', department: 'Non-teaching', role: 'Guidance Counselor & Child Welfare', joinedDate: '2022-03-07', gender: 'Female', qualification: 'M.Sc Counselling Psychology', stateOfOrigin: 'Borno State', address: '15 Sanni Abacha Estate, Ikeja', status: 'Active' },
+];
 
 const DEFAULT_ADMIN = {
   id: 'ADM-001',
@@ -1013,6 +1037,14 @@ export function saveOrders(orders) {
   setMockStore(STORAGE_KEYS.ORDERS, orders);
 }
 
+export function getStaff() {
+  return getMockStore(STORAGE_KEYS.STAFF, INITIAL_STAFF);
+}
+
+export function saveStaff(staff) {
+  setMockStore(STORAGE_KEYS.STAFF, staff);
+}
+
 export function getMockAdmin() {
   return getMockStore(STORAGE_KEYS.ADMIN, DEFAULT_ADMIN);
 }
@@ -1020,12 +1052,17 @@ export function getMockAdmin() {
 export function getDashboardData() {
   const students = getStudents();
   const orders = getOrders();
+  const staff = getStaff();
 
   const total = students.length;
   const pending = students.filter(s => s.admissionStatus === 'Pending').length;
   const approved = students.filter(s => s.admissionStatus === 'Approved').length;
   const admitted = students.filter(s => s.admissionStatus === 'Admitted').length;
   const rejected = students.filter(s => s.admissionStatus === 'Rejected').length;
+
+  const totalStaff = staff.length;
+  const teachingStaff = staff.filter(s => s.department === 'Teaching').length;
+  const nonTeachingStaff = staff.filter(s => s.department === 'Non-teaching').length;
 
   const revenue = orders.filter(o => o.status === 'Paid').reduce((acc, cur) => acc + (cur.amount || 0), 0);
   const outstanding = students.reduce((acc, s) => acc + (parseFloat(s.balance) || 0), 0);
@@ -1058,6 +1095,9 @@ export function getDashboardData() {
       approved,
       admitted,
       rejected,
+      totalStaff,
+      teachingStaff,
+      nonTeachingStaff,
     },
     monthlyRevenue,
     classDistribution,

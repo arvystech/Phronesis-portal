@@ -25,6 +25,14 @@
   RewriteRule ^students/([^/]+)/?$ student-details.html [L,QSA]
   RewriteRule ^admin/students/([^/]+)/?$ student-details.html [L,QSA]
 
+  # /admin/staffs/:id/attendance -> staff-attendance.html
+  RewriteRule ^staffs/([^/]+)/attendance/?$ staff-attendance.html [L,QSA]
+  RewriteRule ^admin/staffs/([^/]+)/attendance/?$ staff-attendance.html [L,QSA]
+
+  # /admin/staffs/:id -> staff-details.html
+  RewriteRule ^staffs/([^/]+)/?$ staff-details.html [L,QSA]
+  RewriteRule ^admin/staffs/([^/]+)/?$ staff-details.html [L,QSA]
+
   # /admin/staff-applications/:id -> staff-application-detail.html
   RewriteRule ^staff-applications/([^/]+)/?$ staff-application-detail.html [L,QSA]
   RewriteRule ^admin/staff-applications/([^/]+)/?$ staff-application-detail.html [L,QSA]
@@ -43,6 +51,21 @@
 
   RewriteRule ^register-student/?$ register-student.html [L,QSA]
   RewriteRule ^admin/register-student/?$ register-student.html [L,QSA]
+
+  RewriteRule ^staffs/new/?$ register-staff.html [L,QSA]
+  RewriteRule ^admin/staffs/new/?$ register-staff.html [L,QSA]
+
+  RewriteRule ^staffs/?$ staffs.html [L,QSA]
+  RewriteRule ^admin/staffs/?$ staffs.html [L,QSA]
+
+  RewriteRule ^staff-details/?$ staff-details.html [L,QSA]
+  RewriteRule ^admin/staff-details/?$ staff-details.html [L,QSA]
+
+  RewriteRule ^staff-attendance/?$ staff-attendance.html [L,QSA]
+  RewriteRule ^admin/staff-attendance/?$ staff-attendance.html [L,QSA]
+
+  RewriteRule ^register-staff/?$ register-staff.html [L,QSA]
+  RewriteRule ^admin/register-staff/?$ register-staff.html [L,QSA]
 
   RewriteRule ^staff-applications/?$ staff-applications.html [L,QSA]
   RewriteRule ^admin/staff-applications/?$ staff-applications.html [L,QSA]

@@ -46,7 +46,8 @@ function renderDashboard(data) {
   document.getElementById('statApproved').textContent = s.approved ?? 0;
   document.getElementById('statAdmitted').textContent = s.admitted ?? 0;
   document.getElementById('statRejected').textContent = s.rejected ?? 0;
-  document.getElementById('statSession').textContent = s.total ?? 0;
+  const staffStatEl = document.getElementById('statTotalStaff') || document.getElementById('statSession');
+  if (staffStatEl) staffStatEl.textContent = s.totalStaff ?? s.total ?? 0;
 
   // Monthly Revenue Chart
   renderRevenueChart(data.monthlyRevenue || []);
@@ -121,7 +122,7 @@ function renderClassDistribution(classes, total) {
     return `
       <div>
         <div class="flex justify-between text-xs mb-1">
-          <span class="font-medium text-text-dark">${c.class_applied}</span>
+          <span class="font-medium text-text-dark">${c.class || c.class_applied || '—'}</span>
           <span class="text-text-soft">${c.count}</span>
         </div>
         <div class="h-1.5 bg-border rounded-full overflow-hidden">

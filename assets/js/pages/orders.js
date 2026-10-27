@@ -22,9 +22,24 @@ async function initOrders() {
     const res = await paymentsAPI.list();
     allOrders = res.data?.data || [];
     renderOrders(allOrders);
+    renderOrderStats(allOrders);
   } catch (err) {
     console.error('Failed to load orders:', err);
   }
+}
+
+function renderOrderStats(orders) {
+  const revEl = document.getElementById('ordersTotalRevenue');
+  const countEl = document.getElementById('ordersCompletedCount');
+  const outEl = document.getElementById('ordersOutstanding');
+
+  const totalRev = orders.filter(o => o.status === 'Paid').reduce((sum, o) => sum + (o.amount || 0), 0);
+  const completedCount = orders.filter(o => o.status === 'Paid').length;
+  const outstanding = orders.filter(o => o.status === 'Pending').reduce((sum, o) => sum + (o.amount || 0), 0);
+
+  if (revEl) revEl.textContent = formatCurrency(totalRev);
+  if (countEl) countEl.textContent = completedCount;
+  if (outEl) outEl.textContent = formatCurrency(outstanding);
 }
 
 function renderOrders(orders) {

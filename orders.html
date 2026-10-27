@@ -49,6 +49,10 @@
             <span class="text-base w-5 text-center">💼</span>
             <span>Staff Applications</span>
           </a>
+          <a href="staffs.html" class="sidebar-item" data-nav="staffs">
+            <span class="text-base w-5 text-center">👔</span>
+            <span>Staffs</span>
+          </a>
           <a href="orders.html" class="sidebar-item active" data-nav="orders">
             <span class="text-base w-5 text-center">💳</span>
             <span>Fee Payments</span>
@@ -117,15 +121,15 @@
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="card p-5 bg-white rounded-2xl border border-gold/20 shadow-sm">
               <p class="text-xs text-text-soft font-medium uppercase tracking-wider">Total Revenue</p>
-              <p class="text-2xl font-bold text-royal-deep mt-1">₦4,250,000</p>
+              <p id="ordersTotalRevenue" class="text-2xl font-bold text-royal-deep mt-1">₦4,250,000</p>
             </div>
             <div class="card p-5 bg-white rounded-2xl border border-gold/20 shadow-sm">
               <p class="text-xs text-text-soft font-medium uppercase tracking-wider">Completed Transactions</p>
-              <p class="text-2xl font-bold text-emerald-600 mt-1">128</p>
+              <p id="ordersCompletedCount" class="text-2xl font-bold text-emerald-600 mt-1">128</p>
             </div>
             <div class="card p-5 bg-white rounded-2xl border border-gold/20 shadow-sm">
               <p class="text-xs text-text-soft font-medium uppercase tracking-wider">Outstanding Balance</p>
-              <p class="text-2xl font-bold text-amber-600 mt-1">₦380,000</p>
+              <p id="ordersOutstanding" class="text-2xl font-bold text-amber-600 mt-1">₦380,000</p>
             </div>
           </div>
 
@@ -189,3 +193,4 @@
   <script type="module" src="./assets/js/pages/orders.js"></script>
 </body>
 </html>
+

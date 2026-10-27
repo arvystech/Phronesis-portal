@@ -2,6 +2,7 @@
 // Vanilla session authentication management
 
 import { authAPI } from './api.js';
+import { getMockAdmin } from './mockData.js';
 
 let currentAdmin = null;
 
@@ -9,11 +10,11 @@ export async function getCurrentAdmin() {
   if (currentAdmin) return currentAdmin;
   try {
     const res = await authAPI.me();
-    currentAdmin = res.data?.admin || null;
+    currentAdmin = res.data?.admin || getMockAdmin();
     return currentAdmin;
   } catch {
-    currentAdmin = null;
-    return null;
+    currentAdmin = getMockAdmin();
+    return currentAdmin;
   }
 }
 
