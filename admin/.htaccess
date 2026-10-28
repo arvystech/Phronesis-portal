@@ -1,0 +1,59 @@
+# ==============================================================================
+# Phronesis Sunesis Admin Portal - Apache Clean URL Rewrite Configuration
+# Location: /admin/.htaccess
+# ==============================================================================
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  Options -Indexes +FollowSymLinks
+
+  # Directly serve existing files and directories (CSS, JS, images, etc.)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Strip .html extension if requested directly (Canonical 301 Redirect)
+  RewriteCond %{THE_REQUEST} \s/+(?:admin/)?([^?\s]+)\.html[\s?] [NC]
+  RewriteRule ^ %1 [R=301,L]
+
+  # Dynamic Parameter Routes (Detail Pages)
+  # /admin/students/:id -> student-details.html
+  RewriteRule ^(?:admin/)?students/([^/]+)/?$ student-details.html [L,QSA]
+
+  # /admin/staffs/:id/attendance -> staff-attendance.html
+  RewriteRule ^(?:admin/)?staffs/([^/]+)/attendance/?$ staff-attendance.html [L,QSA]
+
+  # /admin/staffs/:id -> staff-details.html
+  RewriteRule ^(?:admin/)?staffs/([^/]+)/?$ staff-details.html [L,QSA]
+
+  # /admin/staff-applications/:id -> staff-application-detail.html
+  RewriteRule ^(?:admin/)?staff-applications/([^/]+)/?$ staff-application-detail.html [L,QSA]
+
+  # Clean Page Routes without .html
+  RewriteRule ^(?:admin/)?dashboard/?$ dashboard.html [L,QSA]
+  RewriteRule ^(?:admin/)?students/?$ students.html [L,QSA]
+  RewriteRule ^(?:admin/)?registrations/?$ students.html [L,QSA]
+  RewriteRule ^(?:admin/)?students/new/?$ register-student.html [L,QSA]
+  RewriteRule ^(?:admin/)?register-student/?$ register-student.html [L,QSA]
+  RewriteRule ^(?:admin/)?staffs/?$ staffs.html [L,QSA]
+  RewriteRule ^(?:admin/)?staffs/new/?$ register-staff.html [L,QSA]
+  RewriteRule ^(?:admin/)?register-staff/?$ register-staff.html [L,QSA]
+  RewriteRule ^(?:admin/)?staff-details/?$ staff-details.html [L,QSA]
+  RewriteRule ^(?:admin/)?staff-attendance/?$ staff-attendance.html [L,QSA]
+  RewriteRule ^(?:admin/)?staff-applications/?$ staff-applications.html [L,QSA]
+  RewriteRule ^(?:admin/)?apply-staff/?$ apply-staff.html [L,QSA]
+  RewriteRule ^(?:admin/)?apply/staff/?$ apply-staff.html [L,QSA]
+  RewriteRule ^(?:admin/)?orders/?$ orders.html [L,QSA]
+  RewriteRule ^(?:admin/)?payments/?$ orders.html [L,QSA]
+  RewriteRule ^(?:admin/)?settings/?$ settings.html [L,QSA]
+  RewriteRule ^(?:admin/)?profile/?$ profile.html [L,QSA]
+  RewriteRule ^(?:admin/)?login/?$ login.html [L,QSA]
+
+  # Default route
+  RewriteRule ^$ dashboard.html [L,QSA]
+  RewriteRule ^(?:admin/)?$ dashboard.html [L,QSA]
+
+  # Fallback for any other .html file without extension
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^([^/]+)/?$ $1.html [L,QSA]
+</IfModule>

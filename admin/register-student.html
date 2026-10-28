@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Phronesis Sunesis School of Excellence — Admin Management System" />
+  <title>Register Student · Phronesis Sunesis Admin ERP</title>
+  <link rel="icon" type="image/svg+xml" href="/admin/assets/images/icons/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/assets/css/styles.css" />
+  <link rel="stylesheet" href="/admin/assets/css/global.css" />
+  <link rel="stylesheet" href="/admin/assets/css/components.css" />
+</head>
+<body class="bg-warm-white text-text-dark font-sans antialiased">
+
+  <div class="flex h-screen overflow-hidden bg-warm-white">
+    <!-- Desktop Sidebar -->
+    <div class="hidden lg:flex shrink-0 no-print">
+      <aside class="flex flex-col bg-royal-deep h-full w-64 min-h-screen">
+        <div class="px-5 py-6 border-b border-white/10">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 shrink-0">
+              <img src="/admin/assets/images/logo/logo.png" alt="Phronesis Logo" class="w-full h-full object-contain" />
+            </div>
+            <div>
+              <p class="text-white font-bold text-sm leading-tight">Phronesis</p>
+              <p class="text-blue-300 text-[10px] tracking-widest uppercase">Sunesis Admin</p>
+            </div>
+          </div>
+        </div>
+
+        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+          <p class="text-blue-400 text-[10px] uppercase tracking-widest font-semibold px-3 mb-2">Main Menu</p>
+          <a href="/admin/dashboard" class="sidebar-item" data-nav="dashboard">
+            <span class="text-base w-5 text-center">⊞</span>
+            <span>Dashboard</span>
+          </a>
+          <a href="/admin/students" class="sidebar-item" data-nav="students">
+            <span class="text-base w-5 text-center">👥</span>
+            <span>Registrations</span>
+          </a>
+          <a href="/admin/register-student" class="sidebar-item active" data-nav="register">
+            <span class="text-base w-5 text-center">✚</span>
+            <span>Register Student</span>
+          </a>
+          <a href="/admin/staff-applications" class="sidebar-item" data-nav="staff">
+            <span class="text-base w-5 text-center">💼</span>
+            <span>Staff Applications</span>
+          </a>
+          <a href="/admin/staffs" class="sidebar-item" data-nav="staffs">
+            <span class="text-base w-5 text-center">👔</span>
+            <span>Staffs</span>
+          </a>
+          <a href="/admin/orders" class="sidebar-item" data-nav="orders">
+            <span class="text-base w-5 text-center">💳</span>
+            <span>Fee Payments</span>
+          </a>
+          <a href="/admin/settings" class="sidebar-item" data-nav="settings">
+            <span class="text-base w-5 text-center">⚙</span>
+            <span>Settings</span>
+          </a>
+        </nav>
+
+        <div class="px-4 py-4 border-t border-white/10">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-8 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center text-gold text-xs font-bold admin-initials">
+              A
+            </div>
+            <div class="min-w-0">
+              <p class="text-white text-xs font-semibold truncate admin-name">Admin</p>
+              <p class="text-blue-300 text-[10px] truncate admin-role">Admin</p>
+            </div>
+          </div>
+          <button
+            id="sidebarLogoutBtn"
+            class="w-full text-left text-xs text-blue-300 hover:text-white transition-colors flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10"
+          >
+            <span>⎋</span> Sign out
+          </button>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex flex-col flex-1 min-w-0 overflow-hidden relative">
+      <header class="h-16 bg-white border-b border-border flex items-center justify-between px-6 shrink-0 shadow-sm no-print">
+        <div class="flex items-center gap-4">
+          <div>
+            <p class="text-[10px] uppercase tracking-widest text-text-soft font-semibold">Admin Panel</p>
+            <h1 id="pageTitle" class="text-base font-bold text-text-dark leading-tight">Register Student</h1>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-royal-light text-royal text-[10px] font-bold uppercase tracking-wide border border-royal/15">
+            2025/2026
+          </span>
+          <a href="/admin/profile" class="flex items-center gap-2 pl-3 border-l border-border hover:opacity-80 transition-opacity">
+            <div class="w-8 h-8 rounded-full bg-royal flex items-center justify-center text-white text-xs font-bold admin-initials">
+              A
+            </div>
+            <div class="hidden sm:block">
+              <p class="text-xs font-semibold text-text-dark leading-none admin-name">Admin</p>
+              <p class="text-[10px] text-text-soft admin-role">Staff</p>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6 pb-24 lg:pb-6">
+        <div class="max-w-5xl mx-auto pb-10">
+          
+          <!-- Branding header -->
+          <div id="brandingHeader" class="border border-gold/20 rounded-2xl p-6 sm:p-8 text-center mb-6 flex flex-col items-center justify-center relative overflow-hidden" style="background-color: #F0D98A;">
+            <div class="absolute top-0 left-0 w-full h-1 bg-royal"></div>
+            <div class="w-12 h-12 mb-3">
+              <img src="/admin/assets/images/logo/logo.png" class="w-full h-full object-contain opacity-80" />
+            </div>
+            <h1 class="text-lg sm:text-xl font-bold text-royal uppercase tracking-widest font-serif">Phronesis Sunesis</h1>
+            <p class="text-text-soft text-[9px] uppercase tracking-tighter font-bold">School of Excellence</p>
+          </div>
+
+          <!-- Progress Bar (Mobile only) -->
+          <div id="mobileProgressBar" class="mb-6 px-2 hidden">
+            <div class="flex justify-between items-end mb-2">
+              <span id="stepCounterText" class="text-[10px] font-black text-royal uppercase tracking-widest">Step 1 of 5</span>
+              <span id="stepPercentText" class="text-[10px] font-bold text-text-soft uppercase">20% Complete</span>
+            </div>
+            <div class="h-2 bg-white rounded-full overflow-hidden border border-gold/20 shadow-inner">
+              <div id="stepProgressFill" class="h-full bg-gradient-to-r from-royal to-gold transition-all duration-500" style="width: 20%;"></div>
+            </div>
+          </div>
+
+          <!-- Form Element -->
+          <form id="studentRegForm" class="space-y-6">
+
+            <!-- Section 1: Student Information -->
+            <div id="section1" class="card overflow-hidden" style="background-color: #F0D98A;">
+              <div class="section-header rounded-t-xl overflow-hidden">
+                <span class="header-icon">👤</span>
+                <span>Section 1 — Student Information</span>
+              </div>
+              <div class="p-6 space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="form-label">Full Name <span class="text-red-400 ml-0.5">*</span></label>
+                    <input class="form-input" data-bind="fullName" placeholder="Surname First" required />
+                  </div>
+                  <div>
+                    <label class="form-label">Date of Birth <span class="text-red-400 ml-0.5">*</span></label>
+                    <input type="date" class="form-input" data-bind="dateOfBirth" required />
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label class="form-label">Gender <span class="text-red-400 ml-0.5">*</span></label>
+                    <select class="form-input" data-bind="gender" required>
+                      <option value="">Select…</option>
+                      <option>Male</option>
+                      <option>Female</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="form-label">Blood Group</label>
+                    <select class="form-input" data-bind="bloodGroup">
+                      <option value="">Select…</option>
+                      <option>A+</option><option>A-</option>
+                      <option>B+</option><option>B-</option>
+                      <option>AB+</option><option>AB-</option>
+                      <option>O+</option><option>O-</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="form-label">Religion</label>
+                    <input class="form-input" data-bind="religion" placeholder="e.g. Christianity" />
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="form-label">Nationality</label>
+                    <input class="form-input" data-bind="nationality" value="Nigerian" />
+                  </div>
+                  <div>
+                    <label class="form-label">Class Applying For <span class="text-red-400 ml-0.5">*</span></label>
+                    <select class="form-input" data-bind="class" required>
+                      <option value="">Select Class…</option>
+                      <option>Creche</option>
+                      <option>Pre-Nursery</option>
+                      <option>Nursery 1</option>
+                      <option>Nursery 2</option>
+                      <option>Primary 1</option>
+                      <option>Primary 2</option>
+                      <option>Primary 3</option>
+                      <option>Primary 4</option>
+                      <option>Primary 5</option>
+                      <option>JSS 1</option>
+                      <option>JSS 2</option>
+                      <option>JSS 3</option>
+                      <option>SS 1</option>
+                      <option>SS 2</option>
+                      <option>SS 3</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2: Parent/Guardian Information -->
+            <div id="section2" class="card overflow-hidden" style="background-color: #F0D98A;">
+              <div class="section-header rounded-t-xl overflow-hidden">
+                <span class="header-icon">👪</span>
+                <span>Section 2 — Parent/Guardian Information</span>
+              </div>
+              <div class="p-6 space-y-4">
+                <div>
+                  <label class="form-label">Parent/Guardian Full Name <span class="text-red-400 ml-0.5">*</span></label>
+                  <input class="form-input" data-bind="parentName" placeholder="Title & Full Name" required />
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="form-label">Occupation</label>
+                    <input class="form-input" data-bind="parentOccupation" placeholder="Profession/Job" />
+                  </div>
+                  <div>
+                    <label class="form-label">Parent Phone <span class="text-red-400 ml-0.5">*</span></label>
+                    <input type="tel" class="form-input" data-bind="parentPhone" placeholder="080…" required />
+                  </div>
+                </div>
+                <div>
+                  <label class="form-label">Parent Email Address</label>
+                  <input type="email" class="form-input" data-bind="parentEmail" placeholder="Email" />
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="form-label">Emergency Contact Name <span class="text-red-400 ml-0.5">*</span></label>
+                    <input class="form-input" data-bind="emergencyContact" placeholder="Name" required />
+                  </div>
+                  <div>
+                    <label class="form-label">Emergency Phone <span class="text-red-400 ml-0.5">*</span></label>
+                    <input type="tel" class="form-input" data-bind="emergencyPhone" placeholder="Phone" required />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3: Address & Academic Details -->
+            <div id="section3" class="card overflow-hidden" style="background-color: #F0D98A;">
+              <div class="section-header rounded-t-xl overflow-hidden">
+                <span class="header-icon">📍</span>
+                <span>Section 3 — Address & Academic Details</span>
+              </div>
+              <div class="p-6 space-y-4">
+                <div>
+                  <label class="form-label">Home Address</label>
+                  <textarea class="form-input" rows="2" data-bind="homeAddress" placeholder="Full residential address"></textarea>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="form-label">State of Origin</label>
+                    <input class="form-input" data-bind="stateOfOrigin" placeholder="State" />
+                  </div>
+                  <div>
+                    <label class="form-label">Local Government</label>
+                    <input class="form-input" data-bind="localGovernment" placeholder="LGA" />
+                  </div>
+                </div>
+                <div>
+                  <label class="form-label">Previous School</label>
+                  <input class="form-input" data-bind="previousSchool" placeholder="Name of school" />
+                </div>
+                <div>
+                  <label class="form-label">Health Condition</label>
+                  <textarea class="form-input" rows="2" data-bind="healthCondition" placeholder="Any medical conditions…"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 4: Passport Uploads -->
+            <div id="section4" class="card overflow-hidden" style="background-color: #F0D98A;">
+              <div class="section-header rounded-t-xl overflow-hidden">
+                <span class="header-icon">📸</span>
+                <span>Section 4 — Passport Uploads</span>
+              </div>
+              <div class="p-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <!-- Student Passport -->
+                <div class="space-y-3">
+                  <label class="form-label text-royal font-bold uppercase tracking-wider text-[10px]">Student Passport</label>
+                  <div class="flex items-center gap-4">
+                    <div class="w-20 h-24 rounded-xl bg-white border-2 border-dashed border-royal/30 overflow-hidden flex items-center justify-center shadow-inner">
+                      <img id="studentPassportPreview" src="/admin/assets/images/avatars/default_student.png" class="w-full h-full object-cover" />
+                    </div>
+                    <label class="flex-1 btn-primary cursor-pointer text-xs py-3 text-center rounded-xl shadow-md">
+                      Upload Photo
+                      <input id="studentPassportInput" type="file" class="hidden" accept="image/*" />
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Parent Passport -->
+                <div class="space-y-3">
+                  <label class="form-label text-royal font-bold uppercase tracking-wider text-[10px]">Parent Passport</label>
+                  <div class="flex items-center gap-4">
+                    <div class="w-20 h-24 rounded-xl bg-white border-2 border-dashed border-royal/30 overflow-hidden flex items-center justify-center shadow-inner">
+                      <img id="parentPassportPreview" src="/admin/assets/images/avatars/default_parent.svg" class="w-full h-full object-cover" />
+                    </div>
+                    <label class="flex-1 bg-white border-2 border-royal text-royal font-bold cursor-pointer text-xs py-3 text-center rounded-xl shadow-sm hover:bg-royal/5 transition-colors">
+                      Upload Photo
+                      <input id="parentPassportInput" type="file" class="hidden" accept="image/*" />
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Guardian Passport -->
+                <div class="space-y-3">
+                  <label class="form-label text-royal font-bold uppercase tracking-wider text-[10px]">Guardian Passport</label>
+                  <div class="flex items-center gap-4">
+                    <div class="w-20 h-24 rounded-xl bg-white border-2 border-dashed border-royal/30 overflow-hidden flex items-center justify-center shadow-inner">
+                      <img id="guardianPassportPreview" src="/admin/assets/images/avatars/default_parent.svg" class="w-full h-full object-cover" />
+                    </div>
+                    <label class="flex-1 bg-white border-2 border-royal text-royal font-bold cursor-pointer text-xs py-3 text-center rounded-xl shadow-sm hover:bg-royal/5 transition-colors">
+                      Upload Photo
+                      <input id="guardianPassportInput" type="file" class="hidden" accept="image/*" />
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 5: Payment & Review -->
+            <div id="section5" class="space-y-5">
+              <div class="card overflow-hidden" style="background-color: #D4B15A;">
+                <div class="section-header rounded-t-xl overflow-hidden">
+                  <span class="header-icon">₦</span>
+                  <span>Section 5 — Payment & Review</span>
+                </div>
+                <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div class="space-y-4">
+                    <div>
+                      <label class="form-label">Amount Paid (₦)</label>
+                      <input type="number" class="form-input" data-bind="amountPaid" placeholder="0" />
+                    </div>
+                    <div>
+                      <label class="form-label">Balance (₦)</label>
+                      <input id="balanceInput" class="form-input bg-warm-white font-bold text-red-600" value="₦15,000" readonly />
+                    </div>
+                  </div>
+                  <div class="space-y-4">
+                    <div>
+                      <label class="form-label">Payment Method</label>
+                      <select class="form-input" data-bind="paymentMethod">
+                        <option>Cash</option>
+                        <option>Transfer</option>
+                        <option>POS</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="form-label">Receipt No.</label>
+                      <input class="form-input uppercase" data-bind="receiptNo" placeholder="REC-..." />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Summary Card -->
+              <div class="card p-6 bg-white border-2 border-gold/20">
+                <h3 class="font-bold text-royal text-sm mb-3 uppercase tracking-wider">Review Summary</h3>
+                <div class="text-xs space-y-2 text-text-soft">
+                  <p><span class="font-bold text-text-dark">Student:</span> <span id="sumStudent">—</span></p>
+                  <p><span class="font-bold text-text-dark">Class:</span> <span id="sumClass">—</span></p>
+                  <p><span class="font-bold text-text-dark">Parent:</span> <span id="sumParent">—</span></p>
+                  <p><span class="font-bold text-text-dark">Contact:</span> <span id="sumContact">—</span></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Desktop Action Buttons -->
+            <div class="hidden sm:flex justify-end gap-3 pt-4">
+              <a href="/admin/students" class="btn-secondary">Cancel</a>
+              <button type="submit" class="btn-primary px-10 shadow-lg">
+                ✓ Complete Registration
+              </button>
+            </div>
+          </form>
+
+          <!-- Mobile Controls -->
+          <div id="mobileControls" class="flex gap-3 pt-8 pb-4 hidden">
+            <button id="mobilePrevBtn" type="button" class="flex-1 bg-white border border-gold text-gold font-bold py-3.5 rounded-2xl shadow-sm active:scale-95 transition-all text-sm hidden">
+              Back
+            </button>
+            <button id="mobileNextBtn" type="button" class="flex-1 bg-royal text-white font-bold py-3.5 rounded-2xl shadow-md active:scale-95 transition-all text-sm">
+              Next Step
+            </button>
+            <button id="mobileSubmitBtn" type="button" class="flex-1 bg-emerald-600 text-white font-bold py-3.5 rounded-2xl shadow-lg active:scale-95 transition-all text-sm hidden">
+              Finalize & Submit
+            </button>
+          </div>
+
+        </div>
+      </main>
+
+      <!-- Mobile Bottom Nav -->
+      <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border pb-safe no-print">
+        <div class="flex items-center justify-around px-2 py-2">
+          <a href="/admin/dashboard" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep" data-bottom-nav="dashboard">
+            <span class="text-xl leading-none mb-1">⊞</span>
+            <span class="text-[10px] font-semibold tracking-tight">Dashboard</span>
+          </a>
+          <a href="/admin/students" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep" data-bottom-nav="students">
+            <span class="text-xl leading-none mb-1">👥</span>
+            <span class="text-[10px] font-semibold tracking-tight">Registrations</span>
+          </a>
+          <a href="/admin/register-student" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-royal font-bold scale-105" data-bottom-nav="register">
+            <span class="text-xl leading-none mb-1">✚</span>
+            <span class="text-[10px] font-semibold tracking-tight">Register</span>
+          </a>
+          <a href="/admin/profile" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep" data-bottom-nav="profile">
+            <span class="text-xl leading-none mb-1">👤</span>
+            <span class="text-[10px] font-semibold tracking-tight">Profile</span>
+          </a>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <script src="/admin/assets/js/toast.js"></script>
+  <script type="module" src="/admin/assets/js/pages/register-student.js"></script>
+</body>
+</html>
+

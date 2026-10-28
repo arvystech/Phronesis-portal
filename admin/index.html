@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="refresh" content="0; url=/admin/dashboard" />
+  <title>Admin Portal · Phronesis Sunesis</title>
+  <link rel="icon" type="image/svg+xml" href="/admin/assets/images/icons/favicon.svg" />
+  <script type="module">
+    import { getCurrentAdmin } from '/admin/assets/js/auth.js';
+    try {
+      const admin = await getCurrentAdmin();
+      if (admin) {
+        window.location.replace('/admin/dashboard');
+      } else {
+        window.location.replace('/admin/login');
+      }
+    } catch {
+      window.location.replace('/admin/dashboard');
+    }
+  </script>
+</head>
+<body style="font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #F8F7F3; color: #1E2430;">
+  <div style="text-align: center;">
+    <p style="font-size: 16px; font-weight: 600;">Loading Phronesis Sunesis Admin Portal...</p>
+    <p style="font-size: 13px; color: #667085;">Redirecting to <a href="/admin/dashboard" style="color: #17338F; text-decoration: underline;">Dashboard</a></p>
+  </div>
+</body>
+</html>

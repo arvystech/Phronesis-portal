@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Phronesis Sunesis School of Excellence — Admin Management System" />
+  <title>Student Details · Phronesis Sunesis Admin ERP</title>
+  <link rel="icon" type="image/svg+xml" href="/admin/assets/images/icons/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/assets/css/styles.css" />
+  <link rel="stylesheet" href="/admin/assets/css/global.css" />
+  <link rel="stylesheet" href="/admin/assets/css/components.css" />
+</head>
+<body class="bg-warm-white text-text-dark font-sans antialiased">
+
+  <div class="flex h-screen overflow-hidden bg-warm-white">
+    <!-- Desktop Sidebar -->
+    <div class="hidden lg:flex shrink-0 no-print">
+      <aside class="flex flex-col bg-royal-deep h-full w-64 min-h-screen">
+        <div class="px-5 py-6 border-b border-white/10">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 shrink-0">
+              <img src="/admin/assets/images/logo/logo.png" alt="Phronesis Logo" class="w-full h-full object-contain" />
+            </div>
+            <div>
+              <p class="text-white font-bold text-sm leading-tight">Phronesis</p>
+              <p class="text-blue-300 text-[10px] tracking-widest uppercase">Sunesis Admin</p>
+            </div>
+          </div>
+        </div>
+
+        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+          <p class="text-blue-400 text-[10px] uppercase tracking-widest font-semibold px-3 mb-2">Main Menu</p>
+          <a href="/admin/dashboard" class="sidebar-item" data-nav="dashboard">
+            <span class="text-base w-5 text-center">⊞</span>
+            <span>Dashboard</span>
+          </a>
+          <a href="/admin/students" class="sidebar-item active" data-nav="students">
+            <span class="text-base w-5 text-center">👥</span>
+            <span>Registrations</span>
+          </a>
+          <a href="/admin/register-student" class="sidebar-item" data-nav="register">
+            <span class="text-base w-5 text-center">✚</span>
+            <span>Register Student</span>
+          </a>
+          <a href="/admin/staff-applications" class="sidebar-item" data-nav="staff">
+            <span class="text-base w-5 text-center">💼</span>
+            <span>Staff Applications</span>
+          </a>
+          <a href="/admin/staffs" class="sidebar-item" data-nav="staffs">
+            <span class="text-base w-5 text-center">👔</span>
+            <span>Staffs</span>
+          </a>
+          <a href="/admin/orders" class="sidebar-item" data-nav="orders">
+            <span class="text-base w-5 text-center">💳</span>
+            <span>Fee Payments</span>
+          </a>
+          <a href="/admin/settings" class="sidebar-item" data-nav="settings">
+            <span class="text-base w-5 text-center">⚙</span>
+            <span>Settings</span>
+          </a>
+        </nav>
+
+        <div class="px-4 py-4 border-t border-white/10">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-8 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center text-gold text-xs font-bold admin-initials">
+              A
+            </div>
+            <div class="min-w-0">
+              <p class="text-white text-xs font-semibold truncate admin-name">Admin</p>
+              <p class="text-blue-300 text-[10px] truncate admin-role">Admin</p>
+            </div>
+          </div>
+          <button
+            id="sidebarLogoutBtn"
+            class="w-full text-left text-xs text-blue-300 hover:text-white transition-colors flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10"
+          >
+            <span>⎋</span> Sign out
+          </button>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex flex-col flex-1 min-w-0 overflow-hidden relative">
+      <header class="h-16 bg-white border-b border-border flex items-center justify-between px-6 shrink-0 shadow-sm no-print">
+        <div class="flex items-center gap-4">
+          <div>
+            <p class="text-[10px] uppercase tracking-widest text-text-soft font-semibold">Admin Panel</p>
+            <h1 id="pageTitle" class="text-base font-bold text-text-dark leading-tight">Student Details</h1>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-royal-light text-royal text-[10px] font-bold uppercase tracking-wide border border-royal/15">
+            2025/2026
+          </span>
+          <a href="/admin/profile" class="flex items-center gap-2 pl-3 border-l border-border hover:opacity-80 transition-opacity">
+            <div class="w-8 h-8 rounded-full bg-royal flex items-center justify-center text-white text-xs font-bold admin-initials">
+              A
+            </div>
+            <div class="hidden sm:block">
+              <p class="text-xs font-semibold text-text-dark leading-none admin-name">Admin</p>
+              <p class="text-[10px] text-text-soft admin-role">Staff</p>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6 pb-24 lg:pb-6">
+        <!-- Loading -->
+        <div id="studentDetailLoading" class="flex items-center justify-center h-64">
+          <div class="w-8 h-8 border-4 border-royal border-t-transparent rounded-full animate-spin"></div>
+        </div>
+
+        <div id="studentDetailContent" class="max-w-5xl mx-auto space-y-6 pb-20 hidden">
+          <!-- Top Navigation -->
+          <div class="flex items-center justify-between no-print">
+            <a href="/admin/students" class="btn-secondary text-xs py-2">
+              ← Back to Registrations
+            </a>
+            <div class="flex gap-2">
+              <button onclick="window.print()" class="btn-secondary text-xs py-2">🖨 Print Profile</button>
+              <span id="headerStatusBadge" class="badge-pending">Pending</span>
+            </div>
+          </div>
+
+          <!-- Profile Header Card -->
+          <div class="card overflow-hidden">
+            <div class="h-32 bg-royal relative">
+              <div class="absolute -bottom-12 left-8 flex -space-x-4">
+                <div class="w-24 h-24 rounded-2xl border-4 border-white shadow-lg overflow-hidden bg-warm-white z-10">
+                  <img id="headerStudentPassport" src="/admin/assets/images/avatars/default_student.png" class="w-full h-full object-cover" />
+                </div>
+                <div class="w-20 h-20 rounded-2xl border-4 border-white shadow-lg overflow-hidden bg-warm-white mt-4 opacity-90 z-0">
+                  <img id="headerGuardianPassport" src="/admin/assets/images/avatars/default_parent.svg" class="w-full h-full object-cover" />
+                </div>
+              </div>
+            </div>
+            <div class="pt-16 pb-8 px-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div>
+                <h1 id="headerFullName" class="text-3xl font-bold text-text-dark">—</h1>
+                <p id="headerSubInfo" class="text-royal font-bold tracking-widest text-sm mt-1">—</p>
+                <div class="flex items-center gap-4 mt-3">
+                  <div class="flex items-center gap-1.5 text-xs text-text-soft">
+                    <span>📅 Registered:</span>
+                    <span id="headerRegDate" class="font-semibold text-text-dark">—</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-xs text-text-soft">
+                    <span>👤 Registrar:</span>
+                    <span id="headerRegistrar" class="font-semibold text-text-dark">—</span>
+                  </div>
+                </div>
+              </div>
+              <div id="headerStatusButtons" class="flex gap-2"></div>
+            </div>
+          </div>
+
+          <!-- Relational Tabs Navigation -->
+          <div class="flex border-b border-border gap-2 no-print overflow-x-auto">
+            <button data-tab-btn="biodata" class="px-5 py-3 text-xs font-bold uppercase tracking-wider border-b-2 border-gold text-royal font-black transition-all">
+              📂 Biodata & Classes
+            </button>
+            <button data-tab-btn="attendance" class="enrolled-only-tab px-5 py-3 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-text-soft hover:text-royal transition-all hidden">
+              📅 Attendance
+            </button>
+            <button data-tab-btn="results" class="enrolled-only-tab px-5 py-3 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-text-soft hover:text-royal transition-all hidden">
+              🎓 Academic Grades
+            </button>
+            <button data-tab-btn="payments" class="enrolled-only-tab px-5 py-3 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-text-soft hover:text-royal transition-all hidden">
+              ₦ Fees & Payments
+            </button>
+            <button data-tab-btn="behaviors" class="enrolled-only-tab px-5 py-3 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-text-soft hover:text-royal transition-all hidden">
+              🛡 Behavior Registry
+            </button>
+          </div>
+
+          <!-- TAB 1: BIODATA & CLASSES -->
+          <div data-tab-pane="biodata" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-6">
+              <!-- Student Biodata -->
+              <div class="card overflow-hidden">
+                <div class="bg-royal text-white px-6 py-4 flex items-center gap-3">
+                  <span class="w-6 h-6 rounded-full bg-gold text-royal flex items-center justify-center font-bold text-xs">1</span>
+                  <h3 class="font-bold uppercase tracking-widest text-sm">Student Biodata</h3>
+                </div>
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Full Name</p><p id="bioFullName" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Date of Birth</p><p id="bioDob" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Age</p><p id="bioAge" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Gender</p><p id="bioGender" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Blood Group</p><p id="bioBloodGroup" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Religion</p><p id="bioReligion" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Nationality</p><p id="bioNationality" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Mother Tongue</p><p id="bioMotherTongue" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Phone</p><p id="bioPhone" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Email</p><p id="bioEmail" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">State of Origin</p><p id="bioState" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">LGA</p><p id="bioLga" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Previous School</p><p id="bioPrevSchool" class="font-semibold text-text-dark">—</p></div>
+                  <div class="md:col-span-2 py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Residential Address</p><p id="bioAddress" class="font-semibold text-text-dark">—</p></div>
+                  <div class="md:col-span-2 py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Health / Medical Info</p><p id="bioHealth" class="font-semibold text-text-dark">—</p></div>
+                </div>
+              </div>
+
+              <!-- Parent & Guardian Info -->
+              <div class="card overflow-hidden">
+                <div class="bg-royal text-white px-6 py-4 flex items-center gap-3">
+                  <span class="w-6 h-6 rounded-full bg-gold text-royal flex items-center justify-center font-bold text-xs">2</span>
+                  <h3 class="font-bold uppercase tracking-widest text-sm">Parent & Guardian Information</h3>
+                </div>
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                  <div class="md:col-span-2 mb-2"><h4 class="text-xs font-black text-gold uppercase border-b border-gold/20 pb-1">Primary Parent</h4></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Parent Name</p><p id="bioParentName" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Occupation</p><p id="bioParentOccupation" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Parent Phone</p><p id="bioParentPhone" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Parent Email</p><p id="bioParentEmail" class="font-semibold text-text-dark">—</p></div>
+
+                  <div class="md:col-span-2 mt-4 mb-2"><h4 class="text-xs font-black text-gold uppercase border-b border-gold/20 pb-1">Emergency & Guardian</h4></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Emergency Contact</p><p id="bioEmergencyContact" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Emergency Phone</p><p id="bioEmergencyPhone" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Guardian Name</p><p id="bioGuardianName" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Guardian Phone</p><p id="bioGuardianPhone" class="font-semibold text-text-dark">—</p></div>
+                  <div class="py-2 border-b border-border/50"><p class="text-[10px] font-bold text-royal uppercase tracking-wider mb-0.5">Relationship</p><p id="bioGuardianRel" class="font-semibold text-text-dark">—</p></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column Sidebar -->
+            <div class="space-y-6">
+              <!-- Academic Enrollment -->
+              <div class="card p-6 border-t-4 border-royal">
+                <h3 class="font-bold text-royal text-sm mb-4 uppercase tracking-wider">Academic Placement</h3>
+                <div class="space-y-3 text-sm">
+                  <div class="flex justify-between py-1 border-b border-border/50"><span class="text-text-soft text-xs">Current Class</span><span id="sideClass" class="font-bold text-text-dark">—</span></div>
+                  <div class="flex justify-between py-1 border-b border-border/50"><span class="text-text-soft text-xs">Arm</span><span id="sideArm" class="font-bold text-text-dark">Gold</span></div>
+                  <div class="flex justify-between py-1 border-b border-border/50"><span class="text-text-soft text-xs">Session</span><span id="sideSession" class="font-bold text-text-dark">2025/2026</span></div>
+                </div>
+                <div class="mt-5 grid grid-cols-2 gap-2">
+                  <button id="openTransferBtn" class="btn-secondary text-xs py-2 justify-center">Transfer Class</button>
+                  <button id="openPromoteBtn" class="btn-primary text-xs py-2 justify-center">Promote</button>
+                </div>
+              </div>
+
+              <!-- Fees & Financials -->
+              <div class="card p-6 border-t-4 border-gold">
+                <h3 class="font-bold text-royal text-sm mb-4 uppercase tracking-wider">Fee Account</h3>
+                <div class="space-y-3 text-sm">
+                  <div class="flex justify-between py-1 border-b border-border/50"><span class="text-text-soft text-xs">Registration Fee</span><span id="sideRegFee" class="font-bold text-text-dark">₦15,000</span></div>
+                  <div class="flex justify-between py-1 border-b border-border/50"><span class="text-text-soft text-xs">Amount Paid</span><span id="sideAmountPaid" class="font-bold text-emerald-600">₦0</span></div>
+                  <div class="flex justify-between py-1 border-b border-border/50"><span class="text-text-soft text-xs">Current Balance</span><span id="sideBalance" class="font-bold text-red-500">₦15,000</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: ATTENDANCE -->
+          <div data-tab-pane="attendance" class="space-y-6 hidden">
+            <div class="card p-6">
+              <h3 class="font-bold text-royal text-sm mb-4 uppercase tracking-wider">Log Attendance</h3>
+              <form id="addAttendanceForm" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="form-label">Date</label>
+                  <input id="attDate" type="date" class="form-input" required />
+                </div>
+                <div>
+                  <label class="form-label">Status</label>
+                  <select id="attStatus" class="form-input">
+                    <option>Present</option>
+                    <option>Absent</option>
+                    <option>Late</option>
+                    <option>Excused</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label">Remarks</label>
+                  <input id="attRemarks" class="form-input" placeholder="Optional notes" />
+                </div>
+                <div class="sm:col-span-3 flex justify-end">
+                  <button type="submit" class="btn-primary text-xs py-2.5">Record Attendance</button>
+                </div>
+              </form>
+            </div>
+            <div class="card overflow-hidden">
+              <div class="px-6 py-4 border-b border-border"><h4 class="font-bold text-xs uppercase tracking-wider text-royal">Attendance Log</h4></div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead class="bg-warm-white text-[11px] uppercase text-text-soft border-b border-border">
+                    <tr><th class="px-4 py-2.5">Date</th><th class="px-4 py-2.5">Status</th><th class="px-4 py-2.5">Remarks</th></tr>
+                  </thead>
+                  <tbody id="attendanceTableBody" class="divide-y divide-border"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: ACADEMIC GRADES -->
+          <div data-tab-pane="results" class="space-y-6 hidden">
+            <div class="card p-6">
+              <h3 class="font-bold text-royal text-sm mb-4 uppercase tracking-wider">Record Subject Grade</h3>
+              <form id="addResultForm" class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div>
+                  <label class="form-label">Subject</label>
+                  <input id="resSubject" class="form-input" placeholder="e.g. Mathematics" required />
+                </div>
+                <div>
+                  <label class="form-label">CA Score (40)</label>
+                  <input id="resCaScore" type="number" max="40" class="form-input" placeholder="e.g. 35" required />
+                </div>
+                <div>
+                  <label class="form-label">Exam Score (60)</label>
+                  <input id="resExamScore" type="number" max="60" class="form-input" placeholder="e.g. 52" required />
+                </div>
+                <div>
+                  <label class="form-label">Term</label>
+                  <select id="resTerm" class="form-input">
+                    <option>First Term</option>
+                    <option>Second Term</option>
+                    <option>Third Term</option>
+                  </select>
+                </div>
+                <div class="sm:col-span-4 flex justify-end">
+                  <button type="submit" class="btn-primary text-xs py-2.5">Save Subject Grade</button>
+                </div>
+              </form>
+            </div>
+            <div class="card overflow-hidden">
+              <div class="px-6 py-4 border-b border-border"><h4 class="font-bold text-xs uppercase tracking-wider text-royal">Grade Sheet</h4></div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead class="bg-warm-white text-[11px] uppercase text-text-soft border-b border-border">
+                    <tr><th class="px-4 py-2.5">Subject</th><th class="px-4 py-2.5">CA</th><th class="px-4 py-2.5">Exam</th><th class="px-4 py-2.5">Total</th><th class="px-4 py-2.5">Grade</th><th class="px-4 py-2.5">Term</th></tr>
+                  </thead>
+                  <tbody id="resultsTableBody" class="divide-y divide-border"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: FEES & PAYMENTS -->
+          <div data-tab-pane="payments" class="space-y-6 hidden">
+            <div class="card p-6">
+              <h3 class="font-bold text-royal text-sm mb-4 uppercase tracking-wider">Record Fee Payment</h3>
+              <form id="addPaymentForm" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="form-label">Amount (₦)</label>
+                  <input id="payAmount" type="number" class="form-input" placeholder="Amount in Naira" required />
+                </div>
+                <div>
+                  <label class="form-label">Date</label>
+                  <input id="payDate" type="date" class="form-input" required />
+                </div>
+                <div>
+                  <label class="form-label">Payment Type</label>
+                  <select id="payType" class="form-input">
+                    <option>Tuition</option>
+                    <option>Registration</option>
+                    <option>Uniform</option>
+                    <option>Books</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label">Method</label>
+                  <select id="payMethod" class="form-input">
+                    <option>Transfer</option>
+                    <option>Cash</option>
+                    <option>POS</option>
+                  </select>
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="form-label">Receipt No.</label>
+                  <input id="payReceipt" class="form-input uppercase" placeholder="REC-..." />
+                </div>
+                <div class="sm:col-span-3 flex justify-end">
+                  <button type="submit" class="btn-primary text-xs py-2.5">Post Payment</button>
+                </div>
+              </form>
+            </div>
+            <div class="card overflow-hidden">
+              <div class="px-6 py-4 border-b border-border"><h4 class="font-bold text-xs uppercase tracking-wider text-royal">Payment History</h4></div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead class="bg-warm-white text-[11px] uppercase text-text-soft border-b border-border">
+                    <tr><th class="px-4 py-2.5">Receipt #</th><th class="px-4 py-2.5">Type</th><th class="px-4 py-2.5">Date</th><th class="px-4 py-2.5">Amount</th><th class="px-4 py-2.5">Method</th></tr>
+                  </thead>
+                  <tbody id="paymentsTableBody" class="divide-y divide-border"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 5: BEHAVIOR REGISTRY -->
+          <div data-tab-pane="behaviors" class="space-y-6 hidden">
+            <div class="card p-6">
+              <h3 class="font-bold text-royal text-sm mb-4 uppercase tracking-wider">Log Behavior Entry</h3>
+              <form id="addBehaviorForm" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="form-label">Date</label>
+                    <input id="behDate" type="date" class="form-input" required />
+                  </div>
+                  <div>
+                    <label class="form-label">Incident Type</label>
+                    <select id="behType" class="form-input">
+                      <option>Commendation</option>
+                      <option>Minor Infraction</option>
+                      <option>Serious Infraction</option>
+                      <option>Suspension</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="form-label">Description</label>
+                  <textarea id="behDesc" rows="2" class="form-input" placeholder="Details of the event..." required></textarea>
+                </div>
+                <div>
+                  <label class="form-label">Action Taken</label>
+                  <input id="behAction" class="form-input" placeholder="e.g. Award certificate / Warning issued" />
+                </div>
+                <div class="flex justify-end">
+                  <button type="submit" class="btn-primary text-xs py-2.5">Save Entry</button>
+                </div>
+              </form>
+            </div>
+            <div class="card overflow-hidden">
+              <div class="px-6 py-4 border-b border-border"><h4 class="font-bold text-xs uppercase tracking-wider text-royal">Behavioral History</h4></div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead class="bg-warm-white text-[11px] uppercase text-text-soft border-b border-border">
+                    <tr><th class="px-4 py-2.5">Date</th><th class="px-4 py-2.5">Type</th><th class="px-4 py-2.5">Description</th><th class="px-4 py-2.5">Action Taken</th></tr>
+                  </thead>
+                  <tbody id="behaviorsTableBody" class="divide-y divide-border"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Mobile Bottom Nav -->
+      <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border pb-safe no-print">
+        <div class="flex items-center justify-around px-2 py-2">
+          <a href="/admin/dashboard" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep" data-bottom-nav="dashboard">
+            <span class="text-xl leading-none mb-1">⊞</span>
+            <span class="text-[10px] font-semibold tracking-tight">Dashboard</span>
+          </a>
+          <a href="/admin/students" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-royal font-bold scale-105" data-bottom-nav="students">
+            <span class="text-xl leading-none mb-1">👥</span>
+            <span class="text-[10px] font-semibold tracking-tight">Registrations</span>
+          </a>
+          <a href="/admin/register-student" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep" data-bottom-nav="register">
+            <span class="text-xl leading-none mb-1">✚</span>
+            <span class="text-[10px] font-semibold tracking-tight">Register</span>
+          </a>
+          <a href="/admin/profile" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep" data-bottom-nav="profile">
+            <span class="text-xl leading-none mb-1">👤</span>
+            <span class="text-[10px] font-semibold tracking-tight">Profile</span>
+          </a>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Transfer Modal -->
+  <div id="transferModal" class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 hidden">
+    <div class="card p-6 max-w-md w-full bg-white space-y-4">
+      <h3 class="font-bold text-royal text-base">Class Transfer</h3>
+      <form id="transferForm" class="space-y-3">
+        <div>
+          <label class="form-label">Target Class</label>
+          <select id="transferClass" class="form-input">
+            <option>Creche</option><option>Pre-Nursery</option><option>Nursery 1</option><option>Nursery 2</option>
+            <option>Primary 1</option><option>Primary 2</option><option>Primary 3</option><option>Primary 4</option><option>Primary 5</option>
+            <option>JSS 1</option><option>JSS 2</option><option>JSS 3</option>
+            <option>SS 1</option><option>SS 2</option><option>SS 3</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Arm</label>
+          <input id="transferArm" class="form-input" value="Gold" />
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button id="closeTransferModal" type="button" class="btn-secondary text-xs">Cancel</button>
+          <button type="submit" class="btn-primary text-xs">Execute Transfer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Promote Modal -->
+  <div id="promoteModal" class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 hidden">
+    <div class="card p-6 max-w-md w-full bg-white space-y-4">
+      <h3 class="font-bold text-royal text-base">Student Promotion</h3>
+      <form id="promoteForm" class="space-y-3">
+        <div>
+          <label class="form-label">Next Class</label>
+          <select id="promoteClass" class="form-input">
+            <option>Primary 1</option><option>Primary 2</option><option>Primary 3</option><option>Primary 4</option><option>Primary 5</option>
+            <option>JSS 1</option><option>JSS 2</option><option>JSS 3</option>
+            <option>SS 1</option><option>SS 2</option><option>SS 3</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Arm</label>
+          <input id="promoteArm" class="form-input" value="Gold" />
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button id="closePromoteModal" type="button" class="btn-secondary text-xs">Cancel</button>
+          <button type="submit" class="btn-primary text-xs">Execute Promotion</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/admin/assets/js/toast.js"></script>
+  <script type="module" src="/admin/assets/js/pages/student-detail.js"></script>
+</body>
+</html>
+

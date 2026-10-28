@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Register a new teaching or non-teaching staff member — Phronesis Sunesis Admin ERP" />
+  <title>Register Staff · Phronesis Sunesis Admin ERP</title>
+  <link rel="icon" type="image/svg+xml" href="/admin/assets/images/icons/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/assets/css/styles.css" />
+  <link rel="stylesheet" href="/admin/assets/css/global.css" />
+  <link rel="stylesheet" href="/admin/assets/css/components.css" />
+  <link rel="stylesheet" href="/admin/assets/css/register-staff.css" />
+</head>
+
+<body class="bg-warm-white text-text-dark font-sans antialiased">
+
+  <div class="flex h-screen overflow-hidden bg-warm-white">
+
+    <!-- DESKTOP SIDEBAR -->
+    <div class="hidden lg:flex shrink-0">
+      <aside class="flex flex-col bg-royal-deep h-full w-64 min-h-screen">
+
+        <!-- Logo -->
+        <div class="px-5 py-6 border-b border-white/10">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 shrink-0">
+              <img src="/admin/assets/images/logo/logo.png" alt="Phronesis Logo" class="w-full h-full object-contain" />
+            </div>
+            <div>
+              <p class="text-white font-bold text-sm leading-tight">Phronesis</p>
+              <p class="text-blue-300 text-[10px] tracking-widest uppercase">Sunesis Admin</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto" aria-label="Main navigation">
+          <p class="text-blue-400 text-[10px] uppercase tracking-widest font-semibold px-3 mb-2">Main Menu</p>
+          <!-- Commented out for development task - sidebar restricted to Staffs only
+          <a href="/admin/dashboard" class="sidebar-item" data-nav="dashboard">
+            <span class="text-base w-5 text-center">⊞</span>
+            <span>Dashboard</span>
+          </a>
+          <a href="/admin/students" class="sidebar-item" data-nav="students">
+            <span class="text-base w-5 text-center">👥</span>
+            <span>Registrations</span>
+          </a>
+          <a href="/admin/register-student" class="sidebar-item" data-nav="register">
+            <span class="text-base w-5 text-center">✚</span>
+            <span>Register Student</span>
+          </a>
+          -->
+          <a href="/admin/staffs" class="sidebar-item active" data-nav="staffs">
+            <span class="text-base w-5 text-center">👔</span>
+            <span>Staffs</span>
+          </a>
+          <!--
+          <a href="/admin/staff-applications" class="sidebar-item" data-nav="staff">
+            <span class="text-base w-5 text-center">💼</span>
+            <span>Staff Applications</span>
+          </a>
+          <a href="/admin/orders" class="sidebar-item" data-nav="orders">
+            <span class="text-base w-5 text-center">💳</span>
+            <span>Fee Payments</span>
+          </a>
+          <a href="/admin/settings" class="sidebar-item" data-nav="settings">
+            <span class="text-base w-5 text-center">⚙</span>
+            <span>Settings</span>
+          </a>
+          -->
+        </nav>
+
+        <!-- Admin info -->
+        <div class="px-4 py-4 border-t border-white/10">
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              class="w-8 h-8 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center text-gold text-xs font-bold admin-initials">
+              A</div>
+            <div class="min-w-0">
+              <p class="text-white text-xs font-semibold truncate admin-name">Admin</p>
+              <p class="text-blue-300 text-[10px] truncate admin-role">Admin</p>
+            </div>
+          </div>
+          <button id="sidebarLogoutBtn"
+            class="w-full text-left text-xs text-blue-300 hover:text-white transition-colors flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10">
+            <span>&#8987;</span> Sign out
+          </button>
+        </div>
+      </aside>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex flex-col flex-1 min-w-0 overflow-hidden relative">
+
+      <!-- Top Header -->
+      <header class="h-16 bg-white border-b border-border flex items-center justify-between px-6 shrink-0 shadow-sm">
+        <div class="flex items-center gap-4">
+          <div>
+            <p class="text-[10px] uppercase tracking-widest text-text-soft font-semibold">Admin Panel</p>
+            <h1 id="pageTitle" class="text-base font-bold text-text-dark leading-tight">Register Staff</h1>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span
+            class="hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-royal-light text-royal text-[10px] font-bold uppercase tracking-wide border border-royal/15">
+            2025/2026
+          </span>
+          <a href="/admin/profile"
+            class="flex items-center gap-2 pl-3 border-l border-border hover:opacity-80 transition-opacity">
+            <div
+              class="w-8 h-8 rounded-full bg-royal flex items-center justify-center text-white text-xs font-bold admin-initials">
+              A</div>
+            <div class="hidden sm:block">
+              <p class="text-xs font-semibold text-text-dark leading-none admin-name">Admin</p>
+              <p class="text-[10px] text-text-soft admin-role">Staff</p>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Scrollable Content -->
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6 pb-24 lg:pb-6">
+        <div class="max-w-5xl mx-auto pb-10 space-y-5">
+
+          <!-- Page Introduction -->
+          <div class="rs-page-intro">
+            <div class="rs-page-intro-left">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                <nav aria-label="Breadcrumb" class="rs-breadcrumb">
+                  <a href="/admin/dashboard" class="rs-breadcrumb-link">Dashboard</a>
+                  <span class="rs-breadcrumb-sep" aria-hidden="true">&#8250;</span>
+                  <a href="/admin/staffs" class="rs-breadcrumb-link">Staffs</a>
+                  <span class="rs-breadcrumb-sep" aria-hidden="true">&#8250;</span>
+                  <span class="rs-breadcrumb-current">Register Staff</span>
+                </nav>
+                <a
+                  href="/admin/staffs"
+                  class="inline-flex items-center gap-1.5 text-xs font-semibold text-royal hover:text-royal-deep px-3 py-1.5 rounded-lg border border-border bg-white hover:bg-royal-light/50 transition-colors self-start sm:self-auto"
+                >
+                  <span aria-hidden="true">&#8592;</span> Back to Staffs
+                </a>
+              </div>
+              <p class="rs-section-label">Staff Management</p>
+              <h2 class="rs-page-title">Register New Staff</h2>
+              <p class="rs-page-desc">Enter the details of a new teaching or non-teaching staff member.</p>
+            </div>
+
+            <!-- Completion Indicator -->
+            <div class="rs-completion" id="completionIndicator" aria-live="polite" aria-label="Form completion status">
+              <div class="rs-completion-ring">
+                <svg viewBox="0 0 36 36" class="rs-completion-svg" aria-hidden="true">
+                  <circle cx="18" cy="18" r="15.9" fill="none" stroke="#E7E1D1" stroke-width="2.5" />
+                  <circle id="completionCircle" cx="18" cy="18" r="15.9" fill="none" stroke="#D4B15A" stroke-width="2.5"
+                    stroke-dasharray="0 100" stroke-dashoffset="25" stroke-linecap="round" />
+                </svg>
+                <span id="completionPct" class="rs-completion-pct">0%</span>
+              </div>
+              <div>
+                <p class="rs-completion-label">Required fields</p>
+                <p id="completionCount" class="rs-completion-count">0 of 6 complete</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- REGISTRATION FORM CARD -->
+          <div class="card overflow-hidden">
+
+            <!-- Card Header -->
+            <div class="section-header">
+              <span class="header-icon" aria-hidden="true">&#128219;</span>
+              <span>Staff Information</span>
+            </div>
+
+            <div class="px-6 pt-4 pb-2">
+              <p class="text-xs text-text-soft leading-relaxed">
+                Provide the required staff details below.
+                Fields marked <span class="text-red-400 font-bold">*</span> are required.
+                Fields marked <span class="rs-optional-text">Optional</span> may be left blank.
+              </p>
+            </div>
+
+            <form id="staffRegForm" class="p-6 sm:p-8" novalidate autocomplete="off">
+
+              <!-- Grid: 2 columns on sm+ with generous spacing -->
+              <div class="rs-form-grid">
+
+                <!-- Field 1: Staff No. -->
+                <div class="rs-field-group">
+                  <label class="form-label" for="staffNo">
+                    Staff No. <span class="text-red-400 ml-0.5" aria-hidden="true">*</span>
+                  </label>
+                  <input id="staffNo" name="staffNo" type="text" class="form-input" placeholder="Enter staff number"
+                    autocomplete="off" aria-required="true" aria-describedby="staffNo-error" />
+                  <span id="staffNo-error" class="rs-error-msg" role="alert" aria-live="polite"></span>
+                </div>
+
+                <!-- Field 5: Biometric Enrollment No. -->
+                <div class="rs-field-group">
+                  <label class="form-label" for="biometricNo">
+                    Biometric Enrollment No. <span class="text-red-400 ml-0.5" aria-hidden="true">*</span>
+                  </label>
+                  <input id="biometricNo" name="biometricNo" type="text" class="form-input"
+                    placeholder="Enter biometric enrollment number" autocomplete="off" aria-required="true"
+                    aria-describedby="biometricNo-error" />
+                  <span id="biometricNo-error" class="rs-error-msg" role="alert" aria-live="polite"></span>
+                </div>
+
+                <!-- Field 2: First Name -->
+                <div class="rs-field-group">
+                  <label class="form-label" for="firstName">
+                    First Name <span class="text-red-400 ml-0.5" aria-hidden="true">*</span>
+                  </label>
+                  <input id="firstName" name="firstName" type="text" class="form-input" placeholder="Enter first name"
+                    autocomplete="given-name" aria-required="true" aria-describedby="firstName-error" />
+                  <span id="firstName-error" class="rs-error-msg" role="alert" aria-live="polite"></span>
+                </div>
+
+                <!-- Field 3: Last Name -->
+                <div class="rs-field-group">
+                  <label class="form-label" for="lastName">
+                    Last Name <span class="text-red-400 ml-0.5" aria-hidden="true">*</span>
+                  </label>
+                  <input id="lastName" name="lastName" type="text" class="form-input" placeholder="Enter last name"
+                    autocomplete="family-name" aria-required="true" aria-describedby="lastName-error" />
+                  <span id="lastName-error" class="rs-error-msg" role="alert" aria-live="polite"></span>
+                </div>
+
+                <!-- Field 4: Other Names (Optional) -->
+                <div class="rs-field-group">
+                  <label class="form-label" for="otherNames">
+                    Other Names <span class="rs-optional-badge">Optional</span>
+                  </label>
+                  <input id="otherNames" name="otherNames" type="text" class="form-input"
+                    placeholder="Enter other names, if applicable" autocomplete="additional-name"
+                    aria-describedby="otherNames-hint" />
+                  <span id="otherNames-hint" class="rs-hint">Middle name or other names (leave blank if not
+                    applicable).</span>
+                </div>
+
+                <!-- Field 8: Department -->
+                <div class="rs-field-group">
+                  <label class="form-label" for="department">
+                    Department <span class="text-red-400 ml-0.5" aria-hidden="true">*</span>
+                  </label>
+                  <select id="department" name="department" class="form-input rs-select" aria-required="true"
+                    aria-describedby="department-error">
+                    <option value="">Select department</option>
+                    <option value="Teaching">Teaching</option>
+                    <option value="Non-teaching">Non-teaching</option>
+                  </select>
+                  <span id="department-error" class="rs-error-msg" role="alert" aria-live="polite"></span>
+                </div>
+
+                <!-- Field 6: Email Address (Optional) -->
+                <div class="rs-field-group">
+                  <label class="form-label" for="email">
+                    Email Address <span class="rs-optional-badge">Optional</span>
+                  </label>
+                  <input id="email" name="email" type="email" class="form-input" placeholder="Enter email address"
+                    autocomplete="email" inputmode="email" aria-describedby="email-error email-hint" />
+                  <span id="email-error" class="rs-error-msg" role="alert" aria-live="polite"></span>
+                  <span id="email-hint" class="rs-hint">Used for staff communications. Leave blank if not
+                    available.</span>
+                </div>
+
+                <!-- Field 7: Phone Number -->
+                <div class="rs-field-group">
+                  <label class="form-label" for="phoneNo">
+                    Phone Number <span class="text-red-400 ml-0.5" aria-hidden="true">*</span>
+                  </label>
+                  <input id="phoneNo" name="phoneNo" type="tel" class="form-input" placeholder="Enter phone number"
+                    autocomplete="tel" inputmode="tel" aria-required="true" aria-describedby="phoneNo-error" />
+                  <span id="phoneNo-error" class="rs-error-msg" role="alert" aria-live="polite"></span>
+                </div>
+
+              </div><!-- /rs-form-grid -->
+
+              <!-- Form Footer Buttons -->
+              <div class="rs-form-footer">
+                <button type="button" id="clearFormBtn" class="btn-secondary rs-btn-action"
+                  aria-label="Clear all form fields">
+                  <span aria-hidden="true">&#8635;</span>
+                  Clear Form
+                </button>
+                <button type="submit" id="submitBtn" class="btn-primary rs-btn-submit"
+                  aria-label="Register staff member">
+                  <span aria-hidden="true">&#10003;</span>
+                  Register Staff
+                </button>
+              </div>
+
+            </form>
+          </div><!-- /form card -->
+
+        </div><!-- /max-w -->
+      </main>
+
+      <!-- MOBILE BOTTOM NAV -->
+      <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border"
+        aria-label="Mobile navigation">
+        <div class="flex items-center justify-around px-2 py-2">
+          <a href="/admin/dashboard"
+            class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep"
+            data-bottom-nav="dashboard">
+            <span class="text-xl leading-none mb-1" aria-hidden="true">⊞</span>
+            <span class="text-[10px] font-semibold tracking-tight">Dashboard</span>
+          </a>
+          <a href="/admin/students"
+            class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep"
+            data-bottom-nav="students">
+            <span class="text-xl leading-none mb-1" aria-hidden="true">👥</span>
+            <span class="text-[10px] font-semibold tracking-tight">Registrations</span>
+          </a>
+          <a href="/admin/staffs"
+            class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-royal font-bold scale-105"
+            data-bottom-nav="staffs">
+            <span class="text-xl leading-none mb-1" aria-hidden="true">👔</span>
+            <span class="text-[10px] font-semibold tracking-tight">Staffs</span>
+          </a>
+          <a href="/admin/profile"
+            class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep"
+            data-bottom-nav="profile">
+            <span class="text-xl leading-none mb-1" aria-hidden="true">👤</span>
+            <span class="text-[10px] font-semibold tracking-tight">Profile</span>
+          </a>
+        </div>
+      </nav>
+
+    </div><!-- /main column -->
+  </div><!-- /root flex -->
+
+  <!-- CLEAR FORM CONFIRMATION DIALOG -->
+  <div id="clearConfirmOverlay" class="rs-overlay hidden" aria-hidden="true">
+    <div id="clearConfirmDialog" class="rs-dialog" role="dialog" aria-modal="true" aria-labelledby="clearDialogTitle"
+      aria-describedby="clearDialogDesc">
+      <div class="rs-dialog-icon rs-dialog-icon-warning" aria-hidden="true">&#9888;</div>
+      <h3 id="clearDialogTitle" class="rs-dialog-title">Clear Form?</h3>
+      <p id="clearDialogDesc" class="rs-dialog-body">
+        All entered information will be removed. This action cannot be undone.
+      </p>
+      <div class="rs-dialog-actions">
+        <button id="clearCancelBtn" type="button" class="btn-secondary flex-1">Keep Data</button>
+        <button id="clearConfirmBtn" type="button" class="rs-btn-danger flex-1">Clear Form</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRMATION PREVIEW MODAL -->
+  <div id="previewOverlay" class="rs-overlay hidden" aria-hidden="true">
+    <div id="previewModal" class="rs-preview-modal" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle">
+
+      <!-- Modal Header -->
+      <div class="rs-preview-header">
+        <div class="flex items-center gap-3">
+          <div class="rs-preview-icon" aria-hidden="true">&#128219;</div>
+          <div>
+            <p class="text-[10px] text-blue-300 uppercase tracking-widest font-semibold">Registration Preview</p>
+            <h2 id="previewModalTitle" class="text-base font-bold text-white leading-tight">Staff Details</h2>
+          </div>
+        </div>
+        <button id="previewCloseBtn" type="button" class="rs-preview-close"
+          aria-label="Close preview and return to form">&#10005;</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="rs-preview-body">
+
+        <!-- Frontend-only Notice -->
+        <div class="rs-notice" role="status">
+          <span class="rs-notice-icon" aria-hidden="true">&#8505;</span>
+          <p class="rs-notice-text">
+            Form validation successful. This is a <strong>frontend demonstration only</strong>;
+            the staff record has <strong>not</strong> been saved to the school database.
+          </p>
+        </div>
+
+        <!-- Name Banner -->
+        <div class="rs-preview-name-banner">
+          <div class="rs-preview-avatar" id="previewAvatar" aria-hidden="true">A</div>
+          <div>
+            <p id="previewFullName" class="rs-preview-name-text">—</p>
+            <p id="previewDeptBadge" class="rs-preview-dept-badge">—</p>
+          </div>
+        </div>
+
+        <!-- Detail Grid -->
+        <div class="rs-preview-grid">
+          <div class="rs-preview-field">
+            <span class="rs-preview-field-label">Staff No.</span>
+            <span id="pvStaffNo" class="rs-preview-field-value">—</span>
+          </div>
+          <div class="rs-preview-field">
+            <span class="rs-preview-field-label">Biometric Enrollment No.</span>
+            <span id="pvBiometricNo" class="rs-preview-field-value">—</span>
+          </div>
+          <div class="rs-preview-field">
+            <span class="rs-preview-field-label">Department</span>
+            <span id="pvDepartment" class="rs-preview-field-value">—</span>
+          </div>
+          <div class="rs-preview-field">
+            <span class="rs-preview-field-label">Phone Number</span>
+            <span id="pvPhoneNo" class="rs-preview-field-value">—</span>
+          </div>
+          <div class="rs-preview-field rs-preview-field-full">
+            <span class="rs-preview-field-label">Email Address</span>
+            <span id="pvEmail" class="rs-preview-field-value">—</span>
+          </div>
+        </div>
+
+      </div><!-- /modal body -->
+
+      <!-- Modal Footer -->
+      <div class="rs-preview-footer">
+        <button id="previewBackBtn" type="button" class="btn-secondary rs-preview-btn"
+          aria-label="Return to form to edit details">
+          &#8592; Back to Edit
+        </button>
+        <a href="/admin/staffs" class="btn-secondary rs-preview-btn inline-flex items-center justify-center">
+          Go to Staffs
+        </a>
+        <button id="previewDoneBtn" type="button" class="rs-btn-done rs-preview-btn">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/admin/assets/js/toast.js"></script>
+  <script type="module" src="/admin/assets/js/pages/register-staff.js"></script>
+</body>
+
+</html>

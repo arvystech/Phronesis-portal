@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Phronesis Sunesis School of Excellence — Admin Management System" />
+  <title>Candidate Profile · Phronesis Sunesis Admin ERP</title>
+  <link rel="icon" type="image/svg+xml" href="/admin/assets/images/icons/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/assets/css/styles.css" />
+  <link rel="stylesheet" href="/admin/assets/css/global.css" />
+  <link rel="stylesheet" href="/admin/assets/css/components.css" />
+</head>
+<body class="bg-warm-white text-text-dark font-sans antialiased">
+
+  <div class="flex h-screen overflow-hidden bg-warm-white">
+    <!-- Desktop Sidebar -->
+    <div class="hidden lg:flex shrink-0">
+      <aside class="flex flex-col bg-royal-deep h-full w-64 min-h-screen">
+        <div class="px-5 py-6 border-b border-white/10">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 shrink-0">
+              <img src="/admin/assets/images/logo/logo.png" alt="Phronesis Logo" class="w-full h-full object-contain" />
+            </div>
+            <div>
+              <p class="text-white font-bold text-sm leading-tight">Phronesis</p>
+              <p class="text-blue-300 text-[10px] tracking-widest uppercase">Sunesis Admin</p>
+            </div>
+          </div>
+        </div>
+
+        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto" aria-label="Main menu">
+          <p class="text-blue-400 text-[10px] uppercase tracking-widest font-semibold px-3 mb-2">Main Menu</p>
+          <a href="/admin/dashboard" class="sidebar-item" data-nav="dashboard">
+            <span class="text-base w-5 text-center">⊞</span>
+            <span>Dashboard</span>
+          </a>
+          <a href="/admin/students" class="sidebar-item" data-nav="students">
+            <span class="text-base w-5 text-center">👥</span>
+            <span>Registrations</span>
+          </a>
+          <a href="/admin/register-student" class="sidebar-item" data-nav="register">
+            <span class="text-base w-5 text-center">✚</span>
+            <span>Register Student</span>
+          </a>
+          <a href="/admin/staffs" class="sidebar-item" data-nav="staffs">
+            <span class="text-base w-5 text-center">👔</span>
+            <span>Staffs</span>
+          </a>
+          <a href="/admin/staff-applications" class="sidebar-item active" data-nav="staff">
+            <span class="text-base w-5 text-center">💼</span>
+            <span>Staff Applications</span>
+          </a>
+          <a href="/admin/orders" class="sidebar-item" data-nav="orders">
+            <span class="text-base w-5 text-center">💳</span>
+            <span>Fee Payments</span>
+          </a>
+          <a href="/admin/settings" class="sidebar-item" data-nav="settings">
+            <span class="text-base w-5 text-center">⚙</span>
+            <span>Settings</span>
+          </a>
+        </nav>
+
+        <div class="px-4 py-4 border-t border-white/10">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-8 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center text-gold text-xs font-bold admin-initials">
+              A
+            </div>
+            <div class="min-w-0">
+              <p class="text-white text-xs font-semibold truncate admin-name">Admin</p>
+              <p class="text-blue-300 text-[10px] truncate admin-role">Admin</p>
+            </div>
+          </div>
+          <button
+            id="sidebarLogoutBtn"
+            class="w-full text-left text-xs text-blue-300 hover:text-white transition-colors flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10"
+          >
+            <span>⎋</span> Sign out
+          </button>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex flex-col flex-1 min-w-0 overflow-hidden relative">
+      <header class="h-16 bg-white border-b border-border flex items-center justify-between px-6 shrink-0 shadow-sm">
+        <div class="flex items-center gap-4">
+          <div>
+            <p class="text-[10px] uppercase tracking-widest text-text-soft font-semibold">Admin Panel</p>
+            <h1 id="pageTitle" class="text-base font-bold text-text-dark leading-tight">Applicant Profile</h1>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-royal-light text-royal text-[10px] font-bold uppercase tracking-wide border border-royal/15">
+            2025/2026
+          </span>
+          <a href="/admin/profile" class="flex items-center gap-2 pl-3 border-l border-border hover:opacity-80 transition-opacity">
+            <div class="w-8 h-8 rounded-full bg-royal flex items-center justify-center text-white text-xs font-bold admin-initials">
+              A
+            </div>
+            <div class="hidden sm:block">
+              <p class="text-xs font-semibold text-text-dark leading-none admin-name">Admin</p>
+              <p class="text-[10px] text-text-soft admin-role">Staff</p>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6 pb-24 lg:pb-6">
+        <!-- Loading -->
+        <div id="appDetailLoading" class="flex items-center justify-center h-64">
+          <div class="w-8 h-8 border-4 border-royal border-t-transparent rounded-full animate-spin"></div>
+        </div>
+
+        <div id="appDetailContent" class="max-w-5xl mx-auto pb-10 hidden space-y-6">
+          <!-- Header Actions -->
+          <div class="flex items-center justify-between">
+            <a href="/admin/staff-applications" class="text-sm font-bold text-royal flex items-center gap-2 hover:bg-royal/5 px-3 py-1.5 rounded-lg transition-colors">
+              <span>←</span> Back to Applications
+            </a>
+            <div id="headerActions" class="flex gap-3"></div>
+          </div>
+
+          <!-- Candidate Banner -->
+          <div class="card overflow-hidden flex flex-col sm:flex-row relative">
+            <div class="absolute top-0 right-0 p-6">
+              <span id="appStatusBadge" class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+                Pending
+              </span>
+            </div>
+            <div class="bg-royal-deep text-white p-8 sm:w-1/3 flex flex-col items-center justify-center text-center">
+              <div id="appAvatar" class="w-24 h-24 rounded-full bg-white/10 p-1 shadow-inner mb-4 overflow-hidden border-2 border-gold/30"></div>
+              <h1 id="appName" class="text-xl font-bold">—</h1>
+              <p id="appPosition" class="text-gold text-xs uppercase tracking-widest mt-1 mb-3">—</p>
+              <p id="appCategory" class="text-xs text-blue-200">—</p>
+            </div>
+
+            <div class="p-8 sm:w-2/3 grid grid-cols-2 gap-y-6 gap-x-4">
+              <div><p class="text-[10px] text-text-soft uppercase tracking-wider font-bold mb-1">Email</p><p id="appEmail" class="font-medium text-sm">—</p></div>
+              <div><p class="text-[10px] text-text-soft uppercase tracking-wider font-bold mb-1">Phone</p><p id="appPhone" class="font-medium text-sm">—</p></div>
+              <div><p class="text-[10px] text-text-soft uppercase tracking-wider font-bold mb-1">Gender</p><p id="appGender" class="font-medium text-sm">—</p></div>
+              <div><p class="text-[10px] text-text-soft uppercase tracking-wider font-bold mb-1">Date of Birth</p><p id="appDob" class="font-medium text-sm">—</p></div>
+              <div class="col-span-2"><p class="text-[10px] text-text-soft uppercase tracking-wider font-bold mb-1">Address</p><p id="appAddress" class="font-medium text-sm">—</p></div>
+            </div>
+          </div>
+
+          <!-- Columns -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column -->
+            <div class="lg:col-span-2 space-y-6">
+              <!-- Work Experience -->
+              <div class="card p-6 border-t-4 border-gold">
+                <div class="flex justify-between items-center mb-6">
+                  <h2 class="text-lg font-bold text-royal">Work Experience</h2>
+                  <span id="appExpYears" class="bg-gold/20 text-gold-dark px-3 py-1 rounded-lg text-xs font-bold">0 Years Total</span>
+                </div>
+                <div id="experienceList" class="space-y-4"></div>
+              </div>
+
+              <!-- Education -->
+              <div class="card p-6">
+                <h2 class="text-lg font-bold text-royal mb-6">Educational Qualifications</h2>
+                <div id="educationList" class="space-y-4"></div>
+              </div>
+
+              <!-- Screening Questions -->
+              <div class="card p-6 bg-[#F0D98A]/20">
+                <h2 class="text-lg font-bold text-royal mb-6">Screening Responses</h2>
+                <div class="space-y-6">
+                  <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-text-soft mb-2">Why Phronesis School?</p>
+                    <p id="qWhy" class="text-sm text-text-dark bg-white p-4 rounded-xl border border-gold/20 leading-relaxed"></p>
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-text-soft mb-2">Value Brought</p>
+                    <p id="qValue" class="text-sm text-text-dark bg-white p-4 rounded-xl border border-gold/20 leading-relaxed"></p>
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-text-soft mb-2">Philosophy</p>
+                    <p id="qPhilosophy" class="text-sm text-text-dark bg-white p-4 rounded-xl border border-gold/20 leading-relaxed"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="space-y-6">
+              <!-- Documents -->
+              <div class="card p-6 bg-royal-deep text-white shadow-xl">
+                <h2 class="text-lg font-bold text-gold mb-6">Documents</h2>
+                <div id="documentsList" class="space-y-3"></div>
+              </div>
+
+              <!-- Competencies -->
+              <div class="card p-6">
+                <h2 class="text-lg font-bold text-royal mb-4">Competencies</h2>
+                <div class="space-y-4">
+                  <div><p class="text-[10px] uppercase font-bold text-text-soft mb-1">Subjects</p><p id="skillSubjects" class="text-sm font-medium">N/A</p></div>
+                  <div><p class="text-[10px] uppercase font-bold text-text-soft mb-1">Computer Skills</p><p id="skillComputer" class="text-sm font-medium">N/A</p></div>
+                  <div><p class="text-[10px] uppercase font-bold text-text-soft mb-1">Communication</p><p id="skillComm" class="text-sm font-medium">N/A</p></div>
+                  <div><p class="text-[10px] uppercase font-bold text-text-soft mb-1">Languages</p><p id="skillLang" class="text-sm font-medium">N/A</p></div>
+                </div>
+              </div>
+
+              <!-- Referees -->
+              <div class="card p-6">
+                <h2 class="text-lg font-bold text-royal mb-4">Referees</h2>
+                <div id="refereesList" class="space-y-4"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Mobile Bottom Nav -->
+      <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border pb-safe">
+        <div class="flex items-center justify-around px-2 py-2">
+          <a href="/admin/dashboard" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep" data-bottom-nav="dashboard">
+            <span class="text-xl leading-none mb-1">⊞</span>
+            <span class="text-[10px] font-semibold tracking-tight">Dashboard</span>
+          </a>
+          <a href="/admin/students" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep" data-bottom-nav="students">
+            <span class="text-xl leading-none mb-1">👥</span>
+            <span class="text-[10px] font-semibold tracking-tight">Registrations</span>
+          </a>
+          <a href="/admin/register-student" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep" data-bottom-nav="register">
+            <span class="text-xl leading-none mb-1">✚</span>
+            <span class="text-[10px] font-semibold tracking-tight">Register</span>
+          </a>
+          <a href="/admin/profile" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep" data-bottom-nav="profile">
+            <span class="text-xl leading-none mb-1">👤</span>
+            <span class="text-[10px] font-semibold tracking-tight">Profile</span>
+          </a>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <script src="/admin/assets/js/toast.js"></script>
+  <script type="module" src="/admin/assets/js/pages/staff-application-detail.js"></script>
+</body>
+</html>
+

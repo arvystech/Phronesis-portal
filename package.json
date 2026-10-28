@@ -1,11 +1,13 @@
 {
-  "name": "admin",
+  "name": "phronesis-portal",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build:css": "tailwindcss -i ./src/index.css -o ./assets/css/styles.css --minify",
-    "watch:css": "tailwindcss -i ./src/index.css -o ./assets/css/styles.css --watch",
+    "dev": "node dev-server.js",
+    "start": "node dev-server.js",
+    "build:css": "tailwindcss -i ./src/index.css -o ./admin/assets/css/styles.css --minify",
+    "watch:css": "tailwindcss -i ./src/index.css -o ./admin/assets/css/styles.css --watch",
     "build": "npm run build:css"
   },
   "dependencies": {},
