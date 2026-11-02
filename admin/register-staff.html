@@ -78,15 +78,15 @@
 
         <!-- Admin info -->
         <div class="px-4 py-4 border-t border-white/10">
-          <div class="flex items-center gap-3 mb-3">
-            <div
-              class="w-8 h-8 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center text-gold text-xs font-bold admin-initials">
-              A</div>
+          <a href="/admin/profile" class="sidebar-admin-link flex items-center gap-3 mb-3 p-1.5 -mx-1.5 rounded-xl hover:bg-white/10 transition-all cursor-pointer group" title="View Admin Profile">
+            <div class="w-8 h-8 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center text-gold text-xs font-bold admin-initials group-hover:scale-105 transition-transform">
+              A
+            </div>
             <div class="min-w-0">
-              <p class="text-white text-xs font-semibold truncate admin-name">Admin</p>
+              <p class="text-white text-xs font-semibold truncate admin-name group-hover:text-gold transition-colors">Admin</p>
               <p class="text-blue-300 text-[10px] truncate admin-role">Admin</p>
             </div>
-          </div>
+          </a>
           <button id="sidebarLogoutBtn"
             class="w-full text-left text-xs text-blue-300 hover:text-white transition-colors flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10">
             <span>&#8987;</span> Sign out
@@ -375,8 +375,7 @@
         <div class="rs-notice" role="status">
           <span class="rs-notice-icon" aria-hidden="true">&#8505;</span>
           <p class="rs-notice-text">
-            Form validation successful. This is a <strong>frontend demonstration only</strong>;
-            the staff record has <strong>not</strong> been saved to the school database.
+            Staff registration successful. The staff member has been <strong>successfully saved to the school database</strong>.
           </p>
         </div>
 

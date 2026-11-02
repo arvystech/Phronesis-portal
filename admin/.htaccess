@@ -30,7 +30,7 @@
   RewriteRule ^(?:admin/)?staff-applications/([^/]+)/?$ staff-application-detail.html [L,QSA]
 
   # Clean Page Routes without .html
-  RewriteRule ^(?:admin/)?dashboard/?$ dashboard.html [L,QSA]
+  RewriteRule ^(?:admin/)?dashboard/?$ staffs.html [L,QSA]
   RewriteRule ^(?:admin/)?students/?$ students.html [L,QSA]
   RewriteRule ^(?:admin/)?registrations/?$ students.html [L,QSA]
   RewriteRule ^(?:admin/)?students/new/?$ register-student.html [L,QSA]
@@ -50,8 +50,8 @@
   RewriteRule ^(?:admin/)?login/?$ login.html [L,QSA]
 
   # Default route
-  RewriteRule ^$ dashboard.html [L,QSA]
-  RewriteRule ^(?:admin/)?$ dashboard.html [L,QSA]
+  RewriteRule ^$ staffs.html [L,QSA]
+  RewriteRule ^(?:admin/)?$ staffs.html [L,QSA]
 
   # Fallback for any other .html file without extension
   RewriteCond %{REQUEST_FILENAME}.html -f

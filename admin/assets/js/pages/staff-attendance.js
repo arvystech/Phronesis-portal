@@ -14,18 +14,7 @@ let activeStatusFilter = 'All';
 
 
 
-const MOCK_ATTENDANCE_LOGS = [
-  { date: "Friday, Oct 17, 2026", in: "07:42 AM", out: "04:15 PM", terminal: "Terminal A (Main Gate)", duration: "8h 33m", status: "On Time" },
-  { date: "Thursday, Oct 16, 2026", in: "07:51 AM", out: "04:30 PM", terminal: "Terminal A (Main Gate)", duration: "8h 39m", status: "On Time" },
-  { date: "Wednesday, Oct 15, 2026", in: "08:12 AM", out: "04:20 PM", terminal: "Terminal B (Admin Block)", duration: "8h 08m", status: "Late" },
-  { date: "Tuesday, Oct 14, 2026", in: "07:38 AM", out: "04:10 PM", terminal: "Terminal A (Main Gate)", duration: "8h 32m", status: "On Time" },
-  { date: "Monday, Oct 13, 2026", in: "07:45 AM", out: "04:18 PM", terminal: "Terminal A (Main Gate)", duration: "8h 33m", status: "On Time" },
-  { date: "Friday, Oct 10, 2026", in: "07:40 AM", out: "04:22 PM", terminal: "Terminal A (Main Gate)", duration: "8h 42m", status: "On Time" },
-  { date: "Thursday, Oct 09, 2026", in: "—", out: "—", terminal: "Official Leave (Medical)", duration: "—", status: "Excused" },
-  { date: "Wednesday, Oct 08, 2026", in: "07:49 AM", out: "04:15 PM", terminal: "Terminal A (Main Gate)", duration: "8h 26m", status: "On Time" },
-  { date: "Tuesday, Oct 07, 2026", in: "07:36 AM", out: "04:10 PM", terminal: "Terminal A (Main Gate)", duration: "8h 34m", status: "On Time" },
-  { date: "Monday, Oct 06, 2026", in: "08:05 AM", out: "04:30 PM", terminal: "Terminal B (Admin Block)", duration: "8h 25m", status: "Late" }
-];
+let staffAttendanceLogs = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
   setupLayout('staffs', 'Staff Attendance Log');
@@ -226,13 +215,13 @@ function renderAttendanceTable() {
 
   tbody.innerHTML = '';
 
-  let records = MOCK_ATTENDANCE_LOGS;
+  let records = staffAttendanceLogs;
   if (activeStatusFilter !== 'All') {
-    records = records.filter(r => r.status.toLowerCase() === activeStatusFilter.toLowerCase());
+    records = records.filter(r => r.status && r.status.toLowerCase() === activeStatusFilter.toLowerCase());
   }
 
   if (countEl) {
-    countEl.textContent = `Showing ${records.length} of ${MOCK_ATTENDANCE_LOGS.length} demonstration entries`;
+    countEl.textContent = `Showing ${records.length} attendance ${records.length === 1 ? 'entry' : 'entries'}`;
   }
 
   if (records.length === 0) {

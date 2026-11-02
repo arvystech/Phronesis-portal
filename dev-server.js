@@ -1,8 +1,20 @@
 // dev-server.js
 // Lightweight, zero-dependency Node.js development server simulating
 // Apache/Nginx clean URL routing for Phronesis Sunesis Admin & future Student portal.
+//
+// Development-only features added for auth:
+//   - /api-proxy/* routes proxy to https://api.phronesis-sunesis.com.ng
+//     This is necessary because the live backend uses CORS with wildcard origin (*),
+//     which the browser blocks when credentials are needed. By routing through this
+//     proxy, the browser's CSRF cookie from the backend is preserved in a
+//     same-origin manner. The proxy also handles the _csrf cookie relay.
+//
+// NOTE: This proxy is for local development only. On the production server
+//       (Apache/Nginx), configure a ProxyPass or proxy_pass to achieve the
+//       same effect, or serve the frontend from the same domain as the API.
 
 import http from 'http';
+import https from 'https';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -10,6 +22,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 3000;
+const API_BACKEND = 'https://api.phronesis-sunesis.com.ng';
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -44,13 +57,101 @@ function serveFile(res, filePath) {
   });
 }
 
+/**
+ * Proxy handler for /api-proxy/* requests.
+ * Forwards the request to the live backend, relays the response including
+ * Set-Cookie headers (adjusting the Secure and SameSite flags for localhost
+ * development), and strips the CORS wildcard so the browser accepts the response.
+ *
+ * Cookie attribute adjustment:
+ *   - Removes "Secure" so cookies are set over http://localhost
+ *   - Changes SameSite=Strict to SameSite=Lax for cross-page navigation
+ *   These adjustments are safe for local development; they must NOT be applied
+ *   in production.
+ */
+function proxyToBackend(req, res, backendPath) {
+  const url = new URL(API_BACKEND + backendPath);
+
+  // Forward all incoming request headers, but override Host
+  const forwardHeaders = { ...req.headers };
+  forwardHeaders['host'] = url.hostname;
+
+  // Remove headers that would confuse the backend or cause issues
+  delete forwardHeaders['origin'];        // Will re-add below as the real API origin
+  delete forwardHeaders['referer'];
+  delete forwardHeaders['connection'];
+
+  const options = {
+    hostname: url.hostname,
+    port: 443,
+    path: url.pathname + (url.search || ''),
+    method: req.method,
+    headers: forwardHeaders,
+  };
+
+  const proxyReq = https.request(options, (proxyRes) => {
+    // Adjust Set-Cookie headers for localhost development
+    let setCookieHeaders = proxyRes.headers['set-cookie'];
+    if (setCookieHeaders) {
+      setCookieHeaders = setCookieHeaders.map((cookie) =>
+        cookie
+          .replace(/;\s*Secure/gi, '')          // Remove Secure (http localhost)
+          .replace(/SameSite=Strict/gi, 'SameSite=Lax')  // Allow navigation
+      );
+    }
+
+    // Build response headers — exclude CORS headers so browser uses same-origin rules
+    const responseHeaders = {};
+    for (const [key, val] of Object.entries(proxyRes.headers)) {
+      const lk = key.toLowerCase();
+      if (lk === 'access-control-allow-origin') continue;  // Don't forward wildcard CORS
+      if (lk === 'access-control-allow-credentials') continue;
+      if (lk === 'access-control-allow-methods') continue;
+      if (lk === 'access-control-allow-headers') continue;
+      if (lk === 'transfer-encoding') continue; // We'll recalculate
+      if (lk === 'set-cookie') {
+        responseHeaders['set-cookie'] = setCookieHeaders;
+      } else {
+        responseHeaders[key] = val;
+      }
+    }
+
+    res.writeHead(proxyRes.statusCode, responseHeaders);
+    proxyRes.pipe(res);
+  });
+
+  proxyReq.on('error', (err) => {
+    console.error('[proxy] Backend request failed:', err.message);
+    res.writeHead(502, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Backend unavailable', message: err.message }));
+  });
+
+  // Forward the request body
+  req.pipe(proxyReq);
+}
+
 const server = http.createServer((req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   let pathname = decodeURIComponent(parsedUrl.pathname);
 
-  // 1. Root redirect -> /admin/dashboard
+  // ── API Proxy (/api-proxy/*) ──────────────────────────────────────────────
+  // Routes /api-proxy/some/path -> https://api.phronesis-sunesis.com.ng/some/path
+  // This keeps auth CSRF cookies same-origin with the dev server.
+  if (pathname.startsWith('/api-proxy')) {
+    let backendPath = pathname.replace(/^\/api-proxy/, '') || '/';
+    // Map frontend admin auth routes to the live backend endpoints
+    if (backendPath === '/admin/login') {
+      backendPath = '/login/admin';
+    } else if (backendPath === '/admin/logout' || backendPath === '/logout') {
+      backendPath = '/logout/student';
+    }
+    const queryString = parsedUrl.search || '';
+    return proxyToBackend(req, res, backendPath + queryString);
+  }
+
+  // 1. Root redirect -> /admin/login (auth guard will redirect to /admin/staffs if authenticated)
   if (pathname === '/' || pathname === '') {
-    res.writeHead(302, { Location: '/admin/dashboard' });
+    res.writeHead(302, { Location: '/admin/login' });
     res.end();
     return;
   }
@@ -178,7 +279,7 @@ const server = http.createServer((req, res) => {
       <body style="font-family: sans-serif; text-align: center; padding: 50px;">
         <h2>404 - Page Not Found</h2>
         <p>No route matched <code>${pathname}</code>.</p>
-        <p><a href="/admin/dashboard">Return to Admin Dashboard</a></p>
+        <p><a href="/admin/staffs">Return to Admin Staffs</a></p>
       </body>
     </html>
   `);
@@ -186,5 +287,7 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`Phronesis Sunesis dev server running at http://localhost:${PORT}`);
-  console.log(`Admin Dashboard: http://localhost:${PORT}/admin/dashboard`);
+  console.log(`Login page:     http://localhost:${PORT}/admin/login`);
+  console.log(`Staffs page:    http://localhost:${PORT}/admin/staffs`);
+  console.log(`API proxy:      http://localhost:${PORT}/api-proxy/* -> ${API_BACKEND}/*`);
 });

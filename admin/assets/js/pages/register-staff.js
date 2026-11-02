@@ -1,13 +1,13 @@
 // assets/js/pages/register-staff.js
-// Staff Registration page — frontend-only demonstration.
-// No backend requests are made. All data stays in memory only.
+// Staff Registration Page — Connected to Live Backend API: POST /admin/add-staff
 
 import { requireAuth } from '../auth.js';
 import { setupLayout } from '../layout.js';
+import { staffAPI } from '../api.js';
 
 /* ──────────────────────────────────────────────────────────────────
    FORM STATE
-   Holds trimmed values used for validation and the preview.
+   Holds trimmed values used for validation and submission.
 ────────────────────────────────────────────────────────────────── */
 const formState = {
   staffNo: '',
@@ -47,7 +47,7 @@ function initPage() {
 }
 
 /* ──────────────────────────────────────────────────────────────────
-   INPUT LISTENERS  (real-time validation on blur; clear on input)
+   INPUT LISTENERS (real-time validation on blur; clear error on input)
 ────────────────────────────────────────────────────────────────── */
 function bindInputListeners() {
   ALL_FIELDS.forEach(id => {
@@ -57,7 +57,6 @@ function bindInputListeners() {
     // Sync state on every keystroke
     el.addEventListener('input', () => {
       syncState();
-      // Clear error while user is actively editing
       clearFieldError(id);
       updateCompletion();
     });
@@ -69,7 +68,7 @@ function bindInputListeners() {
       updateCompletion();
     });
 
-    // Select elements also need 'change'
+    // Select elements also handle 'change'
     if (el.tagName === 'SELECT') {
       el.addEventListener('change', () => {
         syncState();
@@ -93,19 +92,18 @@ function syncState() {
    VALIDATION RULES
 ────────────────────────────────────────────────────────────────── */
 
-/** Email format – basic RFC-compliant surface check. */
+/** Email format – RFC compliant surface check. */
 function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
 /**
- * Phone: allow Nigerian (070/080/090/091 + 8 digits) and
- * international formats (+country-code …). Min 7 digits total.
- * Permits spaces, hyphens, parentheses, and leading +/0.
+ * Phone: allow Nigerian (+234 / 070 / 080 / 090 / 091 + 8 digits) and
+ * international formats (+country-code ...). Min 7 digits total.
+ * Preserves leading + and formatting characters.
  */
 function isValidPhone(value) {
   const stripped = value.replace(/[\s\-().]/g, '');
-  // Must be at least 7 digits, only digit chars + optional leading +
   return /^\+?\d{7,15}$/.test(stripped);
 }
 
@@ -135,7 +133,7 @@ function getFieldError(id) {
 
     case 'phoneNo':
       if (!value) return 'Please enter a phone number.';
-      if (!isValidPhone(value)) return 'Enter a valid phone number (e.g. 08012345678 or +447911123456).';
+      if (!isValidPhone(value)) return 'Enter a valid phone number (e.g. +2348033334455 or 08012345678).';
       return '';
 
     case 'department':
@@ -254,60 +252,133 @@ function bindFormSubmit() {
   const form = document.getElementById('staffRegForm');
   if (!form) return;
 
-  form.addEventListener('submit', e => {
-    e.preventDefault(); // Prevent any browser default / page reload
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
 
     syncState();
 
     const isValid = validateAll();
-    if (!isValid) return; // Stop — errors are shown inline
+    if (!isValid) return;
 
-    // Build the frontend-only record object (strings preserved as-is)
-    const staffRecord = {
-      staffNo:       formState.staffNo,
-      firstName:     formState.firstName,
-      lastName:      formState.lastName,
-      otherNames:    formState.otherNames,
-      biometricNo:   formState.biometricNo,
-      email:         formState.email,
-      phoneNo:       formState.phoneNo,
-      department:    formState.department,
-    };
-
-    // Persist to mock staff store so it appears across all pages
-    try {
-      const stored = localStorage.getItem('ps_mock_staff_v1');
-      let staffList = stored ? JSON.parse(stored) : [];
-      if (!Array.isArray(staffList)) staffList = [];
-      const existsIdx = staffList.findIndex(s => s.staffNo && s.staffNo.toLowerCase() === staffRecord.staffNo.toLowerCase());
-      const newStaff = {
-        staffNo: staffRecord.staffNo,
-        firstName: staffRecord.firstName,
-        lastName: staffRecord.lastName,
-        otherNames: staffRecord.otherNames || '',
-        biometricEnrollmentNo: staffRecord.biometricNo,
-        email: staffRecord.email || '',
-        phoneNo: staffRecord.phoneNo,
-        department: staffRecord.department,
-        role: staffRecord.department === 'Teaching' ? 'Subject Teacher' : 'Administrative Staff',
-        joinedDate: new Date().toISOString().split('T')[0],
-        gender: 'Male',
-        qualification: 'B.Sc Education',
-        stateOfOrigin: 'Lagos State',
-        address: 'Phronesis Sunesis Campus',
-        status: 'Active'
-      };
-      if (existsIdx >= 0) {
-        staffList[existsIdx] = newStaff;
-      } else {
-        staffList.unshift(newStaff);
-      }
-      localStorage.setItem('ps_mock_staff_v1', JSON.stringify(staffList));
-    } catch (e) {
-      console.warn('Could not persist staff to localStorage', e);
+    // Normalize department to exact backend accepted enum values ("Teaching" or "Non-Teaching")
+    let department = formState.department;
+    if (department.toLowerCase().includes('non')) {
+      department = 'Non-Teaching';
+    } else {
+      department = 'Teaching';
     }
 
-    openPreview(staffRecord);
+    // Construct the backend payload structure
+    const payload = {
+      staff_no:                formState.staffNo,
+      first_name:              formState.firstName,
+      last_name:               formState.lastName,
+      other_names:             formState.otherNames ? formState.otherNames : null,
+      biometric_enrollment_no: formState.biometricNo,
+      phone:                   formState.phoneNo,
+      department:              department,
+      email:                   formState.email ? formState.email : null,
+    };
+
+    const submitBtn = document.getElementById('submitBtn');
+    let originalBtnHTML = '';
+    if (submitBtn) {
+      originalBtnHTML = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" aria-hidden="true"></span>
+        Registering Staff…
+      `;
+    }
+
+    try {
+      // Submit to real backend endpoint POST /admin/add-staff
+      const result = await staffAPI.create(payload);
+
+      // Notification
+      const successMessage = result?.data?.message || 'Staff member registered successfully!';
+      if (window.toast?.success) {
+        window.toast.success(successMessage);
+      }
+
+      // Record for preview
+      const previewRecord = {
+        staffNo:     payload.staff_no,
+        firstName:   payload.first_name,
+        lastName:    payload.last_name,
+        otherNames:  payload.other_names || '',
+        biometricNo: payload.biometric_enrollment_no,
+        phoneNo:     payload.phone,
+        department:  payload.department,
+        email:       payload.email || '',
+      };
+
+      // Reset form fields
+      performReset();
+
+      // Invalidate or refresh local staff cache so staff listing reflects database immediately
+      try {
+        localStorage.removeItem('ps_live_staff_cache');
+      } catch (_) {}
+
+      // Open preview confirmation dialog
+      openPreview(previewRecord);
+
+    } catch (err) {
+      console.error('Staff registration error:', err);
+
+      const status = err.status || err.response?.status;
+      const data = err.response?.data || err.data;
+      const errorMsg = data?.message || data?.error || err.message || 'Failed to register staff.';
+
+      // Map backend validation errors to form fields if present
+      if (data?.errors && typeof data.errors === 'object') {
+        const errors = data.errors;
+        if (errors.staff_no) setFieldError('staffNo', errors.staff_no);
+        if (errors.first_name) setFieldError('firstName', errors.first_name);
+        if (errors.last_name) setFieldError('lastName', errors.last_name);
+        if (errors.biometric_enrollment_no) setFieldError('biometricNo', errors.biometric_enrollment_no);
+        if (errors.phone) setFieldError('phoneNo', errors.phone);
+        if (errors.department) setFieldError('department', errors.department);
+        if (errors.email) setFieldError('email', errors.email);
+      }
+
+      // Handle 409 Conflict (duplicate staff number, biometric, or email)
+      if (status === 409) {
+        const lowerMsg = errorMsg.toLowerCase();
+        if (lowerMsg.includes('staff number') || lowerMsg.includes('staff_no')) {
+          setFieldError('staffNo', errorMsg);
+        } else if (lowerMsg.includes('biometric')) {
+          setFieldError('biometricNo', errorMsg);
+        } else if (lowerMsg.includes('email')) {
+          setFieldError('email', errorMsg);
+        }
+      }
+
+      // Handle 401 Unauthorized / Session expired
+      if (status === 401) {
+        if (window.toast?.error) {
+          window.toast.error('Session expired. Please sign in again.');
+        }
+        setTimeout(() => {
+          window.location.replace('/admin/login');
+        }, 1200);
+        return;
+      }
+
+      // Display user-friendly notification
+      if (window.toast?.error) {
+        window.toast.error(errorMsg);
+      } else {
+        alert(errorMsg);
+      }
+
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnHTML;
+      }
+    }
   });
 }
 
@@ -325,7 +396,7 @@ function openPreview(rec) {
   // Avatar: initials from first + last
   const initials = ((rec.firstName[0] || '') + (rec.lastName[0] || '')).toUpperCase();
 
-  // Safely set text content — no innerHTML with user data
+  // Safely set text content
   const setText = (id, text) => {
     const el = document.getElementById(id);
     if (el) el.textContent = text || 'Not provided';
@@ -340,7 +411,7 @@ function openPreview(rec) {
   const deptEl = el('previewDeptBadge');
   if (deptEl) deptEl.textContent = rec.department;
 
-  setText('pvStaffNo',    rec.staffNo);
+  setText('pvStaffNo',     rec.staffNo);
   setText('pvBiometricNo', rec.biometricNo);
   setText('pvDepartment',  rec.department);
   setText('pvPhoneNo',     rec.phoneNo);
@@ -351,7 +422,6 @@ function openPreview(rec) {
   if (overlay) {
     overlay.classList.remove('hidden');
     overlay.setAttribute('aria-hidden', 'false');
-    // Focus the close button for accessibility
     setTimeout(() => {
       const closeBtn = document.getElementById('previewCloseBtn');
       if (closeBtn) closeBtn.focus();
@@ -365,7 +435,6 @@ function closePreview() {
     overlay.classList.add('hidden');
     overlay.setAttribute('aria-hidden', 'true');
   }
-  // Return focus to submit button
   const submitBtn = document.getElementById('submitBtn');
   if (submitBtn) submitBtn.focus();
 }
@@ -379,11 +448,10 @@ function bindPreviewModal() {
   if (closeBtn) closeBtn.addEventListener('click', closePreview);
   if (backBtn)  backBtn.addEventListener('click', closePreview);
 
-  // Done: close preview AND reset form
+  // Done button: close preview
   if (doneBtn) {
     doneBtn.addEventListener('click', () => {
       closePreview();
-      performReset();
     });
   }
 
@@ -391,13 +459,13 @@ function bindPreviewModal() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       const previewVisible = overlay && !overlay.classList.contains('hidden');
-      const clearVisible   = !document.getElementById('clearConfirmOverlay').classList.contains('hidden');
+      const clearVisible   = !document.getElementById('clearConfirmOverlay')?.classList.contains('hidden');
       if (previewVisible) { e.preventDefault(); closePreview(); }
       if (clearVisible)   { e.preventDefault(); closeClearDialog(); }
     }
   });
 
-  // Close when clicking the backdrop (outside the modal box)
+  // Close when clicking the backdrop
   if (overlay) {
     overlay.addEventListener('click', e => {
       if (e.target === overlay) closePreview();
@@ -414,7 +482,6 @@ function isFormEmpty() {
 }
 
 function performReset() {
-  // Reset all native input/select values
   ALL_FIELDS.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
@@ -431,7 +498,6 @@ function performReset() {
   updateCompletion();
   closeClearDialog();
 
-  // Return focus to the first field
   const firstInput = document.getElementById('staffNo');
   if (firstInput) firstInput.focus();
 }
@@ -457,15 +523,14 @@ function closeClearDialog() {
 }
 
 function bindClearForm() {
-  const clearBtn      = document.getElementById('clearFormBtn');
-  const cancelBtn     = document.getElementById('clearCancelBtn');
-  const confirmBtn    = document.getElementById('clearConfirmBtn');
-  const clearOverlay  = document.getElementById('clearConfirmOverlay');
+  const clearBtn     = document.getElementById('clearFormBtn');
+  const cancelBtn    = document.getElementById('clearCancelBtn');
+  const confirmBtn   = document.getElementById('clearConfirmBtn');
+  const clearOverlay = document.getElementById('clearConfirmOverlay');
 
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
       if (isFormEmpty()) {
-        // Nothing entered — reset without dialog
         performReset();
       } else {
         openClearDialog();
@@ -476,7 +541,6 @@ function bindClearForm() {
   if (cancelBtn)  cancelBtn.addEventListener('click', closeClearDialog);
   if (confirmBtn) confirmBtn.addEventListener('click', performReset);
 
-  // Close dialog on backdrop click
   if (clearOverlay) {
     clearOverlay.addEventListener('click', e => {
       if (e.target === clearOverlay) closeClearDialog();

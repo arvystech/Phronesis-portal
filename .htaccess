@@ -45,7 +45,7 @@
   # ----------------------------------------------------------------------------
   # 5. Clean Admin Page Routes (without .html)
   # ----------------------------------------------------------------------------
-  RewriteRule ^admin/dashboard/?$ admin/dashboard.html [L,QSA]
+  RewriteRule ^admin/dashboard/?$ admin/staffs.html [L,QSA]
   RewriteRule ^admin/students/?$ admin/students.html [L,QSA]
   RewriteRule ^admin/registrations/?$ admin/students.html [L,QSA]
   RewriteRule ^admin/students/new/?$ admin/register-student.html [L,QSA]
@@ -68,7 +68,7 @@
   RewriteRule ^admin/login/?$ admin/login.html [L,QSA]
 
   # Admin root
-  RewriteRule ^admin/?$ admin/dashboard.html [L,QSA]
+  RewriteRule ^admin/?$ admin/staffs.html [L,QSA]
 
   # ----------------------------------------------------------------------------
   # 6. Future Student Frontend Routing Placeholder (/student/*)
@@ -83,9 +83,9 @@
   # RewriteRule ^student/?$ student/dashboard.html [L,QSA]
 
   # ----------------------------------------------------------------------------
-  # 7. Default Root Route: / -> /admin/dashboard
+  # 7. Default Root Route: / -> /admin/login
   # ----------------------------------------------------------------------------
-  RewriteRule ^$ admin/dashboard.html [L,QSA]
+  RewriteRule ^$ admin/login.html [L,QSA]
 
   # ----------------------------------------------------------------------------
   # 8. Fallback for any other .html file inside admin

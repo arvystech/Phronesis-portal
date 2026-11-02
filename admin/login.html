@@ -15,9 +15,19 @@
 </head>
 <body class="bg-warm-white text-text-dark font-sans antialiased">
 
+  <!-- Session-check loading overlay (shown briefly while verifying existing session) -->
+  <div id="loginLoadingOverlay" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(255,255,255,0.95); align-items:center; justify-content:center; flex-direction:column; gap:16px;">
+    <div style="width:40px; height:40px; border:3px solid #17338F; border-top-color:transparent; border-radius:50%; animation:spin 0.75s linear infinite;"></div>
+    <p style="font-size:14px; color:#667085; font-family:Inter,sans-serif;">Checking session…</p>
+  </div>
+
+  <style>
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+
   <div class="min-h-screen bg-warm-white flex items-center justify-center p-4">
     <div class="w-full max-w-md">
-      <!-- Header card -->
+      <!-- Header -->
       <div class="text-center mb-8">
         <div class="w-20 h-20 mx-auto mb-4">
           <img src="/admin/assets/images/logo/logo.png" alt="Phronesis Logo" class="w-full h-full object-contain" />
@@ -33,13 +43,28 @@
           <p class="text-text-soft text-sm">Enter your admin credentials to continue</p>
         </div>
 
-        <form id="loginForm" class="space-y-4">
+        <!-- Error banner (hidden by default, shown by login.js on failure) -->
+        <div
+          id="loginError"
+          class="hidden mb-4 flex items-start gap-3 p-3 rounded-xl border border-red-200 bg-red-50"
+          role="alert"
+          aria-live="assertive"
+        >
+          <svg class="w-4 h-4 text-red-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+          </svg>
+          <p id="loginErrorMsg" class="text-sm text-red-700 font-medium"></p>
+        </div>
+
+        <form id="loginForm" class="space-y-4" novalidate>
           <div>
             <label class="form-label" for="emailInput">Email Address</label>
             <input
               id="emailInput"
               type="email"
               required
+              autocomplete="email"
               placeholder="admin@phronesis.com"
               class="form-input"
             />
@@ -50,6 +75,7 @@
               id="passwordInput"
               type="password"
               required
+              autocomplete="current-password"
               placeholder="••••••••"
               class="form-input"
             />
@@ -63,7 +89,7 @@
             <span id="btnText">Sign In to Admin Panel</span>
             <span id="btnSpinner" class="hidden flex items-center gap-2">
               <span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-              Signing in...
+              Signing in…
             </span>
           </button>
         </form>

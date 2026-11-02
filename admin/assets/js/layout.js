@@ -31,11 +31,30 @@ export function setupLayout(activeNavKey, pageTitleText) {
   });
 
   // Bind logout buttons
-  const sidebarLogoutBtn = document.getElementById('sidebarLogoutBtn');
-  if (sidebarLogoutBtn) {
-    sidebarLogoutBtn.addEventListener('click', async (e) => {
+  const logoutHandlers = [
+    document.getElementById('sidebarLogoutBtn'),
+    ...document.querySelectorAll('.logout-btn, [data-action="logout"]')
+  ].filter(Boolean);
+
+  logoutHandlers.forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
       e.preventDefault();
       await logout();
     });
-  }
+  });
+
+  // Ensure sidebar admin icon and admin profile container are clickable and redirect to profile
+  const sidebarAdminElements = document.querySelectorAll(
+    'aside .admin-initials, aside .sidebar-admin-link, aside [data-action="profile"]'
+  );
+  sidebarAdminElements.forEach((el) => {
+    el.style.cursor = 'pointer';
+    const parentLink = el.closest('a');
+    if (!parentLink) {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = '/admin/profile';
+      });
+    }
+  });
 }
