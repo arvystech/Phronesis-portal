@@ -5,14 +5,11 @@
 
 import { requireAuth } from '../auth.js';
 import { setupLayout } from '../layout.js';
-
-const LIVE_API_ENDPOINT = 'https://api.phronesis-sunesis.com.ng/staff';
+import { staffAPI } from '../api.js';
 
 let staffId = null;
 let currentStaff = null;
 let activeTab = 'biodata';
-
-
 
 document.addEventListener('DOMContentLoaded', async () => {
   setupLayout('staffs', 'Staff Details');
@@ -109,16 +106,7 @@ async function loadStaffDetail() {
   if (!dataset) {
     try {
       console.info('[Phronesis] Live cache absent; fetching staff list from API...');
-      const res = await fetch(LIVE_API_ENDPOINT, {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-
-      const result = await res.json();
+      const { data: result } = await staffAPI.list();
 
       // Defensive extraction — handle array root, result.data, result.staff, result.results
       let rawList = null;

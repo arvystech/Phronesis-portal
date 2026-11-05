@@ -5,14 +5,11 @@
 
 import { requireAuth } from '../auth.js';
 import { setupLayout } from '../layout.js';
-
-const LIVE_API_ENDPOINT = 'https://api.phronesis-sunesis.com.ng/staff';
+import { staffAPI } from '../api.js';
 
 let staffId = null;
 let currentStaff = null;
 let activeStatusFilter = 'All';
-
-
 
 let staffAttendanceLogs = [];
 
@@ -85,16 +82,7 @@ async function loadStaffAndAttendance() {
   if (!dataset) {
     try {
       console.info('[Phronesis] Live cache absent; fetching staff list from API...');
-      const res = await fetch(LIVE_API_ENDPOINT, {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-
-      const result = await res.json();
+      const { data: result } = await staffAPI.list();
 
       let rawList = null;
       if (Array.isArray(result)) rawList = result;
@@ -281,11 +269,11 @@ function renderAttendanceTable() {
 
     let badgeHtml = '';
     if (rec.status === 'On Time') {
-      badgeHtml = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#DCFCE7] text-[#166534] border border-[#BBF7D0]">Present · On Time</span>';
+      badgeHtml = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#DCFCE7] text-[#166534] border border-[#BBF7D0]">Present · On Time</span>';
     } else if (rec.status === 'Late') {
-      badgeHtml = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">Late Arrival</span>';
+      badgeHtml = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">Late Arrival</span>';
     } else {
-      badgeHtml = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">Excused Leave</span>';
+      badgeHtml = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">Excused Leave</span>';
     }
     tdStatus.innerHTML = badgeHtml;
     tr.appendChild(tdStatus);

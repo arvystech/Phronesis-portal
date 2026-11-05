@@ -4,11 +4,7 @@
 
 import { requireAuth } from '../auth.js';
 import { setupLayout } from '../layout.js';
-
-/* ──────────────────────────────────────────────────────────────────
-   CONFIG & ENDPOINTS
-────────────────────────────────────────────────────────────────── */
-const LIVE_API_ENDPOINT = 'https://api.phronesis-sunesis.com.ng/staff';
+import { staffAPI } from '../api.js';
 
 /* ──────────────────────────────────────────────────────────────────
    STATE
@@ -107,18 +103,11 @@ async function loadStaffRecords() {
   if (errorEl) errorEl.classList.add('hidden');
 
   try {
-    const response = await fetch(LIVE_API_ENDPOINT, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
+    // Use the authenticated API client — sends credentials: 'include' and
+    // Authorization: Bearer <token> automatically via api.js request().
+    // On 401 it redirects to /admin/login automatically.
+    const { data: result } = await staffAPI.list();
 
-    if (!response || !response.ok) {
-      throw new Error(`HTTP ${response ? response.status : 'network error'}`);
-    }
-
-    const result = await response.json();
     const rawStaffList = extractStaffRecords(result);
 
     if (!Array.isArray(rawStaffList)) {
@@ -145,7 +134,7 @@ async function loadStaffRecords() {
         if (window.location.protocol === 'file:') {
           msg = 'Direct file opening (file://) is restricted by browser security (CORS). Requests to external APIs or local modules are blocked. The backend API must permit CORS origin "null" or the site must be served via HTTP/HTTPS.';
         } else if (error.message.includes('Failed to fetch') || error.message.includes('network error')) {
-          msg = `Network or CORS error connecting to ${LIVE_API_ENDPOINT}. Ensure the backend API enables Access-Control-Allow-Origin headers.`;
+          msg = 'Network or CORS error connecting to the backend API. Ensure the backend API enables Access-Control-Allow-Origin and Access-Control-Allow-Credentials headers.';
         }
         errorMsg.textContent = msg;
       }
