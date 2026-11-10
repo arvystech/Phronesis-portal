@@ -196,19 +196,79 @@ export const studentsAPI = {
   promote:       (id, data)  => client.post(`/student/${id}/promote`, data),
 };
 
-// ── Staff (Live API at /staff & /admin/add-staff) ──────────────────────────
+// ── Staff (Live API at /admin/staff & /admin/add-staff) ───────────────────
 export const staffAPI = {
-  list:                    (params)     => client.get('/staff', { params }),
-  get:                     (id)         => client.get(`/staff/${id}`),
-  create:                  (data)       => smartPost('/admin/add-staff', data),
-  update:                  (id, data)   => smartPut(`/staff/${id}`, data),
-  delete:                  (id)         => client.delete(`/staff/${id}`),
+  list: async (params) => {
+    try {
+      return await client.get('/admin/staff', { params });
+    } catch (e) {
+      if (e.response?.status === 404) {
+        return await client.get('/staff', { params });
+      }
+      throw e;
+    }
+  },
+  get: async (id) => {
+    try {
+      return await client.get(`/admin/staff/${id}`);
+    } catch (e) {
+      if (e.response?.status === 404) {
+        return await client.get(`/staff/${id}`);
+      }
+      throw e;
+    }
+  },
+  create: (data) => smartPost('/admin/add-staff', data),
+  update: async (id, data) => {
+    try {
+      return await smartPut(`/admin/staff/${id}`, data);
+    } catch (e) {
+      if (e.response?.status === 404) {
+        return await smartPut(`/staff/${id}`, data);
+      }
+      throw e;
+    }
+  },
+  delete: async (id) => {
+    try {
+      return await client.delete(`/admin/staff/${id}`);
+    } catch (e) {
+      if (e.response?.status === 404) {
+        return await client.delete(`/staff/${id}`);
+      }
+      throw e;
+    }
+  },
 
-  listApplications:        (params)     => client.get('/staff/applications', { params }),
-  getApplication:          (id)         => client.get(`/staff/applications/${id}`),
-  submitApplication:       (data)       => smartPost('/staff/applications', data),
-  updateApplicationStatus: (id, status) => client.patch(`/staff/applications/${id}/status`, { status }),
-  deleteApplication:       (id)         => client.delete(`/staff/applications/${id}`),
+  listApplications: async (params) => {
+    try {
+      return await client.get('/admin/staff/applications', { params });
+    } catch (e) {
+      if (e.response?.status === 404) {
+        return await client.get('/staff/applications', { params });
+      }
+      throw e;
+    }
+  },
+  getApplication: async (id) => {
+    try {
+      return await client.get(`/admin/staff/applications/${id}`);
+    } catch (e) {
+      if (e.response?.status === 404) {
+        return await client.get(`/staff/applications/${id}`);
+      }
+      throw e;
+    }
+  },
+  submitApplication: (data) => smartPost('/staff/applications', data),
+  updateApplicationStatus: (id, status) => client.patch(`/admin/staff/applications/${id}/status`, { status }),
+  deleteApplication: (id) => client.delete(`/admin/staff/applications/${id}`),
+};
+
+// ── Staff Attendance (Live Admin API at /admin/staff-attendance) ───────────
+export const staffAttendanceAPI = {
+  list:         (params) => client.get('/admin/staff-attendance', { params }),
+  getByStaffId: (id, params) => client.get(`/admin/staff/${id}/attendance`, { params }),
 };
 
 // ── Admissions ─────────────────────────────────────────────────────────────
@@ -272,6 +332,7 @@ if (typeof window !== 'undefined') {
     dashboardAPI,
     studentsAPI,
     staffAPI,
+    staffAttendanceAPI,
     admissionsAPI,
     classesAPI,
     subjectsAPI,

@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Staff Details · Phronesis Sunesis School Admin ERP" />
-  <title>Staff Details · Phronesis Sunesis Admin ERP</title>
+  <meta name="description" content="Phronesis Sunesis School ERP — Individual Staff Profile" />
+  <title>Staff Profile · Phronesis Sunesis Admin ERP</title>
   <link rel="icon" type="image/svg+xml" href="/admin/assets/images/icons/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/admin/assets/css/styles.css" />
   <link rel="stylesheet" href="/admin/assets/css/global.css" />
   <link rel="stylesheet" href="/admin/assets/css/components.css" />
+  <link rel="stylesheet" href="/admin/assets/css/staff-profile.css" />
 </head>
 <body class="bg-warm-white text-text-dark font-sans antialiased">
 
@@ -19,7 +20,7 @@
     <!-- Desktop Sidebar -->
     <div class="hidden lg:flex shrink-0">
       <aside class="flex flex-col bg-royal-deep h-full w-64 min-h-screen">
-        <!-- Logo -->
+        <!-- School Logo -->
         <div class="px-5 py-6 border-b border-white/10">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 shrink-0">
@@ -27,49 +28,33 @@
             </div>
             <div>
               <p class="text-white font-bold text-sm leading-tight">Phronesis</p>
-              <p class="text-blue-300 text-[10px] tracking-widest uppercase">Sunesis Admin</p>
+              <p class="text-blue-300 text-[10px] tracking-widest uppercase font-semibold">Sunesis Admin</p>
             </div>
           </div>
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto" aria-label="Main menu">
+        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto" aria-label="Main navigation">
           <p class="text-blue-400 text-[10px] uppercase tracking-widest font-semibold px-3 mb-2">Main Menu</p>
-          <!-- Commented out for development task - sidebar restricted to Staffs only
-          <a href="/admin/dashboard" class="sidebar-item" data-nav="dashboard">
-            <span class="text-base w-5 text-center">⊞</span>
-            <span>Dashboard</span>
-          </a>
-          <a href="/admin/students" class="sidebar-item" data-nav="students">
-            <span class="text-base w-5 text-center">👥</span>
-            <span>Registrations</span>
-          </a>
-          <a href="/admin/register-student" class="sidebar-item" data-nav="register">
-            <span class="text-base w-5 text-center">✚</span>
-            <span>Register Student</span>
-          </a>
-          -->
           <a href="/admin/staffs" class="sidebar-item active" data-nav="staffs">
-            <span class="text-base w-5 text-center">👔</span>
-            <span>Staffs</span>
+            <span class="w-5 h-5 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </span>
+            <span>Staff Directory</span>
           </a>
-          <!--
-          <a href="/admin/staff-applications" class="sidebar-item" data-nav="staff">
-            <span class="text-base w-5 text-center">💼</span>
-            <span>Staff Applications</span>
+          <a href="/admin/staff-attendance" class="sidebar-item" data-nav="staff-attendance">
+            <span class="w-5 h-5 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+            </span>
+            <span>Staff Attendance</span>
           </a>
-          <a href="/admin/orders" class="sidebar-item" data-nav="orders">
-            <span class="text-base w-5 text-center">💳</span>
-            <span>Fee Payments</span>
-          </a>
-          <a href="/admin/settings" class="sidebar-item" data-nav="settings">
-            <span class="text-base w-5 text-center">⚙</span>
-            <span>Settings</span>
-          </a>
-          -->
         </nav>
 
-        <!-- Bottom info -->
+        <!-- Admin Profile & Sign Out Footer -->
         <div class="px-4 py-4 border-t border-white/10">
           <a href="/admin/profile" class="sidebar-admin-link flex items-center gap-3 mb-3 p-1.5 -mx-1.5 rounded-xl hover:bg-white/10 transition-all cursor-pointer group" title="View Admin Profile">
             <div class="w-8 h-8 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center text-gold text-xs font-bold admin-initials group-hover:scale-105 transition-transform">
@@ -77,11 +62,14 @@
             </div>
             <div class="min-w-0">
               <p class="text-white text-xs font-semibold truncate admin-name group-hover:text-gold transition-colors">Admin</p>
-              <p class="text-blue-300 text-[10px] truncate admin-role">Admin</p>
+              <p class="text-blue-300 text-[10px] truncate admin-role">Administrator</p>
             </div>
           </a>
           <button id="sidebarLogoutBtn" class="w-full text-left text-xs text-blue-300 hover:text-white transition-colors flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10">
-            <span>⎋</span> Sign out
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span>Sign out</span>
           </button>
         </div>
       </aside>
@@ -91,295 +79,212 @@
     <div class="flex flex-col flex-1 min-w-0 overflow-hidden relative">
       <!-- Navbar -->
       <header class="h-16 bg-white border-b border-border flex items-center justify-between px-6 shrink-0 shadow-sm">
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
           <div>
-            <p class="text-[10px] uppercase tracking-widest text-text-soft font-semibold">Admin Panel</p>
-            <h1 id="pageTitle" class="text-base font-bold text-text-dark leading-tight">Staff Details</h1>
+            <p class="text-[10px] uppercase tracking-widest text-text-soft font-bold">School Administration</p>
+            <h1 id="pageTitle" class="text-sm sm:text-base font-bold text-text-dark leading-tight">Staff Profile</h1>
           </div>
         </div>
         <div class="flex items-center gap-3">
           <span class="hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-royal-light text-royal text-[10px] font-bold uppercase tracking-wide border border-royal/15">
-            2025/2026
+            Academic Session 2025/2026
           </span>
-          <a href="/admin/profile" class="flex items-center gap-2 pl-3 border-l border-border hover:opacity-80 transition-opacity">
+          <a href="/admin/profile" class="flex items-center gap-2 pl-3 border-l border-border hover:opacity-80 transition-opacity" title="Administrator Profile">
             <div class="w-8 h-8 rounded-full bg-royal flex items-center justify-center text-white text-xs font-bold admin-initials">
               A
             </div>
-            <div class="hidden sm:block">
+            <div class="hidden sm:block text-left">
               <p class="text-xs font-semibold text-text-dark leading-none admin-name">Admin</p>
-              <p class="text-[10px] text-text-soft admin-role">Staff</p>
+              <p class="text-[10px] text-text-soft admin-role mt-0.5">Administrator</p>
             </div>
           </a>
         </div>
       </header>
 
       <!-- Scrollable Main Content -->
-      <main class="flex-1 overflow-y-auto p-4 lg:p-6 pb-24 lg:pb-6">
-        <div class="space-y-6 max-w-5xl mx-auto pb-10">
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6 pb-24 lg:pb-8">
+        <div class="sp-container">
 
-          <!-- Breadcrumbs and Back Action -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs text-text-soft">
-              <a href="/admin/dashboard" class="hover:text-royal transition-colors">Dashboard</a>
-              <span aria-hidden="true">›</span>
-              <a href="/admin/staffs" class="hover:text-royal transition-colors font-medium">Staffs</a>
-              <span aria-hidden="true">›</span>
-              <span class="text-text-dark font-semibold">Staff Details</span>
-            </nav>
-            <a
-              href="/admin/staffs"
-              class="inline-flex items-center gap-1.5 text-xs font-bold text-royal hover:text-royal-deep self-start sm:self-auto py-1 px-2.5 rounded-lg hover:bg-royal-light/50 transition-colors"
-            >
-              <span aria-hidden="true">←</span> Back to Staffs
-            </a>
+          <!-- Section 1: Page Heading & Actions -->
+          <div class="sp-top-bar">
+            <div class="sp-breadcrumb">
+              <a href="/admin/staffs">Staffs</a>
+              <span class="text-gray-400">/</span>
+              <span class="sp-breadcrumb-current">Staff Details</span>
+            </div>
+            <div class="sp-top-actions">
+              <a href="/admin/staffs" class="sp-btn sp-btn-secondary text-xs">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Back to Staffs</span>
+              </a>
+            </div>
           </div>
 
           <!-- Loading State -->
-          <div id="staffDetailLoading" class="flex flex-col items-center justify-center py-20">
-            <div class="w-10 h-10 border-4 border-gold border-t-royal rounded-full animate-spin"></div>
-            <p class="text-xs text-text-soft mt-3 font-medium">Loading staff record...</p>
+          <div id="staffDetailLoading" class="sp-state-card">
+            <div class="sp-spinner"></div>
+            <h3 class="text-sm font-bold text-navy-deep mt-4">Loading Staff Profile</h3>
+            <p class="text-xs text-text-secondary mt-1">Retrieving official records from database...</p>
           </div>
 
-          <!-- Not Found State -->
-          <div id="staffNotFound" class="hidden card p-10 text-center space-y-4">
-            <div class="text-4xl">🔍</div>
-            <h3 class="text-lg font-bold text-text-dark">Staff Record Not Found</h3>
-            <p class="text-xs text-text-soft max-w-md mx-auto">
-              The requested staff member could not be found in the school database.
+          <!-- Error State -->
+          <div id="staffDetailError" class="hidden sp-state-card">
+            <div class="w-10 h-10 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center mb-3">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h3 class="text-sm font-bold text-text-dark">Unable to Load Staff Profile</h3>
+            <p id="staffDetailErrorMsg" class="text-xs text-text-secondary max-w-md mx-auto mt-1 mb-4">
+              The requested staff record could not be retrieved from the server.
             </p>
-            <a href="/admin/staffs" class="btn-primary inline-flex text-xs py-2 px-4 mx-auto">
-              Return to Staffs List
-            </a>
+            <div class="flex items-center gap-3">
+              <button id="staffDetailRetryBtn" type="button" class="sp-btn sp-btn-primary">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>Retry</span>
+              </button>
+              <a href="/admin/staffs" class="sp-btn sp-btn-secondary">
+                Return to Staffs
+              </a>
+            </div>
           </div>
 
           <!-- Staff Detail Content -->
-          <div id="staffDetailContent" class="hidden space-y-6">
+          <div id="staffDetailContent" class="hidden space-y-5">
 
-            <!-- Profile Summary Card Banner -->
-            <div class="rounded-2xl bg-gradient-to-r from-royal-deep to-royal p-6 text-white shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-              <div class="flex items-center gap-4">
-                <div id="detailAvatar" class="w-14 h-14 rounded-2xl bg-gold/30 border border-gold/50 flex items-center justify-center text-xl font-extrabold text-gold shrink-0 shadow-inner">
+            <!-- Section 2: Staff Identity Section (Compact Profile Header) -->
+            <div class="sp-identity-card">
+              <div class="sp-identity-left">
+                <div id="detailAvatar" class="sp-avatar" title="Staff initials">
                   S
                 </div>
-                <div>
-                  <div class="flex flex-wrap items-center gap-2.5">
-                    <h2 id="detailFullName" class="text-xl font-bold text-white leading-tight">—</h2>
-                    <span id="detailDeptBadge" class="text-xs">—</span>
+                <div class="sp-identity-info">
+                  <div class="sp-identity-name-row">
+                    <h2 id="detailFullName" class="sp-identity-name">—</h2>
+                    <span id="detailDeptBadge" class="sp-badge sp-badge-teaching">—</span>
+                    <span id="detailStatusBadge" class="sp-badge sp-badge-active">—</span>
                   </div>
-                  <p id="detailRole" class="text-xs text-blue-200 mt-1 font-medium">—</p>
-                  <p class="text-[11px] text-blue-300 font-mono mt-0.5">
-                    Staff No: <span id="detailStaffNoChip" class="font-bold text-white">—</span>
-                  </p>
+                  <div class="sp-identity-meta">
+                    <span>Staff No: <span id="detailStaffNoChip" class="sp-chip-mono">—</span></span>
+                  </div>
                 </div>
               </div>
-              <div class="flex items-center gap-2 self-stretch sm:self-auto justify-end">
-                <a id="detailAttendanceLink" href="/admin/staff-attendance" class="bg-white/15 hover:bg-white/25 text-white font-semibold text-xs px-3.5 py-2.5 rounded-xl transition-all border border-white/20 inline-flex items-center gap-1.5 shadow-sm">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+
+              <!-- Primary Action: View Attendance History -->
+              <div>
+                <a id="detailAttendanceLink" href="#" class="sp-btn sp-btn-primary">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <span>Attendance Log</span>
-                </a>
-                <a href="/admin/register-staff" class="bg-gold hover:bg-gold-muted text-royal-deep font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-sm">
-                  + Register New Staff
+                  <span>View Attendance History</span>
                 </a>
               </div>
             </div>
 
-            <!-- Tab Headers -->
-            <div class="border-b border-border flex gap-2">
-              <button
-                type="button"
-                data-tab-btn="biodata"
-                class="px-5 py-3 text-xs font-bold uppercase tracking-wider border-b-2 border-gold text-royal bg-white transition-all"
-              >
-                👤 Staff Information
-              </button>
-              <button
-                type="button"
-                data-tab-btn="attendance"
-                class="px-5 py-3 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-text-soft hover:text-royal transition-all"
-              >
-                📅 Attendance Log
-              </button>
-            </div>
+            <!-- Section 3: Staff Information Grid (Personal & Employment) -->
+            <div class="sp-grid">
 
-            <!-- TAB 1: BIODATA & RECORD DETAILS -->
-            <div data-tab-pane="biodata" class="space-y-6">
-              <div class="card overflow-hidden">
-                <div class="section-header">
-                  <span class="header-icon" aria-hidden="true">🪪</span>
-                  <span>Identification & Employment Biodata</span>
+              <!-- Personal Information Card -->
+              <div class="sp-card">
+                <div class="sp-card-header">
+                  <h3 class="sp-card-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span>Personal Information</span>
+                  </h3>
                 </div>
-                <div class="p-6 sm:p-8">
-                  <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
-                    <div class="p-3.5 rounded-xl bg-warm-white/70 border border-border/80">
-                      <dt class="text-[11px] font-bold text-text-soft uppercase tracking-wider">Staff No.</dt>
-                      <dd id="fStaffNo" class="text-sm font-bold text-royal-deep font-mono mt-1">—</dd>
+                <div class="sp-card-body">
+                  <div class="sp-kv-list">
+                    <div class="sp-kv-row">
+                      <span class="sp-kv-label">First Name</span>
+                      <span id="fFirstName" class="sp-kv-val">—</span>
                     </div>
-
-                    <div class="p-3.5 rounded-xl bg-warm-white/70 border border-border/80">
-                      <dt class="text-[11px] font-bold text-text-soft uppercase tracking-wider">Biometric Enrollment No.</dt>
-                      <dd id="fBioNo" class="text-sm font-bold text-royal-deep font-mono mt-1">—</dd>
+                    <div class="sp-kv-row">
+                      <span class="sp-kv-label">Last Name</span>
+                      <span id="fLastName" class="sp-kv-val font-bold">—</span>
                     </div>
-
-                    <div class="p-3.5 rounded-xl bg-warm-white/70 border border-border/80">
-                      <dt class="text-[11px] font-bold text-text-soft uppercase tracking-wider">First Name</dt>
-                      <dd id="fFirstName" class="text-sm font-semibold text-text-dark mt-1">—</dd>
+                    <div class="sp-kv-row">
+                      <span class="sp-kv-label">Other Names</span>
+                      <span id="fOtherNames" class="sp-kv-val">—</span>
                     </div>
-
-                    <div class="p-3.5 rounded-xl bg-warm-white/70 border border-border/80">
-                      <dt class="text-[11px] font-bold text-text-soft uppercase tracking-wider">Last Name</dt>
-                      <dd id="fLastName" class="text-sm font-semibold text-text-dark mt-1">—</dd>
+                    <div class="sp-kv-row">
+                      <span class="sp-kv-label">Email Address</span>
+                      <span id="fEmail" class="sp-kv-val break-all">—</span>
                     </div>
-
-                    <div class="p-3.5 rounded-xl bg-warm-white/70 border border-border/80">
-                      <dt class="text-[11px] font-bold text-text-soft uppercase tracking-wider">Other Names</dt>
-                      <dd id="fOtherNames" class="text-sm font-medium text-text-dark mt-1">—</dd>
+                    <div class="sp-kv-row">
+                      <span class="sp-kv-label">Phone Number</span>
+                      <span id="fPhone" class="sp-kv-val mono">—</span>
                     </div>
-
-                    <div class="p-3.5 rounded-xl bg-warm-white/70 border border-border/80">
-                      <dt class="text-[11px] font-bold text-text-soft uppercase tracking-wider">Department</dt>
-                      <dd id="fDepartment" class="text-sm font-bold text-text-dark mt-1">—</dd>
-                    </div>
-
-                    <div class="p-3.5 rounded-xl bg-warm-white/70 border border-border/80">
-                      <dt class="text-[11px] font-bold text-text-soft uppercase tracking-wider">Phone Number</dt>
-                      <dd id="fPhone" class="text-sm font-medium text-text-dark font-mono mt-1">—</dd>
-                    </div>
-
-                    <div class="p-3.5 rounded-xl bg-warm-white/70 border border-border/80">
-                      <dt class="text-[11px] font-bold text-text-soft uppercase tracking-wider">Email Address</dt>
-                      <dd id="fEmail" class="text-sm font-medium text-text-dark mt-1 break-all">—</dd>
-                    </div>
-
-                    <div class="p-3.5 rounded-xl bg-warm-white/70 border border-border/80">
-                      <dt class="text-[11px] font-bold text-text-soft uppercase tracking-wider">Designation / Role</dt>
-                      <dd id="fRole" class="text-sm font-medium text-text-dark mt-1">—</dd>
-                    </div>
-
-                    <div class="p-3.5 rounded-xl bg-warm-white/70 border border-border/80">
-                      <dt class="text-[11px] font-bold text-text-soft uppercase tracking-wider">Appointment Date</dt>
-                      <dd id="fJoinedDate" class="text-sm font-medium text-text-dark mt-1">—</dd>
-                    </div>
-                  </dl>
-                </div>
-              </div>
-            </div>
-
-            <!-- TAB 2: ATTENDANCE RECORD -->
-            <div data-tab-pane="attendance" class="space-y-6 hidden">
-              <!-- Attendance Metrics -->
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div class="card p-4 text-center">
-                  <p class="text-[10px] uppercase font-bold text-text-soft tracking-wider">Overall Rate</p>
-                  <p class="text-2xl font-bold text-emerald-600 mt-1">97.2%</p>
-                  <p class="text-[10px] text-text-soft mt-0.5">Term 1 2025/2026</p>
-                </div>
-                <div class="card p-4 text-center">
-                  <p class="text-[10px] uppercase font-bold text-text-soft tracking-wider">Days Present</p>
-                  <p class="text-2xl font-bold text-royal-deep mt-1">112</p>
-                  <p class="text-[10px] text-text-soft mt-0.5">Target: 115 days</p>
-                </div>
-                <div class="card p-4 text-center">
-                  <p class="text-[10px] uppercase font-bold text-text-soft tracking-wider">Days Absent</p>
-                  <p class="text-2xl font-bold text-amber-600 mt-1">3</p>
-                  <p class="text-[10px] text-text-soft mt-0.5">Excused absences</p>
-                </div>
-                <div class="card p-4 text-center">
-                  <p class="text-[10px] uppercase font-bold text-text-soft tracking-wider">Punctuality</p>
-                  <p class="text-2xl font-bold text-blue-600 mt-1">98.5%</p>
-                  <p class="text-[10px] text-text-soft mt-0.5">On-time check-in</p>
-                </div>
-              </div>
-
-              <!-- Log Table -->
-              <div class="card overflow-hidden">
-                <div class="px-6 py-4 border-b border-border bg-warm-white/70 flex items-center justify-between">
-                  <h4 class="text-xs font-bold text-text-dark uppercase tracking-wide">
-                    Attendance Log for <span id="attTabStaffName" class="text-royal-deep">—</span> (<span id="attTabStaffNo" class="font-mono">—</span>)
-                  </h4>
-                  <div class="flex items-center gap-3">
-                    <a id="tabAttendanceFullLink" href="/admin/staff-attendance" class="inline-flex items-center gap-1 text-xs font-semibold text-royal hover:text-royal-deep hover:underline">
-                      <span>Full Attendance Page</span>
-                      <span aria-hidden="true">↗</span>
-                    </a>
                   </div>
                 </div>
-                <div class="overflow-x-auto">
-                  <table class="w-full text-left text-xs">
-                    <thead>
-                      <tr class="bg-white border-b border-border text-[10px] font-bold text-text-soft uppercase tracking-wider">
-                        <th class="px-5 py-3">Date</th>
-                        <th class="px-5 py-3">Clock-In</th>
-                        <th class="px-5 py-3">Clock-Out</th>
-                        <th class="px-5 py-3">Method</th>
-                        <th class="px-5 py-3 text-right">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y divide-border/60">
-                      <tr class="hover:bg-warm-white/60">
-                        <td class="px-5 py-3.5 font-medium">Friday, Oct 17, 2026</td>
-                        <td class="px-5 py-3.5 font-mono text-text-soft">07:44 AM</td>
-                        <td class="px-5 py-3.5 font-mono text-text-soft">04:15 PM</td>
-                        <td class="px-5 py-3.5 text-text-soft">Biometric Terminal A</td>
-                        <td class="px-5 py-3.5 text-right">
-                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            Present · On Time
-                          </span>
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-warm-white/60">
-                        <td class="px-5 py-3.5 font-medium">Thursday, Oct 16, 2026</td>
-                        <td class="px-5 py-3.5 font-mono text-text-soft">07:51 AM</td>
-                        <td class="px-5 py-3.5 font-mono text-text-soft">04:30 PM</td>
-                        <td class="px-5 py-3.5 text-text-soft">Biometric Terminal A</td>
-                        <td class="px-5 py-3.5 text-right">
-                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            Present · On Time
-                          </span>
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-warm-white/60">
-                        <td class="px-5 py-3.5 font-medium">Wednesday, Oct 15, 2026</td>
-                        <td class="px-5 py-3.5 font-mono text-text-soft">08:08 AM</td>
-                        <td class="px-5 py-3.5 font-mono text-text-soft">04:20 PM</td>
-                        <td class="px-5 py-3.5 text-text-soft">Biometric Terminal B</td>
-                        <td class="px-5 py-3.5 text-right">
-                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                            Late Arrival
-                          </span>
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-warm-white/60">
-                        <td class="px-5 py-3.5 font-medium">Tuesday, Oct 14, 2026</td>
-                        <td class="px-5 py-3.5 font-mono text-text-soft">07:35 AM</td>
-                        <td class="px-5 py-3.5 font-mono text-text-soft">04:10 PM</td>
-                        <td class="px-5 py-3.5 text-text-soft">Biometric Terminal A</td>
-                        <td class="px-5 py-3.5 text-right">
-                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            Present · On Time
-                          </span>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+              </div>
+
+              <!-- Employment Information Card -->
+              <div class="sp-card">
+                <div class="sp-card-header">
+                  <h3 class="sp-card-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <span>Employment Information</span>
+                  </h3>
+                </div>
+                <div class="sp-card-body">
+                  <div class="sp-kv-list">
+                    <div class="sp-kv-row">
+                      <span class="sp-kv-label">Staff Number</span>
+                      <span id="fStaffNo" class="sp-kv-val mono font-bold text-navy">—</span>
+                    </div>
+                    <div class="sp-kv-row">
+                      <span class="sp-kv-label">Department</span>
+                      <span id="fDepartment" class="sp-kv-val font-bold text-navy">—</span>
+                    </div>
+                    <div class="sp-kv-row">
+                      <span class="sp-kv-label">Employment Status</span>
+                      <span id="fStatus" class="sp-kv-val font-semibold">—</span>
+                    </div>
+                    <div class="sp-kv-row">
+                      <span class="sp-kv-label">Registration Date</span>
+                      <span id="fCreatedAt" class="sp-kv-val text-text-secondary">—</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Footer navigation -->
-            <div class="pt-4 flex items-center justify-between">
-              <a href="/admin/staffs" class="btn-secondary text-xs py-2.5 px-4 inline-flex items-center gap-1.5">
-                <span>←</span> Back to Staffs
-              </a>
-              <a href="/admin/register-staff" class="btn-primary text-xs py-2.5 px-4 inline-flex items-center gap-1.5">
-                <span>+</span> Register Another Staff
-              </a>
-            </div>
+              <!-- Biometric Information Card -->
+              <div class="sp-bio-card">
+                <div class="sp-bio-left">
+                  <div class="sp-bio-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-text-secondary block">Biometric Information</span>
+                    <span class="text-xs text-text-dark font-medium">Biometric Enrollment Number:</span>
+                    <strong id="fBioNo" class="font-mono text-sm text-navy ml-1">—</strong>
+                  </div>
+                </div>
+                <div>
+                  <a id="footerAttendanceLink" href="#" class="sp-btn sp-btn-secondary text-xs">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>View Attendance History</span>
+                  </a>
+                </div>
+              </div>
+
+            </div><!-- /sp-grid -->
 
           </div><!-- /staffDetailContent -->
 
-        </div><!-- /max-w-5xl -->
+        </div><!-- /sp-container -->
       </main>
     </div><!-- /Main Content Area -->
   </div><!-- /flex -->

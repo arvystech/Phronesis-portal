@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Phronesis Sunesis School ERP — Individual Staff Attendance History" />
+  <title>Staff Attendance History · Phronesis Sunesis Admin ERP</title>
+  <link rel="icon" type="image/svg+xml" href="/admin/assets/images/icons/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/assets/css/styles.css" />
+  <link rel="stylesheet" href="/admin/assets/css/global.css" />
+  <link rel="stylesheet" href="/admin/assets/css/components.css" />
+  <link rel="stylesheet" href="/admin/assets/css/staff-attendance-history.css" />
+</head>
+<body class="bg-warm-white text-text-dark font-sans antialiased">
+
+  <div class="flex h-screen overflow-hidden bg-warm-white">
+    <!-- Desktop Sidebar -->
+    <div class="hidden lg:flex shrink-0">
+      <aside class="flex flex-col bg-royal-deep h-full w-64 min-h-screen">
+        <!-- School Logo -->
+        <div class="px-5 py-6 border-b border-white/10">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 shrink-0">
+              <img src="/admin/assets/images/logo/logo.png" alt="Phronesis Logo" class="w-full h-full object-contain" />
+            </div>
+            <div>
+              <p class="text-white font-bold text-sm leading-tight">Phronesis</p>
+              <p class="text-blue-300 text-[10px] tracking-widest uppercase font-semibold">Sunesis Admin</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto" aria-label="Main navigation">
+          <p class="text-blue-400 text-[10px] uppercase tracking-widest font-semibold px-3 mb-2">Main Menu</p>
+          <a href="/admin/staffs" class="sidebar-item" data-nav="staffs">
+            <span class="w-5 h-5 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </span>
+            <span>Staff Directory</span>
+          </a>
+          <a href="/admin/staff-attendance" class="sidebar-item" data-nav="staff-attendance">
+            <span class="w-5 h-5 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+            </span>
+            <span>Staff Attendance</span>
+          </a>
+        </nav>
+
+        <!-- Admin Profile & Sign Out Footer -->
+        <div class="px-4 py-4 border-t border-white/10">
+          <a href="/admin/profile" class="sidebar-admin-link flex items-center gap-3 mb-3 p-1.5 -mx-1.5 rounded-xl hover:bg-white/10 transition-all cursor-pointer group" title="View Admin Profile">
+            <div class="w-8 h-8 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center text-gold text-xs font-bold admin-initials group-hover:scale-105 transition-transform">
+              A
+            </div>
+            <div class="min-w-0">
+              <p class="text-white text-xs font-semibold truncate admin-name group-hover:text-gold transition-colors">Admin</p>
+              <p class="text-blue-300 text-[10px] truncate admin-role">Administrator</p>
+            </div>
+          </a>
+          <button id="sidebarLogoutBtn" class="w-full text-left text-xs text-blue-300 hover:text-white transition-colors flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span>Sign out</span>
+          </button>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="flex flex-col flex-1 min-w-0 overflow-hidden relative">
+      <!-- Navbar -->
+      <header class="h-16 bg-white border-b border-border flex items-center justify-between px-6 shrink-0 shadow-sm">
+        <div class="flex items-center gap-3">
+          <div>
+            <p class="text-[10px] uppercase tracking-widest text-text-soft font-bold">School Administration</p>
+            <h1 id="pageTitle" class="text-sm sm:text-base font-bold text-text-dark leading-tight">Attendance History</h1>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-royal-light text-royal text-[10px] font-bold uppercase tracking-wide border border-royal/15">
+            Academic Session 2025/2026
+          </span>
+          <a href="/admin/profile" class="flex items-center gap-2 pl-3 border-l border-border hover:opacity-80 transition-opacity" title="Administrator Profile">
+            <div class="w-8 h-8 rounded-full bg-royal flex items-center justify-center text-white text-xs font-bold admin-initials">
+              A
+            </div>
+            <div class="hidden sm:block text-left">
+              <p class="text-xs font-semibold text-text-dark leading-none admin-name">Admin</p>
+              <p class="text-[10px] text-text-soft admin-role mt-0.5">Administrator</p>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Scrollable Main Content -->
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6 pb-24 lg:pb-8">
+        <div class="sah-container">
+
+          <!-- Section 1: Page Navigation & Breadcrumbs -->
+          <div class="sah-top-bar">
+            <div class="sah-breadcrumb">
+              <a href="/admin/staffs">Staffs</a>
+              <span class="text-gray-400">/</span>
+              <a id="sahBreadcrumbProfileLink" href="#">Staff Profile</a>
+              <span class="text-gray-400">/</span>
+              <span class="sah-breadcrumb-current">Attendance History</span>
+            </div>
+            <div class="sah-top-actions">
+              <a id="sahBackToProfile" href="#" class="sah-btn sah-btn-secondary text-xs">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span>Back to Staff Profile</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Loading State -->
+          <div id="sahLoading" class="sah-state-card">
+            <div class="w-8 h-8 border-3 border-border border-t-royal rounded-full animate-spin"></div>
+            <h3 class="text-sm font-bold text-navy-deep mt-3">Loading Attendance History</h3>
+            <p class="text-xs text-text-secondary mt-1">Retrieving verified attendance records...</p>
+          </div>
+
+          <!-- Error State -->
+          <div id="sahError" class="hidden sah-state-card">
+            <div class="w-10 h-10 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center mb-3">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h3 class="text-sm font-bold text-text-dark">Unable to Load Attendance History</h3>
+            <p id="sahErrorMsg" class="text-xs text-text-secondary max-w-md mx-auto mt-1 mb-4">
+              Could not retrieve attendance records for this staff member.
+            </p>
+            <div class="flex items-center gap-3">
+              <button id="sahRetryBtn" type="button" class="sah-btn sah-btn-primary">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>Retry</span>
+              </button>
+              <a href="/admin/staffs" class="sah-btn sah-btn-secondary">
+                Return to Staffs
+              </a>
+            </div>
+          </div>
+
+          <!-- Main Content -->
+          <div id="sahContent" class="hidden space-y-4">
+
+            <!-- Section 2: Compact Staff Context Header -->
+            <div class="sah-context-card">
+              <div class="sah-context-left">
+                <div id="sahAvatar" class="sah-avatar" title="Staff initials">
+                  S
+                </div>
+                <div class="sah-context-info">
+                  <div class="sah-context-name-row">
+                    <h2 id="sahStaffName" class="sah-context-name">—</h2>
+                    <span id="sahDeptBadge" class="sah-badge sah-badge-present">—</span>
+                  </div>
+                  <div class="text-xs text-text-secondary">
+                    <span>Staff No: <strong id="sahStaffNo" class="sah-chip-mono">—</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <button id="sahRefreshBtn" type="button" class="sah-btn sah-btn-secondary text-xs" title="Refresh attendance records">
+                  <svg id="sahRefreshIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>Refresh</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Section 3: Attendance Summary Cards (4 Compact Cards) -->
+            <div class="sah-summary-grid">
+              <!-- Card 1: Total Attendance Events -->
+              <div class="sah-stat-card sah-stat-total">
+                <div class="sah-stat-icon">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="sah-stat-label">Total Events</p>
+                  <p id="statTotal" class="sah-stat-num">0</p>
+                </div>
+              </div>
+
+              <!-- Card 2: Present Days (On Time) -->
+              <div class="sah-stat-card sah-stat-present">
+                <div class="sah-stat-icon">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="sah-stat-label">Present Days</p>
+                  <p id="statPresent" class="sah-stat-num text-emerald-700">0</p>
+                </div>
+              </div>
+
+              <!-- Card 3: Late Arrivals -->
+              <div class="sah-stat-card sah-stat-late">
+                <div class="sah-stat-icon">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="sah-stat-label">Late Arrivals</p>
+                  <p id="statLate" class="sah-stat-num text-amber-700">0</p>
+                </div>
+              </div>
+
+              <!-- Card 4: Days Attended -->
+              <div class="sah-stat-card sah-stat-days">
+                <div class="sah-stat-icon">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="sah-stat-label">Days Attended</p>
+                  <p id="statDays" class="sah-stat-num text-navy-deep">0</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 4: Compact Filter Toolbar -->
+            <div class="sah-filter-bar">
+              <div class="sah-filter-inputs">
+                <div class="sah-filter-group">
+                  <label for="filterStartDate" class="sah-filter-label">From</label>
+                  <input type="date" id="filterStartDate" class="sah-control" />
+                </div>
+                <div class="sah-filter-group">
+                  <label for="filterEndDate" class="sah-filter-label">To</label>
+                  <input type="date" id="filterEndDate" class="sah-control" />
+                </div>
+                <div class="sah-filter-group">
+                  <label for="filterIoMode" class="sah-filter-label">Status</label>
+                  <select id="filterIoMode" class="sah-control">
+                    <option value="all">All Events</option>
+                    <option value="0">Clock-In Only</option>
+                    <option value="1">Clock-Out Only</option>
+                    <option value="ontime">Present (On-Time)</option>
+                    <option value="late">Late Arrival</option>
+                  </select>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span id="sahCountText" class="text-xs text-text-secondary font-medium">0 records</span>
+                <button id="sahResetFilter" type="button" class="sah-btn sah-btn-secondary text-xs" title="Reset all filters">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>Reset</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Section 5: Attendance Table Card (5 Columns) -->
+            <div class="sah-table-card">
+              <div class="sah-table-header">
+                <h3 class="sah-table-title">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  <span>Attendance Records</span>
+                </h3>
+                <span class="text-[11px] text-text-secondary font-medium">Timezone: WAT (UTC+1)</span>
+              </div>
+
+              <!-- Empty State -->
+              <div id="sahEmptyState" class="hidden py-12 px-6 text-center">
+                <div class="w-10 h-10 rounded-xl bg-warm-white border border-border mx-auto flex items-center justify-center text-text-muted mb-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>
+                <h4 class="text-xs font-bold text-text-dark">No Attendance Records Found</h4>
+                <p id="sahEmptyMsg" class="text-[11px] text-text-secondary mt-1 max-w-sm mx-auto">
+                  No records matched your selected criteria.
+                </p>
+              </div>
+
+              <!-- Records Table: Exactly 5 Columns -->
+              <div id="sahTableWrapper" class="overflow-x-auto">
+                <table class="sah-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Time</th>
+                      <th>Event</th>
+                      <th>Attendance Status</th>
+                      <th class="text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sahTableBody">
+                    <!-- Populated dynamically via JS -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Pagination Footer -->
+              <div id="sahPagination" class="sah-pagination">
+                <p id="sahPaginationText" class="text-xs text-text-secondary font-medium">
+                  Showing 0 to 0 of 0 records
+                </p>
+                <div class="flex items-center gap-2">
+                  <button id="sahPrevBtn" type="button" class="sah-btn sah-btn-secondary text-xs px-2.5 py-1" disabled>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span>Previous</span>
+                  </button>
+                  <span id="sahPageIndicator" class="text-xs font-bold text-text-dark px-1.5">Page 1 of 1</span>
+                  <button id="sahNextBtn" type="button" class="sah-btn sah-btn-secondary text-xs px-2.5 py-1" disabled>
+                    <span>Next</span>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+            </div><!-- /sah-table-card -->
+
+          </div><!-- /sahContent -->
+
+        </div><!-- /sah-container -->
+      </main>
+    </div><!-- /Main Content Area -->
+  </div><!-- /flex -->
+
+  <!-- Simplified Event Details Modal (Section F) -->
+  <div id="sahModalOverlay" class="sah-modal-overlay">
+    <div class="sah-modal-card" role="dialog" aria-modal="true" aria-labelledby="sahModalTitle">
+      <div class="sah-modal-header">
+        <h4 id="sahModalTitle" class="sah-modal-title">Attendance Event Details</h4>
+        <button id="sahModalCloseIcon" type="button" class="sah-modal-close-icon" aria-label="Close dialog">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="sah-modal-content space-y-3">
+        <div class="sp-kv-list">
+          <div class="sp-kv-row">
+            <span class="sp-kv-label">Staff Name</span>
+            <span id="mStaffName" class="sp-kv-val font-bold text-navy">—</span>
+          </div>
+          <div class="sp-kv-row">
+            <span class="sp-kv-label">Attendance Date</span>
+            <span id="mEventDate" class="sp-kv-val">—</span>
+          </div>
+          <div class="sp-kv-row">
+            <span class="sp-kv-label">Recorded Time</span>
+            <span id="mEventTime" class="sp-kv-val mono font-bold">—</span>
+          </div>
+          <div class="sp-kv-row">
+            <span class="sp-kv-label">Event Type</span>
+            <span id="mEventType" class="sp-kv-val font-semibold">—</span>
+          </div>
+          <div class="sp-kv-row">
+            <span class="sp-kv-label">Attendance Status</span>
+            <span id="mEventStatus" class="sp-kv-val font-bold">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="sah-modal-footer">
+        <button id="sahModalCloseBtn" type="button" class="sah-btn sah-btn-secondary text-xs">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/assets/js/toast.js"></script>
+  <script type="module" src="/admin/assets/js/pages/staff-attendance-history.js"></script>
+</body>
+</html>

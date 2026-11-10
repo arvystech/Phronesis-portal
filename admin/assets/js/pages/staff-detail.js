@@ -1,40 +1,30 @@
-// assets/js/pages/staff-detail.js
-// Staff Details View — connected to Live Backend API.
-// Resolves the staff record from the live cache written by staffs.js,
-// or fetches directly from the live API if the cache is absent.
+// admin/assets/js/pages/staff-detail.js
+// Staff Details — fetches individual staff via GET /admin/staff/{id}
 
 import { requireAuth } from '../auth.js';
 import { setupLayout } from '../layout.js';
 import { staffAPI } from '../api.js';
 
 let staffId = null;
-let currentStaff = null;
-let activeTab = 'biodata';
 
 document.addEventListener('DOMContentLoaded', async () => {
   setupLayout('staffs', 'Staff Details');
 
-  // Extract staff ID from query param ?id=STF001 or clean URL path segment
-  const params = new URLSearchParams(window.location.search);
-  staffId = params.get('id');
+  // Extract numeric ID from clean URL path: /admin/staffs/17
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  // parts = ['admin', 'staffs', '17']
+  const rawId = parts[parts.length - 1];
+  if (rawId && /^\d+$/.test(rawId)) {
+    staffId = parseInt(rawId, 10);
+  }
 
+  // Fallback: query param ?id=17
   if (!staffId) {
-    const parts = window.location.pathname.split('/').filter(Boolean);
-    const last = parts[parts.length - 1];
-    const nonIdNames = ['staffs', 'staff-details.html', 'staff-details', 'staff-detail', 'admin'];
-    if (last && !nonIdNames.includes(last.toLowerCase())) {
-      staffId = decodeURIComponent(last);
+    const params = new URLSearchParams(window.location.search);
+    const qId = params.get('id');
+    if (qId && /^\d+$/.test(qId)) {
+      staffId = parseInt(qId, 10);
     }
-  }
-
-  // Default fallback if no ID supplied
-  if (!staffId) {
-    staffId = 'STF001';
-  }
-
-  // Check if attendance tab should be opened initially
-  if (params.get('tab') === 'attendance' || params.get('view') === 'attendance') {
-    activeTab = 'attendance';
   }
 
   await requireAuth(() => {
@@ -43,211 +33,185 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function initStaffDetail() {
-  bindTabs();
+  if (!staffId) {
+    showError('No valid staff ID provided in the URL. Please go back and select a staff member.');
+    return;
+  }
   await loadStaffDetail();
-}
-
-function bindTabs() {
-  const tabBtns = document.querySelectorAll('[data-tab-btn]');
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const tab = btn.getAttribute('data-tab-btn');
-      switchTab(tab);
-    });
-  });
-
-  // Activate initial tab
-  switchTab(activeTab);
-}
-
-function switchTab(tabName) {
-  activeTab = tabName;
-  document.querySelectorAll('[data-tab-btn]').forEach(btn => {
-    const target = btn.getAttribute('data-tab-btn');
-    if (target === tabName) {
-      btn.className = 'px-5 py-3 text-xs font-bold uppercase tracking-wider border-b-2 border-gold text-royal bg-white transition-all';
-    } else {
-      btn.className = 'px-5 py-3 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-text-soft hover:text-royal transition-all';
-    }
-  });
-
-  document.querySelectorAll('[data-tab-pane]').forEach(pane => {
-    const target = pane.getAttribute('data-tab-pane');
-    if (target === tabName) {
-      pane.classList.remove('hidden');
-    } else {
-      pane.classList.add('hidden');
-    }
-  });
 }
 
 async function loadStaffDetail() {
   const loadingEl = document.getElementById('staffDetailLoading');
   const contentEl = document.getElementById('staffDetailContent');
-  const notFoundEl = document.getElementById('staffNotFound');
+  const errorEl = document.getElementById('staffDetailError');
+  const errorMsgEl = document.getElementById('staffDetailErrorMsg');
 
-  if (loadingEl) loadingEl.classList.remove('hidden');
-  if (contentEl) contentEl.classList.add('hidden');
-  if (notFoundEl) notFoundEl.classList.add('hidden');
+  if (loadingEl) { loadingEl.style.display = 'flex'; loadingEl.classList.remove('hidden'); }
+  if (contentEl) { contentEl.style.display = 'none'; contentEl.classList.add('hidden'); }
+  if (errorEl) { errorEl.style.display = 'none'; errorEl.classList.add('hidden'); }
 
-  // ── Step 1: Try the live staff cache written by staffs.js ──────────────
-  let dataset = null;
   try {
-    const liveCache = localStorage.getItem('ps_live_staff_cache');
-    if (liveCache) {
-      const parsed = JSON.parse(liveCache);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        dataset = parsed;
-      }
+    const { data } = await staffAPI.get(staffId);
+    // Response: { success, staff: StaffMember }
+    const staff = data?.staff || data;
+
+    if (!staff || !staff.id) {
+      showError(`Staff member with ID ${staffId} was not found in the database.`);
+      return;
     }
-  } catch (e) {}
 
-  // ── Step 2: Cache absent — fetch directly from the live API ────────────
-  if (!dataset) {
-    try {
-      console.info('[Phronesis] Live cache absent; fetching staff list from API...');
-      const { data: result } = await staffAPI.list();
+    if (loadingEl) { loadingEl.style.display = 'none'; loadingEl.classList.add('hidden'); }
+    if (contentEl) { contentEl.style.display = 'block'; contentEl.classList.remove('hidden'); }
 
-      // Defensive extraction — handle array root, result.data, result.staff, result.results
-      let rawList = null;
-      if (Array.isArray(result)) rawList = result;
-      else if (Array.isArray(result.staff)) rawList = result.staff;
-      else if (Array.isArray(result.data)) rawList = result.data;
-      else if (Array.isArray(result.results)) rawList = result.results;
-
-      if (rawList && rawList.length > 0) {
-        // Normalise so lookup fields are consistent with what staffs.js writes
-        dataset = rawList.map(raw => ({
-          id: raw.id ?? raw.staff_no,
-          staffNo: String(raw.staff_no || raw.staffNo || '').trim(),
-          firstName: String(raw.first_name || raw.firstName || '').trim(),
-          lastName: String(raw.last_name || raw.lastName || '').trim(),
-          otherNames: String(raw.other_names || raw.otherNames || '').trim(),
-          biometricEnrollmentNo: String(
-            raw.biometric_enrollment_no !== undefined ? raw.biometric_enrollment_no
-              : (raw.biometricEnrollmentNo !== undefined ? raw.biometricEnrollmentNo : '')
-          ).trim(),
-          department: (() => {
-            const d = String(raw.department || '').trim().toLowerCase();
-            return d.includes('non') ? 'Non-teaching' : (d ? 'Teaching' : 'Teaching');
-          })(),
-          email: raw.email || '',
-          phone: raw.phone || raw.phoneNo || '',
-          role: raw.role || '',
-          joinedDate: raw.joinedDate || raw.joined_date || '',
-          gender: raw.gender || '',
-          phoneNo: raw.phoneNo || raw.phone_no || raw.phone || '',
-          qualification: raw.qualification || '',
-          stateOfOrigin: raw.stateOfOrigin || raw.state_of_origin || '',
-          address: raw.address || '',
-          status: raw.status || 'Active',
-        })).filter(s => s.staffNo);
-
-        // Persist for future navigations in this session
-        try {
-          localStorage.setItem('ps_live_staff_cache', JSON.stringify(dataset));
-        } catch (_) {}
-      }
-    } catch (err) {
-      console.error('[Phronesis] Could not load staff from live API:', err.message);
-      // dataset remains null — handled below
+    renderStaffDetails(staff);
+  } catch (error) {
+    console.error('[StaffDetail] Load failed:', error);
+    if (loadingEl) { loadingEl.style.display = 'none'; loadingEl.classList.add('hidden'); }
+    const statusCode = error.status || error.response?.status;
+    let msg;
+    if (statusCode === 401) {
+      msg = 'Your session has expired. Please log in again.';
+    } else if (statusCode === 403) {
+      msg = 'You do not have permission to view this staff member\'s details.';
+    } else if (statusCode === 404) {
+      msg = `Staff member with ID ${staffId} was not found.`;
+    } else {
+      msg = `Could not load staff details: ${error.message}`;
     }
+    showError(msg);
   }
+}
 
-  if (loadingEl) loadingEl.classList.add('hidden');
+function showError(message) {
+  const loadingEl = document.getElementById('staffDetailLoading');
+  const contentEl = document.getElementById('staffDetailContent');
+  const errorEl = document.getElementById('staffDetailError');
+  const errorMsgEl = document.getElementById('staffDetailErrorMsg');
 
-  // ── Step 3: No data available — show not-found rather than fake records ─
-  if (!dataset || dataset.length === 0) {
-    if (notFoundEl) {
-      notFoundEl.classList.remove('hidden');
-      const msgEl = notFoundEl.querySelector('p');
-      if (msgEl) {
-        msgEl.textContent =
-          'Staff data is unavailable — the server could not be reached. ' +
-          'Return to the Staffs page to retry loading all records.';
-      }
-    }
-    return;
-  }
-
-  // ── Step 4: Find the requested staff record ────────────────────────────
-  const match = dataset.find(s =>
-    (s.staffNo && s.staffNo.toLowerCase() === staffId.toLowerCase()) ||
-    (s.biometricEnrollmentNo && s.biometricEnrollmentNo === staffId)
-  );
-
-  if (!match) {
-    if (notFoundEl) notFoundEl.classList.remove('hidden');
-    return;
-  }
-
-  currentStaff = match;
-  if (contentEl) contentEl.classList.remove('hidden');
-
-  renderStaffDetails(currentStaff);
+  if (loadingEl) { loadingEl.style.display = 'none'; loadingEl.classList.add('hidden'); }
+  if (contentEl) { contentEl.style.display = 'none'; contentEl.classList.add('hidden'); }
+  if (errorEl) { errorEl.style.display = 'flex'; errorEl.classList.remove('hidden'); }
+  if (errorMsgEl) errorMsgEl.textContent = message;
 }
 
 function renderStaffDetails(staff) {
-  const other = staff.otherNames && staff.otherNames.trim() ? ` ${staff.otherNames.trim()}` : '';
-  const fullName = `${staff.firstName}${other} ${staff.lastName}`;
-
-  // Avatar initial
-  const initials = staff.firstName ? staff.firstName[0].toUpperCase() : 'S';
-  const avatarEl = document.getElementById('detailAvatar');
-  if (avatarEl) avatarEl.textContent = initials;
-
-  // Header info
-  const nameEl = document.getElementById('detailFullName');
-  if (nameEl) nameEl.textContent = fullName;
-
-  const staffNoChip = document.getElementById('detailStaffNoChip');
-  if (staffNoChip) staffNoChip.textContent = staff.staffNo;
-
-  const roleEl = document.getElementById('detailRole');
-  if (roleEl) roleEl.textContent = staff.role || (staff.department === 'Teaching' ? 'Teaching Staff' : 'Administrative Staff');
-
-  // Department badge (Teaching: Green, Non-teaching: Blue)
-  const deptBadge = document.getElementById('detailDeptBadge');
+  const other = staff.other_names && staff.other_names.trim() ? ` ${staff.other_names.trim()}` : '';
+  const fullName = `${staff.first_name || ''}${other} ${staff.last_name || ''}`.trim();
+  const initials = staff.first_name ? staff.first_name[0].toUpperCase() : 'S';
   const isTeaching = (staff.department || '').toLowerCase() === 'teaching';
+
+  // Update page title
+  document.title = `${fullName} · Staff Details · Phronesis`;
+
+  // Avatar
+  setText('detailAvatar', initials);
+
+  // Header
+  setText('detailFullName', fullName || '—');
+  setText('detailStaffNoChip', staff.staff_no || '—');
+  setText('detailRole', isTeaching ? 'Teaching Staff' : 'Non-Teaching Staff');
+
+  // Department badge
+  const deptBadge = document.getElementById('detailDeptBadge');
   if (deptBadge) {
-    deptBadge.textContent = staff.department;
+    const dept = staff.department || '—';
+    deptBadge.textContent = dept;
     deptBadge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border';
     if (isTeaching) {
-      deptBadge.style.backgroundColor = '#DCFCE7';
-      deptBadge.style.color = '#166534';
-      deptBadge.style.borderColor = '#BBF7D0';
+      Object.assign(deptBadge.style, { backgroundColor: '#DCFCE7', color: '#166534', borderColor: '#BBF7D0' });
     } else {
-      deptBadge.style.backgroundColor = '#DBEAFE';
-      deptBadge.style.color = '#1D4ED8';
-      deptBadge.style.borderColor = '#BFDBFE';
+      Object.assign(deptBadge.style, { backgroundColor: '#DBEAFE', color: '#1D4ED8', borderColor: '#BFDBFE' });
     }
   }
 
-  // Biodata Fields (Safe textContent)
-  setText('fStaffNo', staff.staffNo);
-  setText('fFirstName', staff.firstName);
-  setText('fLastName', staff.lastName);
-  setText('fOtherNames', staff.otherNames && staff.otherNames.trim() ? staff.otherNames.trim() : '—');
-  setText('fBioNo', staff.biometricEnrollmentNo);
-  setText('fDepartment', staff.department);
-  setText('fPhone', staff.phoneNo || '—');
-  setText('fEmail', staff.email && staff.email.trim() ? staff.email.trim() : '—');
-  setText('fRole', staff.role || (isTeaching ? 'Subject Teacher' : 'Non-teaching Staff'));
-  setText('fJoinedDate', staff.joinedDate || '2022-09-01');
+  // Employment status badge
+  const statusBadge = document.getElementById('detailStatusBadge');
+  if (statusBadge) {
+    const status = (staff.employment_status || 'active').toLowerCase();
+    const statusMap = {
+      active: { bg: '#DCFCE7', color: '#166534', border: '#BBF7D0', label: 'Active' },
+      inactive: { bg: '#F3F4F6', color: '#6B7280', border: '#D1D5DB', label: 'Inactive' },
+      suspended: { bg: '#FEF3C7', color: '#B45309', border: '#FDE68A', label: 'Suspended' },
+      resigned: { bg: '#FFE4E6', color: '#BE123C', border: '#FECDD3', label: 'Resigned' },
+      terminated: { bg: '#FFE4E6', color: '#BE123C', border: '#FECDD3', label: 'Terminated' },
+    };
+    const s = statusMap[status] || statusMap.active;
+    statusBadge.textContent = s.label;
+    statusBadge.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border';
+    Object.assign(statusBadge.style, { backgroundColor: s.bg, color: s.color, borderColor: s.border });
+  }
 
-  // Attendance tab staff name & dedicated links
-  setText('attTabStaffName', fullName);
-  setText('attTabStaffNo', staff.staffNo);
+  // Attendance link
+  const attendanceUrl = `/admin/staffs/${staff.id}/attendance`;
+  const attendanceLink = document.getElementById('detailAttendanceLink');
+  if (attendanceLink) attendanceLink.href = attendanceUrl;
 
-  const attendanceUrl = `/admin/staffs/${encodeURIComponent(staff.staffNo)}/attendance`;
-  const detailAttendanceLink = document.getElementById('detailAttendanceLink');
-  if (detailAttendanceLink) detailAttendanceLink.href = attendanceUrl;
+  const footerAttendanceLink = document.getElementById('footerAttendanceLink');
+  if (footerAttendanceLink) footerAttendanceLink.href = attendanceUrl;
 
-  const tabAttendanceFullLink = document.getElementById('tabAttendanceFullLink');
-  if (tabAttendanceFullLink) tabAttendanceFullLink.href = attendanceUrl;
+  // Info fields — only display what the API returned
+  setField('fId', staff.id);
+  setField('fStaffNo', staff.staff_no);
+  setField('fFirstName', staff.first_name);
+  setField('fLastName', staff.last_name);
+  setField('fOtherNames', staff.other_names);
+  setField('fBioNo', staff.biometric_enrollment_no);
+  setField('fDepartment', staff.department);
+  setField('fEmail', staff.email);
+  setField('fPhone', staff.phone);
+  setField('fStatus', staff.employment_status ? capitalise(staff.employment_status) : null);
+  setField('fCreatedAt', staff.created_at ? formatDateTime(staff.created_at) : null);
+  setField('fUpdatedAt', staff.updated_at ? formatDateTime(staff.updated_at) : null);
+}
+
+function setField(id, value) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (value !== null && value !== undefined && String(value).trim() !== '') {
+    el.textContent = String(value).trim();
+    el.classList.remove('field-empty');
+  } else {
+    el.textContent = '—';
+    el.classList.add('field-empty');
+  }
 }
 
 function setText(id, text) {
   const el = document.getElementById(id);
   if (el) el.textContent = text;
 }
+
+function capitalise(str) {
+  return str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : '';
+}
+
+function formatDateTime(isoString) {
+  if (!isoString) return null;
+  try {
+    return new Date(isoString).toLocaleDateString('en-GB', {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  } catch { return isoString; }
+}
+
+// Retry and Refresh buttons
+document.addEventListener('DOMContentLoaded', () => {
+  const retryBtn = document.getElementById('staffDetailRetryBtn');
+  if (retryBtn) {
+    retryBtn.addEventListener('click', () => loadStaffDetail());
+  }
+
+  const refreshBtn = document.getElementById('staffDetailRefreshBtn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', async () => {
+      const icon = document.getElementById('staffDetailRefreshIcon');
+      if (icon) icon.classList.add('animate-spin');
+      try {
+        await loadStaffDetail();
+      } finally {
+        if (icon) icon.classList.remove('animate-spin');
+      }
+    });
+  }
+});

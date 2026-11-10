@@ -62,14 +62,8 @@ function serveFile(res, filePath) {
  * Forwards the request to the live backend, relays the response including
  * Set-Cookie headers (adjusting the Secure and SameSite flags for localhost
  * development), and strips the CORS wildcard so the browser accepts the response.
- *
- * Cookie attribute adjustment:
- *   - Removes "Secure" so cookies are set over http://localhost
- *   - Changes SameSite=Strict to SameSite=Lax for cross-page navigation
- *   These adjustments are safe for local development; they must NOT be applied
- *   in production.
  */
-function proxyToBackend(req, res, backendPath) {
+function proxyToBackend(req, res, backendPath, retryCount = 0) {
   const url = new URL(API_BACKEND + backendPath);
 
   // Forward all incoming request headers, but override Host
@@ -77,7 +71,7 @@ function proxyToBackend(req, res, backendPath) {
   forwardHeaders['host'] = url.hostname;
 
   // Remove headers that would confuse the backend or cause issues
-  delete forwardHeaders['origin'];        // Will re-add below as the real API origin
+  delete forwardHeaders['origin'];
   delete forwardHeaders['referer'];
   delete forwardHeaders['connection'];
 
@@ -121,13 +115,26 @@ function proxyToBackend(req, res, backendPath) {
   });
 
   proxyReq.on('error', (err) => {
-    console.error('[proxy] Backend request failed:', err.message);
-    res.writeHead(502, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Backend unavailable', message: err.message }));
+    console.error(`[proxy] Backend request to ${backendPath} failed:`, err.message);
+    if (retryCount < 2 && (err.code === 'ENOTFOUND' || err.code === 'ECONNRESET' || err.message.includes('disconnected'))) {
+      console.log(`[proxy] Retrying request (${retryCount + 1}/2) in 500ms...`);
+      setTimeout(() => {
+        proxyToBackend(req, res, backendPath, retryCount + 1);
+      }, 500);
+      return;
+    }
+    if (!res.headersSent) {
+      res.writeHead(502, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Backend unavailable', message: err.message }));
+    }
   });
 
-  // Forward the request body
-  req.pipe(proxyReq);
+  // Forward the request body for POST/PUT/PATCH, or end immediately for GET/HEAD
+  if (req.method === 'GET' || req.method === 'HEAD') {
+    proxyReq.end();
+  } else {
+    req.pipe(proxyReq);
+  }
 }
 
 const server = http.createServer((req, res) => {
@@ -208,7 +215,7 @@ const server = http.createServer((req, res) => {
   // /admin/staffs/:id/attendance
   const staffAttendanceMatch = pathname.match(/^\/admin\/staffs\/([^/]+)\/attendance\/?$/);
   if (staffAttendanceMatch) {
-    return serveFile(res, path.join(adminDir, 'staff-attendance.html'));
+    return serveFile(res, path.join(adminDir, 'staff-attendance-history.html'));
   }
 
   // /admin/staffs/:id
@@ -236,6 +243,7 @@ const server = http.createServer((req, res) => {
     '/admin/register-staff': 'register-staff.html',
     '/admin/staff-details': 'staff-details.html',
     '/admin/staff-attendance': 'staff-attendance.html',
+    '/admin/staff-attendance-history': 'staff-attendance-history.html',
     '/admin/staff-applications': 'staff-applications.html',
     '/admin/apply-staff': 'apply-staff.html',
     '/admin/apply/staff': 'apply-staff.html',

@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Staff Attendance Log · Phronesis Sunesis Admin ERP" />
-  <title>Staff Attendance Log · Phronesis Sunesis Admin ERP</title>
+  <meta name="description" content="Phronesis Sunesis School ERP — Staff Attendance Monitoring & Punctuality Dashboard" />
+  <title>Staff Attendance · Phronesis Sunesis Admin ERP</title>
   <link rel="icon" type="image/svg+xml" href="/admin/assets/images/icons/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/admin/assets/css/styles.css" />
   <link rel="stylesheet" href="/admin/assets/css/global.css" />
   <link rel="stylesheet" href="/admin/assets/css/components.css" />
+  <link rel="stylesheet" href="/admin/assets/css/staff-attendance.css" />
 </head>
 <body class="bg-warm-white text-text-dark font-sans antialiased">
 
@@ -19,7 +20,7 @@
     <!-- Desktop Sidebar -->
     <div class="hidden lg:flex shrink-0">
       <aside class="flex flex-col bg-royal-deep h-full w-64 min-h-screen">
-        <!-- Logo -->
+        <!-- School Logo -->
         <div class="px-5 py-6 border-b border-white/10">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 shrink-0">
@@ -27,49 +28,35 @@
             </div>
             <div>
               <p class="text-white font-bold text-sm leading-tight">Phronesis</p>
-              <p class="text-blue-300 text-[10px] tracking-widest uppercase">Sunesis Admin</p>
+              <p class="text-blue-300 text-[10px] tracking-widest uppercase font-semibold">Sunesis Admin</p>
             </div>
           </div>
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto" aria-label="Main menu">
-          <p class="text-blue-400 text-[10px] uppercase tracking-widest font-semibold px-3 mb-2">Main Menu</p>
-          <!-- Commented out for development task - sidebar restricted to Staffs only
-          <a href="/admin/dashboard" class="sidebar-item" data-nav="dashboard">
-            <span class="text-base w-5 text-center">⊞</span>
-            <span>Dashboard</span>
+        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto" aria-label="Main navigation">
+          <p class="text-blue-400 text-[10px] uppercase tracking-widest font-semibold px-3 mb-2">
+            Main Menu
+          </p>
+          <a href="/admin/staffs" class="sidebar-item" data-nav="staffs">
+            <span class="w-5 h-5 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </span>
+            <span>Staff Directory</span>
           </a>
-          <a href="/admin/students" class="sidebar-item" data-nav="students">
-            <span class="text-base w-5 text-center">👥</span>
-            <span>Registrations</span>
+          <a href="/admin/staff-attendance" class="sidebar-item active" data-nav="staff-attendance">
+            <span class="w-5 h-5 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+            </span>
+            <span>Staff Attendance</span>
           </a>
-          <a href="/admin/register-student" class="sidebar-item" data-nav="register">
-            <span class="text-base w-5 text-center">✚</span>
-            <span>Register Student</span>
-          </a>
-          -->
-          <a href="/admin/staffs" class="sidebar-item active" data-nav="staffs">
-            <span class="text-base w-5 text-center">👔</span>
-            <span>Staffs</span>
-          </a>
-          <!--
-          <a href="/admin/staff-applications" class="sidebar-item" data-nav="staff">
-            <span class="text-base w-5 text-center">💼</span>
-            <span>Staff Applications</span>
-          </a>
-          <a href="/admin/orders" class="sidebar-item" data-nav="orders">
-            <span class="text-base w-5 text-center">💳</span>
-            <span>Fee Payments</span>
-          </a>
-          <a href="/admin/settings" class="sidebar-item" data-nav="settings">
-            <span class="text-base w-5 text-center">⚙</span>
-            <span>Settings</span>
-          </a>
-          -->
         </nav>
 
-        <!-- Bottom info -->
+        <!-- Admin Profile & Sign Out Footer -->
         <div class="px-4 py-4 border-t border-white/10">
           <a href="/admin/profile" class="sidebar-admin-link flex items-center gap-3 mb-3 p-1.5 -mx-1.5 rounded-xl hover:bg-white/10 transition-all cursor-pointer group" title="View Admin Profile">
             <div class="w-8 h-8 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center text-gold text-xs font-bold admin-initials group-hover:scale-105 transition-transform">
@@ -77,11 +64,14 @@
             </div>
             <div class="min-w-0">
               <p class="text-white text-xs font-semibold truncate admin-name group-hover:text-gold transition-colors">Admin</p>
-              <p class="text-blue-300 text-[10px] truncate admin-role">Admin</p>
+              <p class="text-blue-300 text-[10px] truncate admin-role">Administrator</p>
             </div>
           </a>
           <button id="sidebarLogoutBtn" class="w-full text-left text-xs text-blue-300 hover:text-white transition-colors flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10">
-            <span>⎋</span> Sign out
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span>Sign out</span>
           </button>
         </div>
       </aside>
@@ -91,242 +81,471 @@
     <div class="flex flex-col flex-1 min-w-0 overflow-hidden relative">
       <!-- Navbar -->
       <header class="h-16 bg-white border-b border-border flex items-center justify-between px-6 shrink-0 shadow-sm">
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
           <div>
-            <p class="text-[10px] uppercase tracking-widest text-text-soft font-semibold">Admin Panel</p>
-            <h1 id="pageTitle" class="text-base font-bold text-text-dark leading-tight">Staff Attendance Log</h1>
+            <p class="text-[10px] uppercase tracking-widest text-text-soft font-bold">School Administration</p>
+            <h1 id="pageTitle" class="text-sm sm:text-base font-bold text-text-dark leading-tight">Staff Attendance</h1>
           </div>
         </div>
         <div class="flex items-center gap-3">
           <span class="hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-royal-light text-royal text-[10px] font-bold uppercase tracking-wide border border-royal/15">
-            2025/2026
+            Academic Session 2025/2026
           </span>
-          <a href="/admin/profile" class="flex items-center gap-2 pl-3 border-l border-border hover:opacity-80 transition-opacity">
+          <a href="/admin/profile" class="flex items-center gap-2 pl-3 border-l border-border hover:opacity-80 transition-opacity" title="Administrator Profile">
             <div class="w-8 h-8 rounded-full bg-royal flex items-center justify-center text-white text-xs font-bold admin-initials">
               A
             </div>
-            <div class="hidden sm:block">
+            <div class="hidden sm:block text-left">
               <p class="text-xs font-semibold text-text-dark leading-none admin-name">Admin</p>
-              <p class="text-[10px] text-text-soft admin-role">Staff</p>
+              <p class="text-[10px] text-text-soft admin-role mt-0.5">Administrator</p>
             </div>
           </a>
         </div>
       </header>
 
-      <!-- Scrollable Main Content -->
-      <main class="flex-1 overflow-y-auto p-4 lg:p-6 pb-24 lg:pb-6">
-        <div class="space-y-5 max-w-6xl mx-auto pb-10">
+      <!-- Main Scrollable Content -->
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6 pb-24 lg:pb-8">
+        <div class="att-container">
 
-          <!-- Top Navigation & Breadcrumbs -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs text-text-soft">
-              <a href="/admin/dashboard" class="hover:text-royal transition-colors">Dashboard</a>
-              <span aria-hidden="true">›</span>
-              <a href="/admin/staffs" class="hover:text-royal transition-colors font-medium">Staffs</a>
-              <span aria-hidden="true">›</span>
-              <span class="text-text-dark font-semibold">Attendance Log</span>
-            </nav>
-            <div class="flex items-center gap-2.5">
-              <a
-                id="viewProfileBtn"
-                href="/admin/staffs"
-                class="btn-secondary text-xs py-2 px-3.5 inline-flex items-center gap-1.5"
+          <!-- ===============================================================
+               SECTION A: Page Header
+               =============================================================== -->
+          <div class="att-header-card">
+            <div class="att-header-left">
+              <div class="att-breadcrumb">
+                <a href="/admin/staffs">Staff Management</a>
+                <span class="text-gray-400">/</span>
+                <span>Attendance Log</span>
+              </div>
+              <h2 class="att-page-title">Staff Attendance</h2>
+              <p class="att-page-subtitle">
+                Daily biometric check-in register, punctuality metrics, and staff attendance tracking.
+              </p>
+            </div>
+
+            <div class="att-header-actions">
+              <!-- Selected Date Indicator -->
+              <div class="att-date-badge" id="attDateBadge" title="Currently selected attendance date">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span id="selectedDateDisplay">Loading date...</span>
+              </div>
+
+              <!-- Refresh Button -->
+              <button
+                id="headerRefreshBtn"
+                type="button"
+                class="att-btn att-btn-secondary"
+                title="Refresh attendance records from live API"
+                aria-label="Refresh attendance records"
               >
-                <span>👤</span> View Staff Biodata
-              </a>
-              <a
-                href="/admin/staffs"
-                class="inline-flex items-center gap-1.5 text-xs font-bold text-royal hover:text-royal-deep px-3 py-2 rounded-xl border border-border bg-white hover:bg-royal-light/50 transition-colors"
+                <svg id="headerRefreshIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>Refresh</span>
+              </button>
+
+              <!-- Export Button -->
+              <button
+                id="headerExportBtn"
+                type="button"
+                class="att-btn att-btn-primary"
+                title="Export currently filtered attendance records to CSV"
+                aria-label="Export attendance to CSV"
               >
-                <span aria-hidden="true">←</span> Back to Staffs
-              </a>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Export CSV</span>
+              </button>
             </div>
           </div>
 
+          <!-- ===============================================================
+               SECTION B: Summary Cards (4 Cards)
+               =============================================================== -->
+          <div class="att-summary-grid">
+            <!-- Card 1: Total Active Staff -->
+            <div class="att-summary-card att-card-total">
+              <div class="att-card-icon-box" aria-hidden="true">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <div class="att-card-content">
+                <p class="att-card-label">Total Active Staff</p>
+                <p id="statTotalStaff" class="att-card-value">—</p>
+                <p class="att-card-hint">Assigned active roster</p>
+              </div>
+            </div>
+
+            <!-- Card 2: Present (On-time arrival) -->
+            <div class="att-summary-card att-card-present">
+              <div class="att-card-icon-box" aria-hidden="true">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="att-card-content">
+                <p class="att-card-label">Present (On Time)</p>
+                <p id="statPresentStaff" class="att-card-value">—</p>
+                <p class="att-card-hint">At or before 08:15 AM</p>
+              </div>
+            </div>
+
+            <!-- Card 3: Late Arrival -->
+            <div class="att-summary-card att-card-late">
+              <div class="att-card-icon-box" aria-hidden="true">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="att-card-content">
+                <p class="att-card-label">Late Arrival</p>
+                <p id="statLateStaff" class="att-card-value">—</p>
+                <p class="att-card-hint">Checked in after 08:15 AM</p>
+              </div>
+            </div>
+
+            <!-- Card 4: Absent -->
+            <div class="att-summary-card att-card-absent">
+              <div class="att-card-icon-box" aria-hidden="true">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="att-card-content">
+                <p class="att-card-label">Absent</p>
+                <p id="statAbsentStaff" class="att-card-value">—</p>
+                <p class="att-card-hint">No punch by 12:00 PM cutoff</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===============================================================
+               SECTION C: Filter Section
+               =============================================================== -->
+          <div class="att-filter-card">
+            <!-- 1. Date Picker -->
+            <div class="att-filter-item">
+              <label for="attDatePicker" class="att-filter-label">Date:</label>
+              <div class="att-select-wrapper">
+                <input
+                  type="date"
+                  id="attDatePicker"
+                  class="att-date-input"
+                  title="Select attendance date"
+                />
+              </div>
+              <button
+                type="button"
+                id="jumpLatestDateBtn"
+                class="att-btn att-btn-secondary"
+                style="height: 40px; padding: 0 0.75rem; font-size: 0.6875rem;"
+                title="Jump to the latest date with biometric log records"
+              >
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                </svg>
+                <span>Latest Logs</span>
+              </button>
+            </div>
+
+            <!-- 2. Department Dropdown -->
+            <div class="att-filter-item">
+              <label for="attDeptFilter" class="att-filter-label">Department:</label>
+              <div class="att-select-wrapper">
+                <select id="attDeptFilter" class="att-select" style="min-width: 155px;">
+                  <option value="All Departments">All Departments</option>
+                  <option value="Teaching">Teaching</option>
+                  <option value="Non-teaching">Non-teaching</option>
+                </select>
+                <div class="att-select-chevron">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Status Dropdown -->
+            <div class="att-filter-item">
+              <label for="attStatusFilter" class="att-filter-label">Status:</label>
+              <div class="att-select-wrapper">
+                <select id="attStatusFilter" class="att-select" style="min-width: 140px;">
+                  <option value="All Statuses">All Statuses</option>
+                  <option value="Present">Present</option>
+                  <option value="Late">Late</option>
+                  <option value="Absent">Absent</option>
+                </select>
+                <div class="att-select-chevron">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Search Field -->
+            <div class="att-search-container">
+              <div class="att-search-icon" aria-hidden="true">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                id="attSearchInput"
+                class="att-search-input"
+                placeholder="Search staff name or biometric ID..."
+                aria-label="Search staff name or biometric ID"
+              />
+              <button
+                type="button"
+                id="attClearSearchBtn"
+                class="att-clear-search-btn hidden"
+                aria-label="Clear search"
+                title="Clear search"
+              >
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- 5. Reset Filter Control -->
+            <button
+              type="button"
+              id="attResetFiltersBtn"
+              class="att-btn att-btn-secondary"
+              title="Reset all filters to defaults"
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>Reset</span>
+            </button>
+          </div>
+
+          <!-- ===============================================================
+               SECTION E: Loading, Error & Empty States
+               =============================================================== -->
           <!-- Loading State -->
-          <div id="attendanceLoading" class="flex flex-col items-center justify-center py-20">
-            <div class="w-10 h-10 border-4 border-gold border-t-royal rounded-full animate-spin"></div>
-            <p class="text-xs text-text-soft mt-3 font-medium">Loading attendance records...</p>
+          <div id="attendanceLoading" class="att-table-card att-state-container" style="display: flex;" role="status">
+            <div class="att-loading-spinner" aria-hidden="true"></div>
+            <h3 class="att-state-title" style="margin-top: 1.25rem;">Loading Attendance Records</h3>
+            <p class="att-state-subtitle">Fetching staff directory and live biometric events from the school database...</p>
           </div>
 
-          <!-- Not Found State -->
-          <div id="staffNotFound" class="hidden card p-10 text-center space-y-4">
-            <div class="text-4xl">🔍</div>
-            <h3 class="text-lg font-bold text-text-dark">Staff Record Not Found</h3>
-            <p class="text-xs text-text-soft max-w-md mx-auto">
-              The requested staff member could not be found to retrieve attendance logs.
-            </p>
-            <a href="/admin/staffs" class="btn-primary inline-flex text-xs py-2 px-4 mx-auto">
-              Return to Staffs List
-            </a>
-          </div>
-
-          <!-- Main Attendance Container -->
-          <div id="attendanceContent" class="hidden space-y-5">
-
-            <!-- Demonstration Disclaimer Banner -->
-            <div class="p-4 rounded-xl bg-amber-50/90 border border-amber-200 flex items-start gap-3.5" role="status">
-              <span class="text-xl text-amber-600 shrink-0" aria-hidden="true">ℹ️</span>
-              <div class="text-xs text-amber-950 leading-relaxed">
-                <strong class="font-bold">Frontend Demonstration View:</strong>
-                The attendance records displayed below are fictional demonstration entries. No real attendance records have been retrieved from or modified in the school database.
-              </div>
+          <!-- Error State -->
+          <div id="attendanceError" class="att-table-card att-state-container hidden" style="display: none;" role="alert">
+            <div class="att-state-icon-box" style="background: #FEE2E2; color: #DC2626;">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
             </div>
+            <h3 class="att-state-title">Failed to Load Attendance Data</h3>
+            <p id="attendanceErrorMsg" class="att-state-subtitle">Could not connect to the attendance API endpoint.</p>
+            <button type="button" id="attendanceRetryBtn" class="att-btn att-btn-primary" style="margin-top: 1.25rem;">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>Retry Request</span>
+            </button>
+          </div>
 
-            <!-- Staff Identity Summary Card Banner -->
-            <div class="rounded-2xl bg-gradient-to-r from-royal-deep to-royal p-5 sm:p-6 text-white shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div class="flex items-center gap-4">
-                <div id="attAvatar" class="w-13 h-13 rounded-2xl bg-gold/25 border border-gold/40 flex items-center justify-center text-xl font-extrabold text-gold shrink-0">
-                  S
-                </div>
-                <div>
-                  <div class="flex flex-wrap items-center gap-2.5">
-                    <h2 id="attStaffName" class="text-lg sm:text-xl font-bold text-white leading-tight">—</h2>
-                    <span id="attDeptBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full">—</span>
-                  </div>
-                  <p id="attRole" class="text-xs text-blue-200 mt-0.5">—</p>
-                  <div class="flex flex-wrap items-center gap-3 text-[11px] text-blue-200 mt-1 font-mono">
-                    <span>Staff No: <strong id="attStaffNo" class="text-white">—</strong></span>
-                    <span>•</span>
-                    <span>Biometric ID: <strong id="attBioNo" class="text-white">—</strong></span>
-                    <span>•</span>
-                    <span class="text-blue-300 font-sans">Session: 2025/2026</span>
-                  </div>
-                </div>
+          <!-- ===============================================================
+               SECTION D: Attendance Table Card (EXACTLY 5 Main Columns)
+               =============================================================== -->
+          <div id="attendanceContent" class="att-table-card hidden" style="display: none;">
+            <!-- Table Header -->
+            <div class="att-table-top">
+              <div>
+                <h3 class="att-table-heading">Daily Attendance Register</h3>
+                <p id="tableSubtitle" class="att-table-subheading">Displaying first valid biometric check-in timestamps.</p>
               </div>
-              <div class="self-stretch sm:self-auto flex items-center justify-end">
-                <span class="text-xs bg-white/15 px-3 py-1.5 rounded-xl text-blue-100 border border-white/20 font-medium">
-                  Academic Term 1
+              <div>
+                <span id="filteredCountChip" class="att-count-pill">
+                  <span id="filteredCountDot" class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span id="filteredCountText">0 records</span>
                 </span>
               </div>
             </div>
 
-            <!-- Attendance Metrics Row (4 equal height cards) -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 sm:gap-4">
-              <div class="card p-4 sm:p-5 flex flex-col justify-between">
-                <div>
-                  <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-text-soft font-semibold">Attendance Rate</p>
-                  <p class="text-xl sm:text-2xl font-bold text-emerald-600 mt-1">97.4%</p>
-                </div>
-                <p class="text-[11px] text-text-soft mt-1">Overall this session</p>
-              </div>
-
-              <div class="card p-4 sm:p-5 flex flex-col justify-between">
-                <div>
-                  <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-text-soft font-semibold">Days Present</p>
-                  <p class="text-xl sm:text-2xl font-bold text-royal-deep mt-1">112 <span class="text-xs font-normal text-text-soft">/ 115</span></p>
-                </div>
-                <p class="text-[11px] text-text-soft mt-1">Target: 115 days</p>
-              </div>
-
-              <div class="card p-4 sm:p-5 flex flex-col justify-between">
-                <div>
-                  <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-text-soft font-semibold">Excused Absences</p>
-                  <p class="text-xl sm:text-2xl font-bold text-amber-600 mt-1">3</p>
-                </div>
-                <p class="text-[11px] text-text-soft mt-1">Approved school leaves</p>
-              </div>
-
-              <div class="card p-4 sm:p-5 flex flex-col justify-between">
-                <div>
-                  <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-text-soft font-semibold">Punctuality</p>
-                  <p class="text-xl sm:text-2xl font-bold text-blue-600 mt-1">98.2%</p>
-                </div>
-                <p class="text-[11px] text-text-soft mt-1">On-time clock-in</p>
-              </div>
+            <!-- Table Container -->
+            <div id="tableContainer" class="att-table-wrapper">
+              <table class="att-table" aria-label="Staff Attendance Register">
+                <thead>
+                  <tr>
+                    <!-- EXACT Column 1: Name (with status badge inside) -->
+                    <th scope="col" style="min-width: 250px;">Name</th>
+                    <!-- EXACT Column 2: Biometric Enrollment No. -->
+                    <th scope="col" style="min-width: 170px;">Biometric Enrollment No.</th>
+                    <!-- EXACT Column 3: Department -->
+                    <th scope="col" style="min-width: 140px;">Department</th>
+                    <!-- EXACT Column 4: Date -->
+                    <th scope="col" style="min-width: 120px;">Date</th>
+                    <!-- EXACT Column 5: Time -->
+                    <th scope="col" style="min-width: 120px;">Time</th>
+                    <!-- Row Actions -->
+                    <th scope="col" style="width: 80px; text-align: center;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="attendanceTableBody">
+                  <!-- Injected dynamically by staff-attendance.js -->
+                </tbody>
+              </table>
             </div>
 
-            <!-- Attendance Log Table Card -->
-            <div class="card overflow-hidden">
-              <!-- Table Card Header & Filter -->
-              <div class="p-4 sm:p-5 border-b border-border bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                  <h3 class="text-sm font-bold text-text-dark">Detailed Check-In Log</h3>
-                  <p class="text-xs text-text-soft mt-0.5">Biometric attendance records for academic session 2025/2026</p>
-                </div>
-                <div class="flex items-center gap-2 self-stretch sm:self-auto">
-                  <label for="attStatusFilter" class="text-xs font-semibold text-text-soft shrink-0">Status:</label>
-                  <select
-                    id="attStatusFilter"
-                    class="bg-warm-white border border-border rounded-xl px-3 py-1.5 text-xs text-text-dark focus:outline-none focus:border-royal"
-                  >
-                    <option value="All">All Records</option>
-                    <option value="On Time">On Time</option>
-                    <option value="Late">Late Arrival</option>
-                    <option value="Excused">Excused Leave</option>
-                  </select>
-                </div>
+            <!-- Empty State Inside Table Card (No records found / No search match) -->
+            <div id="attendanceEmpty" class="att-state-container hidden" style="display: none;">
+              <div class="att-state-icon-box" style="background: var(--navy-subtle); color: var(--navy-royal);">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
               </div>
-
-              <!-- Table -->
-              <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse min-w-[700px]" aria-label="Staff attendance log table">
-                  <thead>
-                    <tr class="bg-warm-white/90 border-b border-border text-[11px] font-bold text-text-soft uppercase tracking-wider">
-                      <th scope="col" class="px-4 py-3 text-center w-12">S/N</th>
-                      <th scope="col" class="px-4 py-3">Date</th>
-                      <th scope="col" class="px-4 py-3 w-28">Clock-In</th>
-                      <th scope="col" class="px-4 py-3 w-28">Clock-Out</th>
-                      <th scope="col" class="px-4 py-3">Terminal ID</th>
-                      <th scope="col" class="px-4 py-3">Duration</th>
-                      <th scope="col" class="px-4 py-3 text-right w-36">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody id="attLogTbody" class="divide-y divide-border/60 text-xs text-text-dark">
-                    <!-- Populated dynamically -->
-                  </tbody>
-                </table>
-              </div>
-
-              <!-- Table Footer -->
-              <div class="px-5 py-3 border-t border-border bg-warm-white/60 text-xs text-text-soft flex items-center justify-between">
-                <span id="attRecordCount">Showing 10 demonstration entries</span>
-                <span class="font-medium">Phronesis Sunesis Biometric Sync</span>
-              </div>
+              <h3 id="attendanceEmptyTitle" class="att-state-title">No Attendance Records Found</h3>
+              <p id="attendanceEmptyText" class="att-state-subtitle">No active staff members match the selected criteria for this date.</p>
+              <button type="button" id="attendanceEmptyResetBtn" class="att-btn att-btn-secondary" style="margin-top: 1.25rem;">
+                <span>Clear Filter Criteria</span>
+              </button>
             </div>
 
-            <!-- Bottom Actions -->
-            <div class="pt-2 flex items-center justify-between">
-              <a href="/admin/staffs" class="btn-secondary text-xs py-2.5 px-4 inline-flex items-center gap-1.5">
-                <span aria-hidden="true">←</span> Back to Staffs
-              </a>
-              <a
-                id="bottomProfileBtn"
-                href="/admin/staffs"
-                class="btn-primary text-xs py-2.5 px-4 inline-flex items-center gap-1.5"
-              >
-                <span>👤</span> View Full Staff Biodata
-              </a>
+            <!-- Pagination Bar -->
+            <div id="paginationContainer" class="att-pagination">
+              <div id="paginationRange" class="att-pagination-text">
+                Showing 0–0 of 0 staff records
+              </div>
+              <div class="att-pagination-controls">
+                <span id="pageIndicator" class="text-xs font-semibold text-text-secondary mr-2">Page 1 of 1</span>
+                <button id="prevPageBtn" type="button" class="att-pagination-btn" disabled>
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                  </svg>
+                  <span>Previous</span>
+                </button>
+                <button id="nextPageBtn" type="button" class="att-pagination-btn" disabled>
+                  <span>Next</span>
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
             </div>
+          </div>
 
-          </div><!-- /attendanceContent -->
-
-        </div><!-- /max-w-6xl -->
+        </div><!-- /att-container -->
       </main>
 
-      <!-- Mobile Bottom Nav -->
+      <!-- Mobile Navigation -->
       <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border pb-safe" aria-label="Mobile navigation">
         <div class="flex items-center justify-around px-2 py-2">
-          <a href="/admin/dashboard" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep" data-bottom-nav="dashboard">
-            <span class="text-xl leading-none mb-1">⊞</span>
-            <span class="text-[10px] font-semibold tracking-tight">Dashboard</span>
-          </a>
-          <a href="/admin/students" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep" data-bottom-nav="students">
-            <span class="text-xl leading-none mb-1">👥</span>
-            <span class="text-[10px] font-semibold tracking-tight">Registrations</span>
-          </a>
-          <a href="/admin/staffs" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-royal font-bold scale-105" data-bottom-nav="staffs">
-            <span class="text-xl leading-none mb-1">👔</span>
+          <a href="/admin/staffs" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep" data-bottom-nav="staffs">
+            <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
             <span class="text-[10px] font-semibold tracking-tight">Staffs</span>
           </a>
+          <a href="/admin/staff-attendance" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-royal font-bold scale-105" data-bottom-nav="staff-attendance">
+            <svg class="w-5 h-5 mb-1 text-royal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            <span class="text-[10px] font-semibold tracking-tight">Attendance</span>
+          </a>
           <a href="/admin/profile" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 text-text-soft hover:text-royal-deep" data-bottom-nav="profile">
-            <span class="text-xl leading-none mb-1">👤</span>
+            <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
             <span class="text-[10px] font-semibold tracking-tight">Profile</span>
           </a>
         </div>
       </nav>
     </div><!-- /Main Content Area -->
   </div><!-- /flex -->
+
+  <!-- =========================================================================
+       MODAL: View Event Details Modal
+       GUARANTEED TO START HIDDEN WITH INLINE style="display: none;"
+       ========================================================================= -->
+  <div id="viewDetailsModal" class="att-modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalStaffName">
+    <div class="att-modal-card" id="modalCard">
+      <div class="att-modal-header">
+        <div class="att-modal-header-left">
+          <svg class="w-5 h-5 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <div>
+            <h3 class="att-modal-title">Attendance Event Audit</h3>
+            <p class="att-modal-subtitle">Verified biometric check-in record</p>
+          </div>
+        </div>
+        <button type="button" id="closeDetailsModalBtn" class="att-modal-close-icon" aria-label="Close modal">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="att-modal-content space-y-4">
+        <!-- Staff Profile Header in Modal -->
+        <div class="p-3.5 rounded-xl bg-warm-white border border-border flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <div id="modalStaffAvatar" class="w-10 h-10 rounded-xl bg-royal text-white font-extrabold flex items-center justify-center text-sm shrink-0">
+              S
+            </div>
+            <div class="min-w-0">
+              <h4 id="modalStaffName" class="font-bold text-text-dark text-sm truncate">—</h4>
+              <p id="modalStaffMeta" class="text-text-secondary text-[11px]">—</p>
+            </div>
+          </div>
+          <div id="modalStaffStatusBadge">—</div>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div class="p-3 rounded-lg bg-surface-bg border border-border">
+            <p class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Attendance Date</p>
+            <p id="modalAttDate" class="text-xs font-semibold text-text-dark mt-1 font-mono">—</p>
+          </div>
+          <div class="p-3 rounded-lg bg-surface-bg border border-border">
+            <p class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">First Check-In Time</p>
+            <p id="modalAttTime" class="text-xs font-semibold text-text-dark mt-1 font-mono">—</p>
+          </div>
+          <div class="p-3 rounded-lg bg-surface-bg border border-border">
+            <p class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Biometric ID</p>
+            <p id="modalBioNo" class="text-xs font-semibold text-text-dark mt-1 font-mono">—</p>
+          </div>
+          <div class="p-3 rounded-lg bg-surface-bg border border-border">
+            <p class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Terminal Machine No</p>
+            <p id="modalMachineNo" class="text-xs font-semibold text-text-dark mt-1 font-mono">—</p>
+          </div>
+          <div class="p-3 rounded-lg bg-surface-bg border border-border">
+            <p class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">I/O Mode Code</p>
+            <p id="modalIoMode" class="text-xs font-semibold text-text-dark mt-1 font-mono">—</p>
+          </div>
+          <div class="p-3 rounded-lg bg-surface-bg border border-border">
+            <p class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Mode Code</p>
+            <p id="modalModeCode" class="text-xs font-semibold text-text-dark mt-1 font-mono">—</p>
+          </div>
+          <div class="col-span-2 p-3 rounded-lg bg-surface-bg border border-border">
+            <p class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Source Record & File</p>
+            <p id="modalSourceFile" class="text-xs font-semibold text-text-dark mt-1 font-mono break-all">—</p>
+          </div>
+          <div class="col-span-2 p-3 rounded-lg bg-surface-bg border border-border">
+            <p class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Server Ingestion Timestamp</p>
+            <p id="modalImportedAt" class="text-xs font-semibold text-text-secondary mt-1 font-mono">—</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="att-modal-footer">
+        <button type="button" id="dismissDetailsModalBtn" class="att-btn att-btn-primary">
+          <span>Close</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <script src="/admin/assets/js/toast.js"></script>
   <script type="module" src="/admin/assets/js/pages/staff-attendance.js"></script>

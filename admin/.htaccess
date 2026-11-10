@@ -20,8 +20,8 @@
   # /admin/students/:id -> student-details.html
   RewriteRule ^(?:admin/)?students/([^/]+)/?$ student-details.html [L,QSA]
 
-  # /admin/staffs/:id/attendance -> staff-attendance.html
-  RewriteRule ^(?:admin/)?staffs/([^/]+)/attendance/?$ staff-attendance.html [L,QSA]
+  # /admin/staffs/:id/attendance -> staff-attendance-history.html
+  RewriteRule ^(?:admin/)?staffs/([^/]+)/attendance/?$ staff-attendance-history.html [L,QSA]
 
   # /admin/staffs/:id -> staff-details.html
   RewriteRule ^(?:admin/)?staffs/([^/]+)/?$ staff-details.html [L,QSA]
@@ -40,6 +40,7 @@
   RewriteRule ^(?:admin/)?register-staff/?$ register-staff.html [L,QSA]
   RewriteRule ^(?:admin/)?staff-details/?$ staff-details.html [L,QSA]
   RewriteRule ^(?:admin/)?staff-attendance/?$ staff-attendance.html [L,QSA]
+  RewriteRule ^(?:admin/)?staff-attendance-history/?$ staff-attendance-history.html [L,QSA]
   RewriteRule ^(?:admin/)?staff-applications/?$ staff-applications.html [L,QSA]
   RewriteRule ^(?:admin/)?apply-staff/?$ apply-staff.html [L,QSA]
   RewriteRule ^(?:admin/)?apply/staff/?$ apply-staff.html [L,QSA]

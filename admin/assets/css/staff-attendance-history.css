@@ -1,0 +1,589 @@
+/* ==============================================================================
+   Phronesis Sunesis Admin Portal — Staff Attendance History Stylesheet
+   Location: admin/assets/css/staff-attendance-history.css
+   ============================================================================== */
+
+:root {
+  --ph-navy: #142D70;
+  --ph-navy-deep: #10265F;
+  --ph-navy-subtle: #EEF2FA;
+  --ph-gold: #DDB650;
+  --ph-gold-hover: #C9A038;
+  --ph-gold-subtle: #FAF6EB;
+  --ph-bg-page: #F8F7F3;
+  --ph-card-bg: #FFFFFF;
+  --ph-border: #E9E4D8;
+  --ph-border-light: #F2EFE8;
+  --ph-text-dark: #1A202C;
+  --ph-text-secondary: #64748B;
+  --ph-text-muted: #94A3B8;
+
+  --ph-present-bg: #DCFCE7;
+  --ph-present-text: #15803D;
+  --ph-present-border: #BBF7D0;
+
+  --ph-late-bg: #FEF3C7;
+  --ph-late-text: #B45309;
+  --ph-late-border: #FDE68A;
+
+  --ph-checkout-bg: #EEF2FA;
+  --ph-checkout-text: #163183;
+  --ph-checkout-border: #BFDBFE;
+}
+
+/* ── Container Layout ────────────────────────────────────────────── */
+.sah-container {
+  max-width: 1040px;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+/* ── Top Navigation Bar ───────────────────────────────────────────── */
+.sah-top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.sah-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--ph-text-secondary);
+}
+
+.sah-breadcrumb a {
+  color: var(--ph-text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.sah-breadcrumb a:hover {
+  color: var(--ph-navy);
+}
+
+.sah-breadcrumb-current {
+  color: var(--ph-text-dark);
+  font-weight: 700;
+}
+
+.sah-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ── Action Buttons ──────────────────────────────────────────────── */
+.sah-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  height: 36px;
+  padding: 0 0.875rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 0.5rem;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.sah-btn svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.sah-btn-secondary {
+  background: #FFFFFF;
+  border: 1px solid var(--ph-border);
+  color: var(--ph-text-dark);
+  box-shadow: 0 1px 2px rgba(16, 38, 107, 0.03);
+}
+
+.sah-btn-secondary:hover {
+  background: var(--ph-bg-page);
+  border-color: #D6CFBF;
+  color: var(--ph-navy);
+}
+
+.sah-btn-primary {
+  background: var(--ph-navy);
+  border: 1px solid var(--ph-navy-deep);
+  color: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(20, 45, 112, 0.15);
+}
+
+.sah-btn-primary:hover {
+  background: var(--ph-navy-deep);
+  box-shadow: 0 3px 8px rgba(20, 45, 112, 0.22);
+}
+
+/* ── Staff Context Header Card (Compact) ─────────────────────────── */
+.sah-context-card {
+  background: #FFFFFF;
+  border: 1px solid var(--ph-border);
+  border-radius: 0.875rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 1px 3px rgba(16, 38, 107, 0.02);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sah-context-left {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.sah-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 0.625rem;
+  background: #FAF6EB;
+  border: 1.5px solid var(--ph-gold);
+  color: var(--ph-navy-deep);
+  font-size: 1.125rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sah-context-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.sah-context-name-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sah-context-name {
+  font-size: 1.0625rem;
+  font-weight: 800;
+  color: var(--ph-navy-deep);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.sah-chip-mono {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.1rem 0.4rem;
+  background: #FAF6EB;
+  border: 1px solid #E7DECE;
+  border-radius: 0.375rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--ph-navy);
+}
+
+/* ── 4 Compact Summary Cards ─────────────────────────────────────── */
+.sah-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.875rem;
+}
+
+@media (max-width: 900px) {
+  .sah-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .sah-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sah-stat-card {
+  background: #FFFFFF;
+  border: 1px solid var(--ph-border);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 1px 2px rgba(16, 38, 107, 0.02);
+  min-height: 72px;
+}
+
+.sah-stat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sah-stat-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sah-stat-total .sah-stat-icon {
+  background: var(--ph-navy-subtle);
+  color: var(--ph-navy);
+  border: 1px solid rgba(20, 45, 112, 0.12);
+}
+
+.sah-stat-present .sah-stat-icon {
+  background: var(--ph-present-bg);
+  color: var(--ph-present-text);
+  border: 1px solid var(--ph-present-border);
+}
+
+.sah-stat-late .sah-stat-icon {
+  background: var(--ph-late-bg);
+  color: var(--ph-late-text);
+  border: 1px solid var(--ph-late-border);
+}
+
+.sah-stat-days .sah-stat-icon {
+  background: var(--ph-gold-subtle);
+  color: #855C08;
+  border: 1px solid rgba(221, 182, 80, 0.25);
+}
+
+.sah-stat-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ph-text-secondary);
+  margin-bottom: 0.1rem;
+  line-height: 1.2;
+}
+
+.sah-stat-num {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--ph-navy-deep);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+/* ── Filter Toolbar ──────────────────────────────────────────────── */
+.sah-filter-bar {
+  background: #FFFFFF;
+  border: 1px solid var(--ph-border);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  box-shadow: 0 1px 2px rgba(16, 38, 107, 0.02);
+}
+
+.sah-filter-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.sah-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.sah-filter-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ph-text-secondary);
+  white-space: nowrap;
+}
+
+.sah-control {
+  height: 32px;
+  padding: 0 0.625rem;
+  background: #F8F7F3;
+  border: 1px solid var(--ph-border);
+  border-radius: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--ph-text-dark);
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.sah-control:focus {
+  border-color: var(--ph-navy);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 2px rgba(20, 45, 112, 0.08);
+}
+
+/* ── Attendance Table Card (5 Columns: Date, Time, Event, Status, Action) ─ */
+.sah-table-card {
+  background: #FFFFFF;
+  border: 1px solid var(--ph-border);
+  border-radius: 0.875rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(16, 38, 107, 0.02);
+}
+
+.sah-table-header {
+  padding: 0.875rem 1.25rem;
+  background: #FAF9F6;
+  border-bottom: 1px solid var(--ph-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.sah-table-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ph-navy-deep);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.sah-table-title svg {
+  width: 15px;
+  height: 15px;
+  color: var(--ph-navy);
+}
+
+.sah-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.sah-table thead th {
+  background: #FAF9F6;
+  border-bottom: 1px solid var(--ph-border);
+  padding: 0.625rem 1rem;
+  font-size: 0.625rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ph-text-secondary);
+  white-space: nowrap;
+}
+
+.sah-table tbody tr {
+  border-bottom: 1px solid var(--ph-border-light);
+  transition: background-color 0.12s ease;
+}
+
+.sah-table tbody tr:hover {
+  background-color: rgba(238, 242, 250, 0.45);
+}
+
+.sah-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.sah-table tbody td {
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  color: var(--ph-text-dark);
+  vertical-align: middle;
+}
+
+/* ── Badges ──────────────────────────────────────────────────────── */
+.sah-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.sah-badge-present {
+  background: var(--ph-present-bg);
+  color: var(--ph-present-text);
+  border-color: var(--ph-present-border);
+}
+
+.sah-badge-late {
+  background: var(--ph-late-bg);
+  color: var(--ph-late-text);
+  border-color: var(--ph-late-border);
+}
+
+.sah-badge-checkout {
+  background: var(--ph-checkout-bg);
+  color: var(--ph-checkout-text);
+  border-color: var(--ph-checkout-border);
+}
+
+/* ── Inspection Action Button (Compact) ──────────────────────────── */
+.sah-btn-inspect {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.375rem;
+  background: #FFFFFF;
+  border: 1px solid var(--ph-border);
+  color: var(--ph-navy);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.sah-btn-inspect:hover {
+  background: var(--ph-navy-subtle);
+  border-color: #BFDBFE;
+  color: var(--ph-navy-deep);
+}
+
+.sah-btn-inspect svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ── Pagination ──────────────────────────────────────────────────── */
+.sah-pagination {
+  padding: 0.625rem 1.25rem;
+  background: #FFFFFF;
+  border-top: 1px solid var(--ph-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* ── Simplified Event Modal ──────────────────────────────────────── */
+.sah-modal-overlay {
+  display: none !important;
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 38, 95, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.sah-modal-overlay.open {
+  display: flex !important;
+}
+
+.sah-modal-card {
+  background: #FFFFFF;
+  border-radius: 0.875rem;
+  border: 1px solid var(--ph-border);
+  box-shadow: 0 16px 36px -12px rgba(16, 38, 107, 0.25);
+  max-width: 440px;
+  width: 100%;
+  overflow: hidden;
+  animation: sahModalIn 0.15s ease-out;
+}
+
+@keyframes sahModalIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.sah-modal-header {
+  padding: 0.875rem 1.25rem;
+  background: var(--ph-navy);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sah-modal-title {
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.sah-modal-close-icon {
+  background: none;
+  border: none;
+  color: #BFDBFE;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  transition: all 0.12s ease;
+}
+
+.sah-modal-close-icon:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.sah-modal-close-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sah-modal-content {
+  padding: 1.25rem;
+}
+
+.sah-modal-footer {
+  padding: 0.75rem 1.25rem;
+  background: var(--ph-bg-page);
+  border-top: 1px solid var(--ph-border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* ── States ──────────────────────────────────────────────────────── */
+.sah-state-card {
+  background: #FFFFFF;
+  border: 1px solid var(--ph-border);
+  border-radius: 0.875rem;
+  padding: 3.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(16, 38, 107, 0.02);
+}

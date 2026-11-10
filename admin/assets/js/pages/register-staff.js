@@ -1,3 +1,4 @@
+
 // assets/js/pages/register-staff.js
 // Staff Registration Page — Connected to Live Backend API: POST /admin/add-staff
 
@@ -25,7 +26,7 @@ const formState = {
 ────────────────────────────────────────────────────────────────── */
 const REQUIRED_FIELDS = ['staffNo', 'biometricNo', 'firstName', 'lastName', 'phoneNo', 'department'];
 const OPTIONAL_FIELDS = ['otherNames', 'email'];
-const ALL_FIELDS      = [...REQUIRED_FIELDS, ...OPTIONAL_FIELDS];
+const ALL_FIELDS = [...REQUIRED_FIELDS, ...OPTIONAL_FIELDS];
 
 /* ──────────────────────────────────────────────────────────────────
    ENTRY POINT
@@ -228,15 +229,15 @@ function clearAllErrors() {
 function updateCompletion() {
   syncState();
   const completed = REQUIRED_FIELDS.filter(id => getFieldError(id) === '' && formState[id] !== '').length;
-  const total     = REQUIRED_FIELDS.length; // 6
-  const pct       = Math.round((completed / total) * 100);
+  const total = REQUIRED_FIELDS.length; // 6
+  const pct = Math.round((completed / total) * 100);
 
-  const circle  = document.getElementById('completionCircle');
-  const pctEl   = document.getElementById('completionPct');
+  const circle = document.getElementById('completionCircle');
+  const pctEl = document.getElementById('completionPct');
   const countEl = document.getElementById('completionCount');
 
-  if (circle)  circle.setAttribute('stroke-dasharray', `${pct} ${100 - pct}`);
-  if (pctEl)   pctEl.textContent  = pct + '%';
+  if (circle) circle.setAttribute('stroke-dasharray', `${pct} ${100 - pct}`);
+  if (pctEl) pctEl.textContent = pct + '%';
   if (countEl) countEl.textContent = `${completed} of ${total} complete`;
 
   // Shift stroke colour to green at 100%
@@ -270,14 +271,14 @@ function bindFormSubmit() {
 
     // Construct the backend payload structure
     const payload = {
-      staff_no:                formState.staffNo,
-      first_name:              formState.firstName,
-      last_name:               formState.lastName,
-      other_names:             formState.otherNames ? formState.otherNames : null,
+      staff_no: formState.staffNo,
+      first_name: formState.firstName,
+      last_name: formState.lastName,
+      other_names: formState.otherNames ? formState.otherNames : null,
       biometric_enrollment_no: formState.biometricNo,
-      phone:                   formState.phoneNo,
-      department:              department,
-      email:                   formState.email ? formState.email : null,
+      phone: formState.phoneNo,
+      department: department,
+      email: formState.email ? formState.email : null,
     };
 
     const submitBtn = document.getElementById('submitBtn');
@@ -303,14 +304,14 @@ function bindFormSubmit() {
 
       // Record for preview
       const previewRecord = {
-        staffNo:     payload.staff_no,
-        firstName:   payload.first_name,
-        lastName:    payload.last_name,
-        otherNames:  payload.other_names || '',
+        staffNo: payload.staff_no,
+        firstName: payload.first_name,
+        lastName: payload.last_name,
+        otherNames: payload.other_names || '',
         biometricNo: payload.biometric_enrollment_no,
-        phoneNo:     payload.phone,
-        department:  payload.department,
-        email:       payload.email || '',
+        phoneNo: payload.phone,
+        department: payload.department,
+        email: payload.email || '',
       };
 
       // Reset form fields
@@ -319,7 +320,7 @@ function bindFormSubmit() {
       // Invalidate or refresh local staff cache so staff listing reflects database immediately
       try {
         localStorage.removeItem('ps_live_staff_cache');
-      } catch (_) {}
+      } catch (_) { }
 
       // Open preview confirmation dialog
       openPreview(previewRecord);
@@ -404,18 +405,18 @@ function openPreview(rec) {
 
   const el = id => document.getElementById(id);
 
-  if (el('previewAvatar'))   el('previewAvatar').textContent   = initials || 'ST';
+  if (el('previewAvatar')) el('previewAvatar').textContent = initials || 'ST';
   if (el('previewFullName')) el('previewFullName').textContent = fullName;
 
   // Department badge
   const deptEl = el('previewDeptBadge');
   if (deptEl) deptEl.textContent = rec.department;
 
-  setText('pvStaffNo',     rec.staffNo);
+  setText('pvStaffNo', rec.staffNo);
   setText('pvBiometricNo', rec.biometricNo);
-  setText('pvDepartment',  rec.department);
-  setText('pvPhoneNo',     rec.phoneNo);
-  setText('pvEmail',       rec.email || 'Not provided');
+  setText('pvDepartment', rec.department);
+  setText('pvPhoneNo', rec.phoneNo);
+  setText('pvEmail', rec.email || 'Not provided');
 
   // Show the overlay
   const overlay = document.getElementById('previewOverlay');
@@ -440,13 +441,13 @@ function closePreview() {
 }
 
 function bindPreviewModal() {
-  const overlay     = document.getElementById('previewOverlay');
-  const closeBtn    = document.getElementById('previewCloseBtn');
-  const backBtn     = document.getElementById('previewBackBtn');
-  const doneBtn     = document.getElementById('previewDoneBtn');
+  const overlay = document.getElementById('previewOverlay');
+  const closeBtn = document.getElementById('previewCloseBtn');
+  const backBtn = document.getElementById('previewBackBtn');
+  const doneBtn = document.getElementById('previewDoneBtn');
 
   if (closeBtn) closeBtn.addEventListener('click', closePreview);
-  if (backBtn)  backBtn.addEventListener('click', closePreview);
+  if (backBtn) backBtn.addEventListener('click', closePreview);
 
   // Done button: close preview
   if (doneBtn) {
@@ -459,9 +460,9 @@ function bindPreviewModal() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       const previewVisible = overlay && !overlay.classList.contains('hidden');
-      const clearVisible   = !document.getElementById('clearConfirmOverlay')?.classList.contains('hidden');
+      const clearVisible = !document.getElementById('clearConfirmOverlay')?.classList.contains('hidden');
       if (previewVisible) { e.preventDefault(); closePreview(); }
-      if (clearVisible)   { e.preventDefault(); closeClearDialog(); }
+      if (clearVisible) { e.preventDefault(); closeClearDialog(); }
     }
   });
 
@@ -523,9 +524,9 @@ function closeClearDialog() {
 }
 
 function bindClearForm() {
-  const clearBtn     = document.getElementById('clearFormBtn');
-  const cancelBtn    = document.getElementById('clearCancelBtn');
-  const confirmBtn   = document.getElementById('clearConfirmBtn');
+  const clearBtn = document.getElementById('clearFormBtn');
+  const cancelBtn = document.getElementById('clearCancelBtn');
+  const confirmBtn = document.getElementById('clearConfirmBtn');
   const clearOverlay = document.getElementById('clearConfirmOverlay');
 
   if (clearBtn) {
@@ -538,7 +539,7 @@ function bindClearForm() {
     });
   }
 
-  if (cancelBtn)  cancelBtn.addEventListener('click', closeClearDialog);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeClearDialog);
   if (confirmBtn) confirmBtn.addEventListener('click', performReset);
 
   if (clearOverlay) {

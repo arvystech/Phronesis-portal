@@ -1,6 +1,6 @@
 // assets/js/pages/staffs.js
 // Staffs Management Page — Phronesis Sunesis School ERP
-// Connected to Live Backend API: https://api.phronesis-sunesis.com.ng/staff
+// Connected to Live Backend API: https://api.phronesis-sunesis.com.ng/admin/staff
 
 import { requireAuth } from '../auth.js';
 import { setupLayout } from '../layout.js';
@@ -454,10 +454,10 @@ function renderTable() {
 
     // Action A: View Details (Eye icon)
     const viewBtn = document.createElement('a');
-    viewBtn.href = `/admin/staffs/${encodeURIComponent(staff.staffNo)}`;
+    viewBtn.href = `/admin/staffs/${staff.id}`;
     viewBtn.className = 'staffs-action-btn staffs-btn-details';
     viewBtn.style.cssText = 'width: 36px; height: 36px; min-width: 36px; min-height: 36px; max-width: 36px; max-height: 36px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 8px; background-color: #FFFFFF; border: 1px solid #E7E1D1; color: #17338F; text-decoration: none; box-sizing: border-box;';
-    viewBtn.setAttribute('title', 'View staff details');
+    viewBtn.setAttribute('title', 'View Staff Details');
     viewBtn.setAttribute('aria-label', `View staff details for ${staff.firstName} ${staff.lastName}`);
     viewBtn.innerHTML = `
       <svg style="width: 16px; height: 16px; min-width: 16px; min-height: 16px; display: block;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -469,10 +469,10 @@ function renderTable() {
 
     // Action B: View Attendance (Calendar icon)
     const attendanceBtn = document.createElement('a');
-    attendanceBtn.href = `/admin/staffs/${encodeURIComponent(staff.staffNo)}/attendance`;
+    attendanceBtn.href = `/admin/staffs/${staff.id}/attendance`;
     attendanceBtn.className = 'staffs-action-btn staffs-btn-attendance';
     attendanceBtn.style.cssText = 'width: 36px; height: 36px; min-width: 36px; min-height: 36px; max-width: 36px; max-height: 36px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 8px; background-color: #FFFFFF; border: 1px solid #E7E1D1; color: #667085; text-decoration: none; box-sizing: border-box;';
-    attendanceBtn.setAttribute('title', 'View attendance log');
+    attendanceBtn.setAttribute('title', 'View Attendance History');
     attendanceBtn.setAttribute('aria-label', `View attendance log for ${staff.firstName} ${staff.lastName}`);
     attendanceBtn.innerHTML = `
       <svg style="width: 16px; height: 16px; min-width: 16px; min-height: 16px; display: block;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
