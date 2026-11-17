@@ -17,7 +17,7 @@ try {
   sessionStorage.removeItem('ps_admin_session');
   localStorage.removeItem('ps_admin_session');
   localStorage.removeItem('phronesis_jwt_token');
-} catch (_) {}
+} catch (_) { }
 
 // ── In-memory session state (Tab/Page execution scoped only) ───────────────────
 let _currentAdmin = null;
@@ -161,9 +161,9 @@ export async function login(email, password) {
       data?.message ||
       data?.error ||
       (res?.status === 401 ? 'Invalid email or password.' :
-       res?.status === 403 ? 'Access denied. You do not have administrator privileges.' :
-       res?.status === 429 ? 'Too many login attempts. Please wait before retrying.' :
-       `Authentication failed (HTTP ${res?.status || 500}).`);
+        res?.status === 403 ? 'Access denied. You do not have administrator privileges.' :
+          res?.status === 429 ? 'Too many login attempts. Please wait before retrying.' :
+            `Authentication failed (HTTP ${res?.status || 500}).`);
 
     const err = new Error(errorMsg);
     err.status = res?.status || 401;
@@ -315,13 +315,13 @@ export async function logout() {
       method: 'POST',
       headers,
       credentials: 'include',
-    }).catch(() => {});
+    }).catch(() => { });
 
     // Also call backend's student/cookie clear route directly as backup
     await fetch(API_BASE + '/logout/student', {
       method: 'GET',
       credentials: 'include',
-    }).catch(() => {});
+    }).catch(() => { });
   } catch (_) {
     // Ignore network errors during logout
   }
@@ -336,7 +336,7 @@ export async function logout() {
     sessionStorage.clear();
     localStorage.removeItem('ps_admin_session');
     localStorage.removeItem('phronesis_jwt_token');
-  } catch (_) {}
+  } catch (_) { }
 
   window.location.replace('/admin/login');
 }

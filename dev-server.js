@@ -3,7 +3,7 @@
 // Apache/Nginx clean URL routing for Phronesis Sunesis Admin & future Student portal.
 //
 // Development-only features added for auth:
-//   - /api-proxy/* routes proxy to https://api.phronesis-sunesis.com.ng
+//   - /api-proxy/* routes proxy to the API_BACKEND configured below
 //     This is necessary because the live backend uses CORS with wildcard origin (*),
 //     which the browser blocks when credentials are needed. By routing through this
 //     proxy, the browser's CSRF cookie from the backend is preserved in a
@@ -22,7 +22,10 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 3000;
-const API_BACKEND = 'https://api.phronesis-sunesis.com.ng';
+const DEFAULT_API_BACKEND = process.env.NODE_ENV === 'production'
+  ? 'https://api.phronesis-sunesis.com.ng'
+  : 'http://localhost:4000';
+const API_BACKEND = process.env.API_BACKEND || DEFAULT_API_BACKEND;
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -64,7 +67,9 @@ function serveFile(res, filePath) {
  * development), and strips the CORS wildcard so the browser accepts the response.
  */
 function proxyToBackend(req, res, backendPath, retryCount = 0) {
-  const url = new URL(API_BACKEND + backendPath);
+  const backendBase = API_BACKEND.replace(/\/+$/, '');
+  const url = new URL(backendBase + backendPath);
+  const transport = url.protocol === 'https:' ? https : http;
 
   // Forward all incoming request headers, but override Host
   const forwardHeaders = { ...req.headers };
@@ -77,13 +82,13 @@ function proxyToBackend(req, res, backendPath, retryCount = 0) {
 
   const options = {
     hostname: url.hostname,
-    port: 443,
+    port: Number(url.port) || (url.protocol === 'https:' ? 443 : 80),
     path: url.pathname + (url.search || ''),
     method: req.method,
     headers: forwardHeaders,
   };
 
-  const proxyReq = https.request(options, (proxyRes) => {
+  const proxyReq = transport.request(options, (proxyRes) => {
     // Adjust Set-Cookie headers for localhost development
     let setCookieHeaders = proxyRes.headers['set-cookie'];
     if (setCookieHeaders) {
@@ -146,6 +151,11 @@ const server = http.createServer((req, res) => {
   // This keeps auth CSRF cookies same-origin with the dev server.
   if (pathname.startsWith('/api-proxy')) {
     let backendPath = pathname.replace(/^\/api-proxy/, '') || '/';
+    // These CBT routes are explicitly mounted under /api-proxy on the backend,
+    // while the candidate exam and admin routes are mounted at the API root.
+    if (/^\/(student\/cbt\/(classes|subjects)|cbt\/access)(\/|$)/.test(backendPath)) {
+      backendPath = `/api-proxy${backendPath}`;
+    }
     // Map frontend admin auth routes to the live backend endpoints
     if (backendPath === '/admin/login') {
       backendPath = '/login/admin';
@@ -205,6 +215,11 @@ const server = http.createServer((req, res) => {
   // 4. Admin Routing
   const adminDir = path.join(__dirname, 'admin');
 
+  // Student-facing CBT application
+  if (pathname === '/cbt' || pathname === '/cbt/') {
+    return serveFile(res, path.join(__dirname, 'cbt', 'index.html'));
+  }
+
   // Admin dynamic detail routes:
   // /admin/students/:id
   const studentMatch = pathname.match(/^\/admin\/students\/([^/]+)\/?$/);
@@ -231,6 +246,11 @@ const server = http.createServer((req, res) => {
   }
 
   // Admin clean page routes
+  const cbtStudentResultsMatch = pathname.match(/^\/admin\/cbt-students\/([^/]+)\/results\/?$/);
+  if (cbtStudentResultsMatch) {
+    return serveFile(res, path.join(adminDir, 'cbt-student-results.html'));
+  }
+
   const cleanRoutes = {
     '/admin': 'staffs.html',
     '/admin/': 'staffs.html',
@@ -239,6 +259,8 @@ const server = http.createServer((req, res) => {
     '/admin/registrations': 'students.html',
     '/admin/register-student': 'register-student.html',
     '/admin/staffs': 'staffs.html',
+    '/admin/cbt': 'cbt.html',
+    '/admin/cbt-students': 'cbt-students.html',
     '/admin/staffs/new': 'register-staff.html',
     '/admin/register-staff': 'register-staff.html',
     '/admin/staff-details': 'staff-details.html',

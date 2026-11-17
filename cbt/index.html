@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Phronesis Sunesis School computer based examinations." />
+  <title>Student CBT · Phronesis Sunesis</title>
+  <link rel="icon" type="image/svg+xml" href="/admin/assets/images/icons/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/cbt/assets/css/cbt.css" />
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="/cbt"><img src="/admin/assets/images/logo/logo.png" alt="Phronesis Sunesis School" /><span><strong>Phronesis</strong><small>Sunesis School of Excellence</small></span></a><span class="header-label">COMPUTER BASED TEST</span></header>
+  <main class="page-shell">
+    <section id="accessView" class="access-layout">
+      <div class="welcome-panel"><div class="welcome-icon" aria-hidden="true">✎</div><p class="eyebrow">STUDENT EXAM PORTAL</p><h1>Your exam.<br />Your best effort.</h1><p>Enter your admission number to find exams assigned to your class.</p><div class="welcome-note"><span>Timed exam</span><span>·</span><span>Objective questions</span><span>·</span><span>A–D options</span></div></div>
+      <form id="accessForm" class="access-card"><div class="card-heading"><p class="eyebrow">WELCOME, STUDENT</p><h2>Access your CBT</h2><p>Enter the admission number issued by your school.</p></div><div id="studentAccessFields"><label for="admissionNumber">Admission number</label><input id="admissionNumber" name="admissionNumber" type="text" autocomplete="off" maxlength="80" placeholder="e.g. PSS-J/2026/083" required /><button id="checkExamsBtn" class="button button-primary button-wide" type="submit">Find my exams <span aria-hidden="true">→</span></button></div><div id="examPicker" class="exam-picker hidden"><label for="examSelect">Available exam</label><select id="examSelect"><option value="">Select an exam</option></select><button id="beginExamBtn" class="button button-primary button-wide" type="button">Continue to exam <span aria-hidden="true">→</span></button><button id="changeStudentBtn" class="access-back" type="button">← Change admission number</button></div><p id="accessMessage" class="form-message" role="status"></p><p class="privacy-note">Your answers are saved to the school exam system.</p></form>
+    </section>
+
+    <section id="examView" class="exam-view hidden" aria-live="off">
+      <div class="exam-topline"><div><p class="eyebrow">PHRONESIS SUNESIS · CBT EXAM</p><h1 id="examTitle">Exam</h1></div><div class="timer-box" id="timerBox" role="timer" aria-live="off"><span class="timer-caption">TIME REMAINING</span><strong id="timerDisplay">30:00</strong></div></div>
+      <section class="candidate-strip" aria-label="Student and exam details"><div class="candidate-detail"><span>ADMISSION NUMBER</span><strong id="candidateId"></strong></div><div class="candidate-detail"><span>CLASS</span><strong id="candidateClass"></strong></div><div class="candidate-detail"><span>SUBJECT</span><strong id="candidateSubject"></strong></div><div class="candidate-detail candidate-progress"><span>PROGRESS</span><strong id="progressDisplay">Question 1 of 1</strong></div></section>
+      <div class="exam-layout"><section class="question-panel"><div class="question-toolbar"><span id="questionNumber" class="question-number">QUESTION 01</span><span class="keyboard-help"><kbd>N</kbd> Next <kbd>P</kbd> Previous</span></div><h2 id="questionPrompt"></h2><div id="optionsList" class="options-list"></div><p id="answerSaveStatus" class="answer-save-status" role="status" aria-live="polite"></p><div class="question-navigation"><button id="previousBtn" class="button button-outline" type="button">← Previous <kbd>P</kbd></button><button id="nextBtn" class="button button-primary" type="button">Next question <kbd>N</kbd> →</button></div></section><aside class="question-sidebar"><h2>Questions</h2><p>Choose a number to jump to that question.</p><div id="questionGrid" class="question-grid" aria-label="Question navigator"></div><div class="legend"><span><i class="legend-current"></i>Current</span><span><i class="legend-answered"></i>Answered</span><span><i class="legend-unanswered"></i>Not answered</span></div><button id="submitExamBtn" class="button button-submit button-wide" type="button">Submit exam <kbd>S</kbd></button><p class="shortcut-note">Keyboard: <kbd>A</kbd>–<kbd>D</kbd> select an answer</p></aside></div>
+    </section>
+
+    <section id="confirmationView" class="confirmation-view hidden" role="status"><div class="success-mark" aria-hidden="true">✓</div><p class="eyebrow">EXAM SUBMITTED</p><h1>Your exam has been submitted successfully.</h1><p id="confirmationMessage" class="confirmation-message">Your answers have been recorded.</p><div class="confirmation-details"><div><span>ADMISSION NUMBER</span><strong id="confirmationId"></strong></div><div><span>CLASS</span><strong id="confirmationClass"></strong></div><div><span>SUBJECT</span><strong id="confirmationSubject"></strong></div><div><span>SUBMITTED</span><strong id="submittedAt"></strong></div></div><p id="redirectMessage" class="thanks-note">Returning to CBT access in 5 seconds…</p></section>
+    <dialog id="submitModal" class="submit-modal" aria-labelledby="submitModalTitle" aria-describedby="submitModalMessage"><div class="submit-modal-content"><div class="modal-icon" aria-hidden="true">?</div><p class="eyebrow">CONFIRM SUBMISSION</p><h2 id="submitModalTitle">Submit your exam?</h2><p id="submitModalMessage" class="submit-modal-message"></p><div class="submit-modal-actions"><button id="cancelSubmitBtn" class="button button-outline" type="button">Go back to exam</button><button id="confirmSubmitBtn" class="button button-submit" type="button">Yes, submit exam</button></div></div></dialog>
+  </main>
+  <footer class="site-footer">Phronesis Sunesis School of Excellence <span>·</span> Student CBT Portal</footer>
+  <script type="module" src="/cbt/assets/js/exam.js"></script>
+</body>
+</html>
