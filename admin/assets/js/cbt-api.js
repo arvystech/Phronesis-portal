@@ -54,6 +54,7 @@ export const cbtAdminAPI = {
   },
   getStudentResults: (studentId) => request(`/admin/cbt/students/${encodeURIComponent(studentId)}/results`),
   getAttemptReview: (attemptId) => request(`/admin/cbt/attempts/${encodeURIComponent(attemptId)}/review`),
+  resetAttempt: (attemptId) => request(`/admin/cbt/attempts/${encodeURIComponent(attemptId)}/reset`, { method: 'POST', body: {} }),
   listExams: (params = {}) => {
     const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== '' && value != null));
     return request(`/admin/cbt/exams${query.size ? `?${query}` : ''}`);

@@ -25,6 +25,7 @@ const elements = Object.fromEntries([
 document.addEventListener('DOMContentLoaded', initialize);
 
 async function initialize() {
+  addStudentIdentityUI();
   elements.accessForm.addEventListener('submit', verifyStudentAccess);
   elements.beginExamBtn.addEventListener('click', startExam);
   elements.changeStudentBtn.addEventListener('click', changeCandidate);
@@ -44,6 +45,7 @@ async function initialize() {
     if (option) saveAnswer(option.dataset.optionId);
   });
   document.addEventListener('keydown', handleShortcuts);
+  document.addEventListener('contextmenu', blockExamContextMenu);
   window.addEventListener('beforeunload', protectActiveAttempt);
   elements.submitModal.addEventListener('click', (event) => {
     if (event.target === elements.submitModal) elements.submitModal.close();
@@ -70,12 +72,14 @@ async function verifyStudentAccess(event) {
   setAccessMessage('Checking your admission number…');
   try {
     const response = await cbtStudentAPI.access(enteredAdmissionNumber);
-    const result = response.data && !Array.isArray(response.data) ? response.data : response;
-    student = result.student || result.candidate || null;
+    const result = unwrapResponse(response);
+    student = mergeStudent(student, findStudentRecord(result));
     admissionNumber = student?.admissionNumber || student?.admission_number || student?.studentId || student?.student_id || enteredAdmissionNumber;
+    renderStudentPreview();
     const examResponse = await cbtStudentAPI.listExams();
-    const examData = examResponse.data && !Array.isArray(examResponse.data) ? examResponse.data : examResponse;
-    student = examData.student || examData.candidate || student;
+    const examData = unwrapResponse(examResponse);
+    student = mergeStudent(student, findStudentRecord(examData));
+    renderStudentPreview();
     availableExams = extractList(examData, ['exams', 'availableExams', 'available_exams']);
     populateExamChoices();
     if (!availableExams.length) {
@@ -116,7 +120,76 @@ async function changeCandidate() {
   availableExams = [];
   student = null;
   admissionNumber = '';
+  elements.studentPreview.classList.add('hidden');
   setAccessMessage('');
+}
+
+function addStudentIdentityUI() {
+  const preview = document.createElement('section');
+  preview.id = 'studentPreview';
+  preview.className = 'student-preview hidden';
+  preview.setAttribute('aria-live', 'polite');
+  preview.innerHTML = '<div class="student-preview-avatar" id="studentPreviewAvatar">S</div><div class="student-preview-copy"><p class="eyebrow">STUDENT VERIFIED</p><h2 id="studentPreviewName">Student</h2><div class="student-preview-meta"><span><small>ADMISSION NUMBER</small><strong id="studentPreviewAdmission"></strong></span><span><small>CLASS</small><strong id="studentPreviewClass"></strong></span></div></div>';
+  elements.examPicker.before(preview);
+  elements.studentPreview = preview;
+  elements.studentPreviewAvatar = document.getElementById('studentPreviewAvatar');
+  elements.studentPreviewName = document.getElementById('studentPreviewName');
+  elements.studentPreviewAdmission = document.getElementById('studentPreviewAdmission');
+  elements.studentPreviewClass = document.getElementById('studentPreviewClass');
+
+  const strip = document.querySelector('.candidate-strip');
+  if (strip && !document.getElementById('candidateName')) {
+    strip.insertAdjacentHTML('afterbegin', '<div class="candidate-detail candidate-name-detail"><span>STUDENT NAME</span><strong id="candidateName"></strong></div>');
+  }
+  elements.candidateName = document.getElementById('candidateName');
+}
+
+function getStudentName(record) {
+  if (!record || typeof record !== 'object') return '';
+  const parts = [
+    record.first_name ?? record.firstName ?? record.given_name ?? record.givenName,
+    record.middle_name ?? record.middleName ?? record.other_names ?? record.otherNames,
+    record.last_name ?? record.lastName ?? record.family_name ?? record.familyName ?? record.surname,
+  ].map((part) => String(part || '').trim()).filter(Boolean);
+  const directName = parts.join(' ') || String(record.full_name ?? record.fullName ?? record.student_full_name ?? record.studentFullName ?? record.display_name ?? record.displayName ?? record.student_name ?? record.studentName ?? record.name ?? '').trim();
+  if (directName) return directName;
+  for (const key of ['student', 'candidate', 'profile', 'details', 'student_details', 'studentDetails']) {
+    const nestedName = getStudentName(record[key]);
+    if (nestedName) return nestedName;
+  }
+  return '';
+}
+
+function unwrapResponse(response) {
+  let value = response;
+  for (let depth = 0; depth < 3 && value?.data && typeof value.data === 'object'; depth += 1) value = value.data;
+  return value;
+}
+
+function findStudentRecord(payload, depth = 0) {
+  if (!payload || typeof payload !== 'object' || depth > 4) return null;
+  if (getStudentName(payload) || payload.admission_number || payload.admissionNumber || payload.student_id || payload.studentId) return payload;
+  for (const key of ['student', 'candidate', 'profile', 'details', 'student_details', 'studentDetails']) {
+    const found = findStudentRecord(payload[key], depth + 1);
+    if (found) return found;
+  }
+  return null;
+}
+
+function mergeStudent(existing, next) {
+  if (!existing) return next;
+  if (!next) return existing;
+  return { ...existing, ...next };
+}
+
+function renderStudentPreview() {
+  const name = getStudentName(student);
+  elements.studentPreviewName.textContent = name || 'Student name unavailable';
+  elements.studentPreviewAdmission.textContent = admissionNumber || student?.admission_number || student?.admissionNumber || '—';
+  const candidateClass = student?.class_name || student?.className || student?.class?.class_name || student?.class?.name || '';
+  elements.studentPreviewClass.textContent = candidateClass || 'Assigned exam class';
+  elements.studentPreviewAvatar.textContent = name ? name.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase() : 'S';
+  elements.studentPreview.classList.remove('hidden');
 }
 
 async function startExam() {
@@ -156,7 +229,7 @@ function exitExamFullscreen() {
 }
 
 function setActiveAttempt(attempt, selectedExam = {}) {
-  student = attempt.student || attempt.candidate || student;
+  student = mergeStudent(student, findStudentRecord(attempt.student || attempt.candidate || attempt));
   attemptId = attempt.attempt_id ?? attempt.attemptId ?? attempt.id;
   if (attemptId == null) throw new Error('The backend did not return an attempt ID.');
   const exam = attempt.exam || attempt;
@@ -208,7 +281,8 @@ function showExam() {
   elements.confirmationView.classList.add('hidden');
   elements.examView.classList.remove('hidden');
   elements.examTitle.textContent = `${activeExam.className} · ${activeExam.subject}`;
-  elements.candidateId.textContent = admissionNumber || student?.student_no || student?.studentNo || student?.student_id || student?.studentId || student?.admission_number || student?.admissionNumber || student?.name || student?.full_name || 'Verified student';
+  elements.candidateName.textContent = getStudentName(student) || 'Student name unavailable';
+  elements.candidateId.textContent = admissionNumber || student?.student_no || student?.studentNo || student?.student_id || student?.studentId || student?.admission_number || student?.admissionNumber || 'Verified student';
   elements.candidateClass.textContent = activeExam.className;
   elements.candidateSubject.textContent = activeExam.subject;
   elements.questionGrid.innerHTML = activeExam.questions.map((_, index) => `<button class="question-jump" type="button" data-question-index="${index}" aria-label="Go to question ${index + 1}">${index + 1}</button>`).join('');
@@ -334,6 +408,11 @@ function protectActiveAttempt(event) {
   event.returnValue = '';
 }
 
+function blockExamContextMenu(event) {
+  if (!attemptId || submitted || elements.examView.classList.contains('hidden')) return;
+  event.preventDefault();
+}
+
 function updateTimer() {
   if (submitted || !deadline) return;
   const secondsLeft = Math.max(0, Math.ceil((deadline - (Date.now() + serverOffsetMs)) / 1000));
@@ -423,11 +502,49 @@ async function resumeAttempt() {
     setActiveAttempt(attempt, examFallback || {});
     showExam();
   } catch (error) {
+    if (String(error.code || error.payload?.code || '').toUpperCase() === 'ATTEMPT_RESET') {
+      await recoverFromResetAttempt();
+      return;
+    }
     if (error.status === 401) setAccessMessage('Your temporary CBT session expired. Re-enter your admission number to continue.');
     else if ([404, 409].includes(error.status)) {
       try { sessionStorage.removeItem(ATTEMPT_KEY); } catch (_) { /* Ignore restricted storage. */ }
       setAccessMessage(error.message || 'This attempt is no longer available. Select an available exam to continue.');
     } else setAccessMessage(errorMessage(error, 'Could not resume your exam. Check your connection and try again.'));
+  }
+}
+
+async function recoverFromResetAttempt() {
+  try { sessionStorage.removeItem(ATTEMPT_KEY); } catch (_) { /* Let the student continue if storage is unavailable. */ }
+  attemptId = null;
+  activeExam = null;
+  answers = {};
+  pendingAnswers = {};
+  clearInterval(timerInterval);
+  elements.examView.classList.add('hidden');
+  elements.confirmationView.classList.add('hidden');
+  elements.accessView.classList.remove('hidden');
+  elements.studentAccessFields.classList.remove('hidden');
+  elements.examPicker.classList.add('hidden');
+  elements.admissionNumber.value = admissionNumber;
+  elements.checkExamsBtn.disabled = false;
+  elements.beginExamBtn.disabled = true;
+
+  try {
+    const examData = unwrapResponse(await cbtStudentAPI.listExams());
+    student = mergeStudent(student, findStudentRecord(examData));
+    availableExams = extractList(examData, ['exams', 'availableExams', 'available_exams']);
+    populateExamChoices();
+    renderStudentPreview();
+    if (availableExams.length) {
+      elements.studentAccessFields.classList.add('hidden');
+      elements.examPicker.classList.remove('hidden');
+      setAccessMessage('Your previous attempt was reset. Select the exam to start again.');
+      return;
+    }
+    setAccessMessage('Your previous attempt was reset, but this exam is not currently available. Re-enter your admission number when an exam is available.');
+  } catch (_) {
+    setAccessMessage('Your previous attempt was reset. Re-enter your admission number to start again.');
   }
 }
 

@@ -60,6 +60,7 @@
   RewriteRule ^admin/staffs/?$ admin/staffs.html [L,QSA]
   RewriteRule ^admin/cbt/?$ admin/cbt.html [L,QSA]
   RewriteRule ^admin/cbt-students/?$ admin/cbt-students.html [L,QSA]
+  RewriteRule ^admin/cbt-student-results/?$ admin/cbt-student-results.html [L,QSA]
   RewriteRule ^admin/staffs/new/?$ admin/register-staff.html [L,QSA]
   RewriteRule ^admin/register-staff/?$ admin/register-staff.html [L,QSA]
   RewriteRule ^admin/staff-details/?$ admin/staff-details.html [L,QSA]

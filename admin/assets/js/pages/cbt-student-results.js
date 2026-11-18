@@ -8,24 +8,28 @@ const date = (value) => value ? new Date(value).toLocaleString() : '—';
 let reviewQuestions = [];
 let reviewIndex = 0;
 let reviewTitle = '';
+let resetAttemptId = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   setupLayout('cbt-students', 'Student exam results');
   createReviewModal();
+  createResetModal();
+  $('resultsContent').addEventListener('click', handleReviewClick);
+  $('resultsContent').addEventListener('click', handleResetClick);
   requireAuth(loadResults);
 });
 
 async function loadResults() {
-  const match = window.location.pathname.match(/^\/admin\/cbt-students\/(\d+)\/results\/?$/);
-  if (!match) return showError('The student ID in this page address is invalid.');
+  const legacyMatch = window.location.pathname.match(/^\/admin\/cbt-students\/(\d+)\/results\/?$/);
+  const studentId = new URLSearchParams(window.location.search).get('studentId') || legacyMatch?.[1];
+  if (!studentId || !/^\d+$/.test(studentId)) return showError('The student ID in this page address is invalid.');
   try {
-    const data = await cbtAdminAPI.getStudentResults(match[1]);
+    const data = await cbtAdminAPI.getStudentResults(studentId);
     const student = data.student || {};
     const summary = data.summary || {};
     const fullName = [student.first_name, student.middle_name, student.last_name].filter(Boolean).join(' ');
     const results = data.results || [];
     $('resultsContent').innerHTML = `<div class="cbt-heading"><div><p class="cbt-eyebrow">STUDENT PROFILE</p><h2>${esc(fullName || 'Student')}</h2><p>${esc(student.admission_number || '—')} · ${esc(student.class_name || 'Class unavailable')} · ${esc(student.status || '—')}</p></div><span class="roster-status">${esc(student.status || '—')}</span></div><div class="result-summary"><div><strong>${Number(summary.totalAttempts || 0)}</strong><span>Total attempts</span></div><div><strong>${Number(summary.completedExams || 0)}</strong><span>Completed exams</span></div><div><strong>${Number(summary.inProgressExams || 0)}</strong><span>In progress</span></div></div><section class="cbt-panel"><div class="cbt-panel-heading"><div><span class="cbt-step">CBT</span><div><h3>Exam history</h3><p>Scores and attempt summaries for this student.</p></div></div></div>${results.length ? `<div class="result-list">${results.map(renderResult).join('')}</div>` : '<div class="cbt-empty">This student has not taken any CBT exams yet.</div>'}</section>`;
-    $('resultsContent').addEventListener('click', handleReviewClick);
   } catch (error) {
     showError(error.message || 'Could not load this student’s exam history.');
   }
@@ -36,7 +40,51 @@ function renderResult(result) {
   const score = result.score == null ? 'Not scored' : `${result.score} / ${result.max_score ?? '—'}`;
   const percent = result.percentage == null ? '—' : `${result.percentage}%`;
   const duration = result.duration_seconds ? `${Math.round(result.duration_seconds / 60)} min` : '—';
-  return `<article class="result-card"><div class="result-card-top"><div><h4>${esc(result.title || 'CBT exam')}</h4><p>${esc(result.subject_name || 'Subject unavailable')} · ${esc(result.class_name || 'Class unavailable')}${result.session_name ? ` · ${esc(result.session_name)}` : ''}${result.term_name ? ` · ${esc(result.term_name)}` : ''}</p></div><span class="roster-status ${completed ? 'is-complete' : 'is-progress'}">${esc((result.status || 'unknown').replaceAll('_', ' '))}</span></div><div class="result-metrics"><div><span>Score</span><strong>${esc(score)}</strong></div><div><span>Percentage</span><strong>${esc(percent)}</strong></div><div><span>Answered</span><strong>${Number(result.answered_count || 0)} / ${Number(result.question_count || 0)}</strong></div><div><span>Duration</span><strong>${esc(duration)}</strong></div></div><div class="result-dates"><span>Started: ${esc(date(result.started_at))}</span><span>Submitted: ${esc(date(result.submitted_at))}</span></div><div class="result-card-actions"><button class="cbt-button cbt-button-primary" type="button" data-review-attempt="${esc(result.attempt_id)}" data-review-title="${esc(result.title || 'CBT exam')}">Review questions</button></div></article>`;
+  return `<article class="result-card"><div class="result-card-top"><div><h4>${esc(result.title || 'CBT exam')}</h4><p>${esc(result.subject_name || 'Subject unavailable')} · ${esc(result.class_name || 'Class unavailable')}${result.session_name ? ` · ${esc(result.session_name)}` : ''}${result.term_name ? ` · ${esc(result.term_name)}` : ''}</p></div><span class="roster-status ${completed ? 'is-complete' : 'is-progress'}">${esc((result.status || 'unknown').replaceAll('_', ' '))}</span></div><div class="result-metrics"><div><span>Score</span><strong>${esc(score)}</strong></div><div><span>Percentage</span><strong>${esc(percent)}</strong></div><div><span>Answered</span><strong>${Number(result.answered_count || 0)} / ${Number(result.question_count || 0)}</strong></div><div><span>Duration</span><strong>${esc(duration)}</strong></div></div><div class="result-dates"><span>Started: ${esc(date(result.started_at))}</span><span>Submitted: ${esc(date(result.submitted_at))}</span></div><div class="result-card-actions"><button class="cbt-button cbt-button-primary" type="button" data-review-attempt="${esc(result.attempt_id)}" data-review-title="${esc(result.title || 'CBT exam')}">Review questions</button><button class="cbt-button cbt-button-danger" type="button" data-reset-attempt="${esc(result.attempt_id)}" data-reset-title="${esc(result.title || 'CBT exam')}">Reset attempt</button></div></article>`;
+}
+
+function createResetModal() {
+  const dialog = document.createElement('dialog');
+  dialog.id = 'resetAttemptModal';
+  dialog.className = 'question-review-modal';
+  dialog.setAttribute('aria-labelledby', 'resetAttemptTitle');
+  dialog.innerHTML = `<div class="reset-attempt-content"><header class="question-review-header"><div><p class="cbt-eyebrow">ATTEMPT MANAGEMENT</p><h2 id="resetAttemptTitle">Reset this attempt?</h2><p id="resetAttemptExam" class="cbt-modal-meta"></p></div><button id="closeResetAttempt" class="cbt-modal-close" type="button" aria-label="Close reset dialog">×</button></header><p class="reset-attempt-description">This voids the selected attempt and removes it from the student’s normal results. The student can start again while the exam is available. The existing attempt remains in the audit history.</p><div id="resetAttemptError" class="cbt-error" role="alert" hidden></div><footer class="question-review-footer"><button id="cancelResetAttempt" class="cbt-button cbt-button-secondary" type="button">Cancel</button><button id="confirmResetAttempt" class="cbt-button cbt-button-danger" type="button">Reset attempt</button></footer></div>`;
+  document.body.append(dialog);
+  dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+  $('closeResetAttempt').addEventListener('click', () => dialog.close());
+  $('cancelResetAttempt').addEventListener('click', () => dialog.close());
+  $('confirmResetAttempt').addEventListener('click', confirmAttemptReset);
+}
+
+function handleResetClick(event) {
+  const button = event.target.closest('[data-reset-attempt]');
+  if (!button) return;
+  resetAttemptId = button.dataset.resetAttempt;
+  $('resetAttemptExam').textContent = button.dataset.resetTitle || 'CBT exam';
+  $('resetAttemptError').hidden = true;
+  $('confirmResetAttempt').disabled = false;
+  $('confirmResetAttempt').textContent = 'Reset attempt';
+  $('resetAttemptModal').showModal();
+}
+
+async function confirmAttemptReset() {
+  if (!resetAttemptId) return;
+  const confirmButton = $('confirmResetAttempt');
+  confirmButton.disabled = true;
+  confirmButton.textContent = 'Resetting…';
+  $('resetAttemptError').hidden = true;
+  try {
+    await cbtAdminAPI.resetAttempt(resetAttemptId);
+    $('resetAttemptModal').close();
+    await loadResults();
+  } catch (error) {
+    $('resetAttemptError').textContent = error.message || 'Could not reset this attempt.';
+    $('resetAttemptError').hidden = false;
+  } finally {
+    resetAttemptId = null;
+    confirmButton.disabled = false;
+    confirmButton.textContent = 'Reset attempt';
+  }
 }
 
 function createReviewModal() {

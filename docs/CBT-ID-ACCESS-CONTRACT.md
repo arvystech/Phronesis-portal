@@ -12,7 +12,22 @@ The frontend sends this JSON to the candidate-access route:
 
 The backend exposes `POST /cbt/access`, `POST /student/cbt/access`, and `POST /api-proxy/cbt/access` aliases. The local frontend requests `/api-proxy/cbt/access`; the development proxy forwards it to the backend `/api-proxy/cbt/access` alias.
 
-On success, set a temporary `HttpOnly` candidate-session cookie and return the verified candidate if useful. The backend must check that the admission number matches exactly one active student. Do not ask the student for a class, subject, PIN, or portal password.
+On success, set a temporary `HttpOnly` candidate-session cookie and return the verified candidate's display name along with the admission number and class. The CBT page shows the name after verification and during the exam. A response can use `student: { first_name, middle_name, last_name, admission_number, class_name }` or `student: { full_name, admission_number, class_name }`. The backend must check that the admission number matches exactly one active student. Do not ask the student for a class, subject, PIN, or portal password.
+
+Example success response:
+
+```json
+{
+  "success": true,
+  "student": {
+    "first_name": "Precious",
+    "middle_name": "Effiom",
+    "last_name": "Effiwatt",
+    "admission_number": "PSS-J/2026/083",
+    "class_name": "JSS 1"
+  }
+}
+```
 
 ## Candidate exam flow
 

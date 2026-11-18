@@ -261,6 +261,7 @@ const server = http.createServer((req, res) => {
     '/admin/staffs': 'staffs.html',
     '/admin/cbt': 'cbt.html',
     '/admin/cbt-students': 'cbt-students.html',
+    '/admin/cbt-student-results': 'cbt-student-results.html',
     '/admin/staffs/new': 'register-staff.html',
     '/admin/register-staff': 'register-staff.html',
     '/admin/staff-details': 'staff-details.html',
