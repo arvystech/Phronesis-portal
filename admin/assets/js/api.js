@@ -166,6 +166,7 @@ export const studentsAPI = {
       throw e;
     }
   },
+  updateDetails: (id, data) => client.patch(`/admin/students/${id}`, data),
   create: async (data) => {
     try {
       return await smartPost('/student/register', data);
@@ -177,6 +178,7 @@ export const studentsAPI = {
     }
   },
   update:       (id, data)   => smartPut(`/student/${id}`, data),
+  changeClass:  (id, classId) => client.patch(`/admin/students/${id}/class`, { class_id: classId }),
   updateStatus: (id, status) => client.patch(`/student/${id}/status`, { status }),
   delete:       (id)         => client.delete(`/student/${id}`),
 
@@ -287,6 +289,7 @@ export const classesAPI = {
   getStudents: (id)        => client.get(`/classes/${id}/students`),
   create:      (data)      => client.post('/classes', data),
   update:      (id, data)  => client.put(`/classes/${id}`, data),
+  updatePassword: (id, password) => client.patch(`/classes/${id}/password`, { password }),
   delete:      (id)        => client.delete(`/classes/${id}`),
 };
 

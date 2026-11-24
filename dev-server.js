@@ -166,7 +166,7 @@ const server = http.createServer((req, res) => {
     return proxyToBackend(req, res, backendPath + queryString);
   }
 
-  // 1. Root redirect -> /admin/login (auth guard will redirect to /admin/staffs if authenticated)
+  // 1. Root redirect -> /admin/login (auth guard redirects authenticated admins to /admin/dashboard)
   if (pathname === '/' || pathname === '') {
     res.writeHead(302, { Location: '/admin/login' });
     res.end();
@@ -220,6 +220,20 @@ const server = http.createServer((req, res) => {
     return serveFile(res, path.join(__dirname, 'cbt', 'index.html'));
   }
 
+  // Class-teacher result management portal
+  if (pathname === '/results' || pathname === '/results/') {
+    return serveFile(res, path.join(__dirname, 'results', 'index.html'));
+  }
+  if (pathname === '/results/dashboard' || pathname === '/results/dashboard/') {
+    return serveFile(res, path.join(__dirname, 'results', 'dashboard.html'));
+  }
+  if (pathname === '/results/positions' || pathname === '/results/positions/') {
+    return serveFile(res, path.join(__dirname, 'results', 'positions.html'));
+  }
+  if (pathname === '/results/scores' || pathname === '/results/scores/') {
+    return serveFile(res, path.join(__dirname, 'results', 'scores.html'));
+  }
+
   // Admin dynamic detail routes:
   // /admin/students/:id
   const studentMatch = pathname.match(/^\/admin\/students\/([^/]+)\/?$/);
@@ -252,13 +266,16 @@ const server = http.createServer((req, res) => {
   }
 
   const cleanRoutes = {
-    '/admin': 'staffs.html',
-    '/admin/': 'staffs.html',
-    '/admin/dashboard': 'staffs.html',
+    '/admin': 'dashboard.html',
+    '/admin/': 'dashboard.html',
+    '/admin/dashboard': 'dashboard.html',
     '/admin/students': 'students.html',
-    '/admin/registrations': 'students.html',
+    '/admin/student-edit': 'student-edit.html',
+    '/admin/student-results': 'student-results.html',
+    '/admin/registrations': 'registrations.html',
     '/admin/register-student': 'register-student.html',
     '/admin/staffs': 'staffs.html',
+    '/admin/classes': 'classes.html',
     '/admin/cbt': 'cbt.html',
     '/admin/cbt-students': 'cbt-students.html',
     '/admin/cbt-student-results': 'cbt-student-results.html',

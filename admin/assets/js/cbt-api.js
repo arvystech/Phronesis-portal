@@ -48,6 +48,12 @@ async function fetchCsrf() {
 }
 
 export const cbtAdminAPI = {
+  listCbtClasses: () => {
+    const classPath = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? '/student/cbt/classes'
+      : '/api-proxy/student/cbt/classes';
+    return request(classPath);
+  },
   listStudents: (params = {}) => {
     const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== '' && value != null));
     return request(`/admin/cbt/students${query.size ? `?${query}` : ''}`);

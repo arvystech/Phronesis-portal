@@ -63,6 +63,8 @@ export function setupLayout(activeNavKey, pageTitleText) {
 
 const adminNavItems = [
   { key: 'dashboard', href: '/admin/dashboard', icon: '⌂', label: 'Dashboard' },
+  { key: 'students', href: '/admin/students', icon: '♙', label: 'Students' },
+  { key: 'classes', href: '/admin/classes', icon: '▦', label: 'Classes' },
   { key: 'staffs', href: '/admin/staffs', icon: '♟', label: 'Staffs' },
   { key: 'staff-attendance', href: '/admin/staff-attendance', icon: '▤', label: 'Staff Attendance' },
   { key: 'cbt', href: '/admin/cbt', icon: '✎', label: 'CBT Questions' },

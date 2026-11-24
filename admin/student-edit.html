@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Edit student details">
+  <title>Edit Student | Phronesis Sunesis Admin ERP</title>
+  <link rel="icon" type="image/svg+xml" href="/admin/assets/images/icons/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/assets/css/styles.css">
+  <link rel="stylesheet" href="/admin/assets/css/global.css">
+  <link rel="stylesheet" href="/admin/assets/css/components.css">
+  <link rel="stylesheet" href="/admin/assets/css/student-directory.css">
+  <link rel="stylesheet" href="/admin/assets/css/student-edit.css">
+</head>
+<body class="bg-warm-white text-text-dark font-sans antialiased">
+  <div class="flex h-screen overflow-hidden bg-warm-white">
+    <div class="hidden lg:flex shrink-0"><aside class="flex flex-col bg-royal-deep h-full w-64 min-h-screen"><div class="px-5 py-6 border-b border-white/10"><div class="flex items-center gap-3"><img src="/admin/assets/images/logo/logo.png" alt="Phronesis Logo" class="w-10 h-10 object-contain"><div><p class="text-white font-bold text-sm">Phronesis</p><p class="text-blue-300 text-[10px] tracking-widest uppercase">Sunesis Admin</p></div></div></div><nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto" aria-label="Main navigation"></nav><div class="px-4 py-4 border-t border-white/10"><a href="/admin/profile" class="sidebar-admin-link flex items-center gap-3 mb-3 p-1.5 rounded-xl"><div class="w-8 h-8 rounded-full bg-gold/20 text-gold flex items-center justify-center admin-initials">A</div><div><p class="text-white text-xs admin-name">Admin</p><p class="text-blue-300 text-[10px] admin-role">Admin</p></div></a><button id="sidebarLogoutBtn" class="text-xs text-blue-300" type="button">Sign out</button></div></aside></div>
+    <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
+      <header class="h-16 bg-white border-b border-border flex items-center justify-between px-6"><div><p class="text-[10px] uppercase tracking-widest text-text-soft">Admin Panel</p><h1 id="pageTitle" class="text-base font-bold">Edit student</h1></div><a href="/admin/profile" class="flex items-center gap-2 pl-3 border-l border-border"><div class="w-8 h-8 rounded-full bg-royal flex items-center justify-center text-white text-xs font-bold admin-initials">A</div><div class="hidden sm:block"><p class="text-xs font-semibold admin-name">Admin</p><p class="text-[10px] text-text-soft admin-role">Admin</p></div></a></header>
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6">
+        <section class="student-edit-page">
+          <a class="student-edit-back" href="/admin/students">← Back to students</a>
+          <div class="student-edit-heading"><div><p class="student-eyebrow">STUDENT RECORD</p><h2>Edit student details</h2><p>Update the student’s biodata, class, and guardian contact.</p></div></div>
+          <div id="studentEditLoading" class="student-edit-state">Loading student details...</div>
+          <div id="studentEditError" class="student-directory-error" role="alert" hidden></div>
+          <form id="studentEditForm" class="student-edit-card" hidden>
+            <div class="student-edit-section"><h3>Student details</h3><p>Fields marked required must be completed.</p></div>
+            <div class="student-edit-grid">
+              <div class="student-edit-field"><label for="editAdmissionNumber">Admission number <span>*</span></label><input id="editAdmissionNumber" name="admissionNumber" type="text" required autocomplete="off"></div>
+              <div class="student-edit-field"><label for="editClass">Class <span>*</span></label><select id="editClass" name="classId" required><option value="">Loading classes...</option></select></div>
+              <div class="student-edit-field"><label for="editFirstName">First name <span>*</span></label><input id="editFirstName" name="firstName" type="text" required autocomplete="given-name"></div>
+              <div class="student-edit-field"><label for="editMiddleName">Middle name <small>(optional)</small></label><input id="editMiddleName" name="middleName" type="text" autocomplete="additional-name"></div>
+              <div class="student-edit-field"><label for="editLastName">Last name <span>*</span></label><input id="editLastName" name="lastName" type="text" required autocomplete="family-name"></div>
+              <div class="student-edit-field"><label for="editGender">Gender <small>(optional)</small></label><select id="editGender" name="gender"><option value="">Select gender</option><option value="Female">Female</option><option value="Male">Male</option><option value="Other">Other</option></select></div>
+              <div class="student-edit-field"><label for="editDateOfBirth">Date of birth <small>(optional)</small></label><input id="editDateOfBirth" name="dateOfBirth" type="date"></div>
+            </div>
+            <div class="student-edit-section student-edit-guardian"><h3>Guardian contact</h3><p>These details are optional.</p></div>
+            <div class="student-edit-grid student-edit-grid-guardian">
+              <div class="student-edit-field"><label for="editGuardianName">Guardian name</label><input id="editGuardianName" name="guardianName" type="text" autocomplete="name"></div>
+              <div class="student-edit-field"><label for="editGuardianPhone">Guardian phone number</label><input id="editGuardianPhone" name="guardianPhone" type="tel" autocomplete="tel"></div>
+            </div>
+            <div id="studentEditMessage" class="student-edit-message" role="status" aria-live="polite" hidden></div>
+            <footer class="student-edit-actions"><a href="/admin/students" class="student-edit-cancel">Cancel</a><button id="saveStudentEdit" type="submit" class="student-edit-save">Save changes</button></footer>
+          </form>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script type="module" src="/admin/assets/js/pages/student-edit.js"></script>
+</body>
+</html>

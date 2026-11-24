@@ -3,22 +3,22 @@
 //
 // Flow:
 //   1. On page load, check if already authenticated via backend session.
-//      If yes, redirect to /admin/staffs (the default post-login landing page).
+//      If yes, redirect to /admin/dashboard.
 //   2. On form submit, call login() from auth.js, which:
 //      a. Fetches a CSRF token from the backend root
 //      b. POSTs credentials to POST /admin/login
 //      c. Stores the JWT token in sessionStorage on success
-//   3. On success, redirect to /admin/staffs.
+//   3. On success, redirect to /admin/dashboard.
 //   4. On failure, show the error message from the backend without exposing tokens.
 
 import { login, getCurrentAdmin } from '../auth.js';
 
 // The default landing page after successful admin login
-const POST_LOGIN_REDIRECT = '/admin/staffs';
+const POST_LOGIN_REDIRECT = '/admin/dashboard';
 const LOGIN_PATH = '/admin/login';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // ── Already authenticated? Redirect to staffs ─────────────────────────────
+  // ── Already authenticated? Redirect to dashboard ──────────────────────────
   // If the session is valid, skip the login page.
   // We check silently so the login form is not briefly shown before redirect.
   const loadingOverlay = document.getElementById('loginLoadingOverlay');

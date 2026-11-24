@@ -1,6 +1,6 @@
 import { requireAuth } from '../auth.js';
 import { setupLayout } from '../layout.js';
-import { classesAPI, subjectsAPI } from '../api.js';
+import { subjectsAPI } from '../api.js';
 import { cbtAdminAPI } from '../cbt-api.js';
 
 const LETTERS = ['A', 'B', 'C', 'D'];
@@ -39,12 +39,13 @@ async function initCbtPage() {
 async function loadPageData() {
   try {
     const [classResponse, subjectResponse, examResponse] = await Promise.all([
-      classesAPI.list(), subjectsAPI.list(), cbtAdminAPI.listExams(),
+      cbtAdminAPI.listCbtClasses(), subjectsAPI.list(), cbtAdminAPI.listExams(),
     ]);
     classRecords = extractRecords(classResponse, ['classes', 'data', 'results']);
     subjectRecords = extractRecords(subjectResponse, ['subjects', 'data', 'results']);
     exams = extractRecords(examResponse, ['exams', 'data', 'results']);
     populateLookup('classSelect', classRecords, ['class_id', 'id'], ['class_name', 'className', 'class', 'name', 'title'], 'No classes available');
+    populateLookup('editClassSelect', classRecords, ['class_id', 'id'], ['class_name', 'className', 'class', 'name', 'title'], 'No classes available');
     populateLookup('subjectSelect', subjectRecords, ['subject_id', 'id'], ['subject_name', 'subjectName', 'subject', 'name', 'title'], 'No subjects available');
     renderExams();
   } catch (error) {
@@ -70,7 +71,9 @@ function populateLookup(selectId, records, idKeys, nameKeys, emptyLabel) {
     const name = firstDefined(record, nameKeys);
     return id != null && name ? new Option(String(name), String(id)) : null;
   }).filter(Boolean);
-  select.replaceChildren(new Option(options.length ? 'Select an option' : emptyLabel, ''), ...options);
+  const placeholder = options.length ? 'Select an option' : emptyLabel;
+  select.replaceChildren(...(select.multiple ? [] : [new Option(placeholder, '')]), ...options);
+  if (select.multiple && !options.length) select.add(new Option(emptyLabel, ''));
   select.disabled = options.length === 0;
 }
 
@@ -124,11 +127,23 @@ function collectQuestions(listId) {
 }
 
 function selectedIds() {
-  const classId = Number(document.getElementById('classSelect').value);
+  const classIds = [...document.getElementById('classSelect').selectedOptions]
+    .map((option) => Number(option.value))
+    .filter((id) => Number.isInteger(id) && id > 0);
   const subjectId = Number(document.getElementById('subjectSelect').value);
-  if (!Number.isInteger(classId) || classId <= 0) { notify('Select a valid class from the school records.'); return null; }
+  if (!classIds.length) { notify('Select at least one valid class or arm.'); return null; }
   if (!Number.isInteger(subjectId) || subjectId <= 0) { notify('Select a valid subject from the school records.'); return null; }
-  return { classId, subjectId };
+  return { classIds, subjectId };
+}
+
+function selectedClassIds(selectId) {
+  return [...document.getElementById(selectId).selectedOptions]
+    .map((option) => Number(option.value))
+    .filter((id) => Number.isInteger(id) && id > 0);
+}
+
+function selectedClassNames(selectId) {
+  return [...document.getElementById(selectId).selectedOptions].map((option) => option.textContent.trim()).filter(Boolean);
 }
 
 async function createExam(event) {
@@ -137,9 +152,9 @@ async function createExam(event) {
   if (!ids) return;
   const questions = collectQuestions('questionList');
   if (!questions) return;
-  const className = document.getElementById('classSelect').selectedOptions[0]?.textContent;
+  const classNames = selectedClassNames('classSelect');
   const subjectName = document.getElementById('subjectSelect').selectedOptions[0]?.textContent;
-  const payload = { ...ids, title: `${className} · ${subjectName}`, durationSeconds: DURATION_SECONDS, questions };
+  const payload = { ...ids, title: `${classNames.join(', ')} · ${subjectName}`, durationSeconds: DURATION_SECONDS, questions };
   try {
     await cbtAdminAPI.createExam(payload);
     document.getElementById('questionList').replaceChildren();
@@ -156,7 +171,14 @@ async function refreshExams() {
 }
 
 function examId(exam) { return firstDefined(exam, ['exam_id', 'examId', 'id']); }
-function examClass(exam) { return firstDefined(exam, ['class_name', 'className']) || 'Class'; }
+function examClass(exam) {
+  const names = firstDefined(exam, ['class_names', 'classNames']);
+  if (Array.isArray(names) && names.length) return names.join(', ');
+  if (typeof names === 'string' && names) return names;
+  const classes = Array.isArray(exam.classes) ? exam.classes : [];
+  if (classes.length) return classes.map((item) => typeof item === 'string' ? item : firstDefined(item, ['class_name', 'className', 'name'])).filter(Boolean).join(', ');
+  return firstDefined(exam, ['class_name', 'className']) || 'Class';
+}
 function examSubject(exam) { return firstDefined(exam, ['subject_name', 'subjectName']) || 'Subject'; }
 function examStatus(exam) { return String(firstDefined(exam, ['status']) || 'draft').toLowerCase(); }
 
@@ -242,9 +264,14 @@ async function openEditModal(id) {
   list.replaceChildren();
   questions.forEach((question) => addQuestion('editQuestionList', normalizeQuestion(question)));
   if (!questions.length) addQuestion('editQuestionList');
-  const classId = firstDefined(editingExam, ['class_id', 'classId']);
+  let assignedClassIds = firstDefined(editingExam, ['classIds', 'class_ids']);
+  if (!Array.isArray(assignedClassIds)) assignedClassIds = assignedClassIds == null ? [] : [assignedClassIds];
+  if (!assignedClassIds.length && Array.isArray(editingExam.classes)) {
+    assignedClassIds = editingExam.classes.map((item) => typeof item === 'object' ? firstDefined(item, ['class_id', 'classId', 'id']) : item).filter((id) => id != null);
+  }
   const subjectId = firstDefined(editingExam, ['subject_id', 'subjectId']);
-  if (classId != null) document.getElementById('classSelect').value = String(classId);
+  const editClassSelect = document.getElementById('editClassSelect');
+  [...editClassSelect.options].forEach((option) => { option.selected = assignedClassIds.map(String).includes(String(option.value)); });
   if (subjectId != null) document.getElementById('subjectSelect').value = String(subjectId);
   document.getElementById('editSetModal').showModal();
 }
@@ -258,15 +285,18 @@ function closeEditModal() {
 async function saveEditedExam(event) {
   event.preventDefault();
   if (!editingExamId || !editingExam) return;
-  const ids = selectedIds();
-  if (!ids) return;
+  const classIds = selectedClassIds('editClassSelect');
+  const subjectId = Number(document.getElementById('subjectSelect').value);
+  if (!classIds.length) { notify('Select at least one valid class or arm.'); return; }
+  if (!Number.isInteger(subjectId) || subjectId <= 0) { notify('Select a valid subject from the school records.'); return; }
   const questions = collectQuestions('editQuestionList');
   if (!questions) return;
-  const className = document.getElementById('classSelect').selectedOptions[0]?.textContent;
+  const classNames = selectedClassNames('editClassSelect');
   const subjectName = document.getElementById('subjectSelect').selectedOptions[0]?.textContent;
   const payload = {
-    ...ids,
-    title: editingExam.title || `${className} · ${subjectName}`,
+    classIds,
+    subjectId,
+    title: editingExam.title || `${classNames.join(', ')} · ${subjectName}`,
     durationSeconds: Number(firstDefined(editingExam, ['duration_seconds', 'durationSeconds']) || DURATION_SECONDS),
     questions,
   };

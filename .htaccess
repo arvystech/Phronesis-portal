@@ -10,6 +10,9 @@
   # Student CBT portal
   RewriteRule ^cbt/?$ cbt/index.html [L]
 
+  # Admin root lands on the admin dashboard even though /admin is a directory.
+  RewriteRule ^admin/?$ admin/dashboard.html [L,QSA]
+
   # ----------------------------------------------------------------------------
   # 1. Directly serve existing physical files and directories
   # ----------------------------------------------------------------------------
@@ -51,13 +54,21 @@
   # ----------------------------------------------------------------------------
   # 5. Clean Admin Page Routes (without .html)
   # ----------------------------------------------------------------------------
-  RewriteRule ^admin/dashboard/?$ admin/staffs.html [L,QSA]
+  # Class teacher result management portal
+  RewriteRule ^results/dashboard/?$ results/dashboard.html [L,QSA]
+  RewriteRule ^results/positions/?$ results/positions.html [L,QSA]
+  RewriteRule ^results/scores/?$ results/scores.html [L,QSA]
+
+  RewriteRule ^admin/dashboard/?$ admin/dashboard.html [L,QSA]
   RewriteRule ^admin/students/?$ admin/students.html [L,QSA]
-  RewriteRule ^admin/registrations/?$ admin/students.html [L,QSA]
+  RewriteRule ^admin/student-edit/?$ admin/student-edit.html [L,QSA]
+  RewriteRule ^admin/student-results/?$ admin/student-results.html [L,QSA]
+  RewriteRule ^admin/registrations/?$ admin/registrations.html [L,QSA]
   RewriteRule ^admin/students/new/?$ admin/register-student.html [L,QSA]
   RewriteRule ^admin/register-student/?$ admin/register-student.html [L,QSA]
 
   RewriteRule ^admin/staffs/?$ admin/staffs.html [L,QSA]
+  RewriteRule ^admin/classes/?$ admin/classes.html [L,QSA]
   RewriteRule ^admin/cbt/?$ admin/cbt.html [L,QSA]
   RewriteRule ^admin/cbt-students/?$ admin/cbt-students.html [L,QSA]
   RewriteRule ^admin/cbt-student-results/?$ admin/cbt-student-results.html [L,QSA]
@@ -77,7 +88,7 @@
   RewriteRule ^admin/login/?$ admin/login.html [L,QSA]
 
   # Admin root
-  RewriteRule ^admin/?$ admin/staffs.html [L,QSA]
+  RewriteRule ^admin/?$ admin/dashboard.html [L,QSA]
 
   # ----------------------------------------------------------------------------
   # 6. Future Student Frontend Routing Placeholder (/student/*)
