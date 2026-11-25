@@ -58,6 +58,13 @@ export const cbtAdminAPI = {
     const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== '' && value != null));
     return request(`/admin/cbt/students${query.size ? `?${query}` : ''}`);
   },
+  listAdminClasses: () => request('/admin/cbt/classes'),
+  listSubjects: (params = {}) => {
+    const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== '' && value != null));
+    return request(`/admin/cbt/subjects${query.size ? `?${query}` : ''}`);
+  },
+  createSubject: (body) => request('/admin/cbt/subjects', { method: 'POST', body }),
+  updateSubjectClasses: (subjectId, classIds) => request(`/admin/cbt/subjects/${encodeURIComponent(subjectId)}/classes`, { method: 'PUT', body: { classIds } }),
   getStudentResults: (studentId) => request(`/admin/cbt/students/${encodeURIComponent(studentId)}/results`),
   getAttemptReview: (attemptId) => request(`/admin/cbt/attempts/${encodeURIComponent(attemptId)}/review`),
   resetAttempt: (attemptId) => request(`/admin/cbt/attempts/${encodeURIComponent(attemptId)}/reset`, { method: 'POST', body: {} }),

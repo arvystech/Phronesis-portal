@@ -69,6 +69,7 @@
 
   RewriteRule ^admin/staffs/?$ admin/staffs.html [L,QSA]
   RewriteRule ^admin/classes/?$ admin/classes.html [L,QSA]
+  RewriteRule ^admin/subjects/?$ admin/subjects.html [L,QSA]
   RewriteRule ^admin/cbt/?$ admin/cbt.html [L,QSA]
   RewriteRule ^admin/cbt-students/?$ admin/cbt-students.html [L,QSA]
   RewriteRule ^admin/cbt-student-results/?$ admin/cbt-student-results.html [L,QSA]

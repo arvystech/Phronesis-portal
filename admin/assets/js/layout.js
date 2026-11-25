@@ -68,6 +68,7 @@ const adminNavItems = [
   { key: 'staffs', href: '/admin/staffs', icon: '♟', label: 'Staffs' },
   { key: 'staff-attendance', href: '/admin/staff-attendance', icon: '▤', label: 'Staff Attendance' },
   { key: 'cbt', href: '/admin/cbt', icon: '✎', label: 'CBT Questions' },
+  { key: 'subjects', href: '/admin/subjects', icon: '▤', label: 'Subjects' },
   { key: 'cbt-students', href: '/admin/cbt-students', icon: '☷', label: 'CBT Students' },
   { key: 'profile', href: '/admin/profile', icon: '●', label: 'Profile' },
 ];
