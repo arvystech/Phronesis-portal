@@ -78,7 +78,10 @@ export const cbtAdminAPI = {
   publishExam: (id) => request(`/admin/cbt/exams/${encodeURIComponent(id)}/publish`, { method: 'POST', body: {} }),
   closeExam: (id) => request(`/admin/cbt/exams/${encodeURIComponent(id)}/close`, { method: 'POST', body: {} }),
   archiveExam: (id) => request(`/admin/cbt/exams/${encodeURIComponent(id)}`, { method: 'DELETE' }),
-  listAttempts: (id) => request(`/admin/cbt/exams/${encodeURIComponent(id)}/attempts`),
+  listAttempts: (id, params = {}) => {
+    const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== '' && value != null));
+    return request(`/admin/cbt/exams/${encodeURIComponent(id)}/attempts${query.size ? `?${query}` : ''}`);
+  },
 };
 
 export const cbtStudentAPI = {

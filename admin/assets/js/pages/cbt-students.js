@@ -10,6 +10,9 @@ let searchTimer;
 let subjectSearchTimer;
 let exams = [];
 let subjectAttemptRows = [];
+let examLoadError = null;
+let subjectLoadVersion = 0;
+const API_PAGE_SIZE = 100;
 const $ = (id) => document.getElementById(id);
 const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const records = (payload, keys = []) => {
@@ -21,6 +24,10 @@ const records = (payload, keys = []) => {
 };
 const idOf = (item) => item?.subject_id ?? item?.subjectId ?? item?.id;
 const subjectIdOfExam = (exam) => exam?.subject_id ?? exam?.subjectId ?? exam?.subject?.subject_id ?? exam?.subject?.id;
+const classIdsOfExam = (exam) => {
+  const ids = exam?.class_ids ?? exam?.classIds ?? exam?.classes?.map((item) => item.class_id ?? item.classId ?? item.id);
+  return Array.isArray(ids) ? ids.map(String) : [];
+};
 const fullName = (student) => [student?.first_name ?? student?.firstName, student?.middle_name ?? student?.middleName, student?.last_name ?? student?.lastName].filter(Boolean).join(' ');
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -48,12 +55,50 @@ async function init() {
   $('searchSubjectStudents').addEventListener('click', renderSubjectAttempts);
 
   const [classResult, subjectResult, examResult] = await Promise.allSettled([
-    classesAPI.list(), subjectsAPI.list(), cbtAdminAPI.listExams(),
+    classesAPI.list(), subjectsAPI.list(), loadAllPages((params) => cbtAdminAPI.listExams(params), ['exams', 'items']),
   ]);
   if (classResult.status === 'fulfilled') populateClasses(classResult.value?.data ?? classResult.value);
   if (subjectResult.status === 'fulfilled') populateSubjects(subjectResult.value?.data ?? subjectResult.value);
-  if (examResult.status === 'fulfilled') exams = records(examResult.value, ['exams', 'items']);
+  if (examResult.status === 'fulfilled') exams = examResult.value;
+  else examLoadError = examResult.reason?.message || 'Could not load CBT exam list.';
   loadStudents();
+}
+
+async function loadAllPages(fetchPage, recordKeys) {
+  const firstResponse = await fetchPage({ page: 1, limit: API_PAGE_SIZE });
+  const allRows = records(firstResponse, recordKeys);
+  const pagination = extractPagination(firstResponse);
+  const effectiveLimit = Number(pagination.limit ?? pagination.pageSize ?? pagination.page_size) || API_PAGE_SIZE;
+  const total = Number(pagination.total ?? pagination.totalRecords ?? pagination.total_records);
+  const totalPages = pagination.totalPages ?? pagination.total_pages ?? pagination.pages
+    ?? (Number.isFinite(total) && total >= 0 ? Math.ceil(total / effectiveLimit) : undefined);
+  if (Number.isFinite(Number(totalPages)) && Number(totalPages) > 1) {
+    const pageNumbers = Array.from({ length: Math.min(Number(totalPages) - 1, 199) }, (_, index) => index + 2);
+    const laterPages = await Promise.all(pageNumbers.map((pageNumber) => fetchPage({ page: pageNumber, limit: API_PAGE_SIZE })));
+    laterPages.forEach((response) => allRows.push(...records(response, recordKeys)));
+    return allRows;
+  }
+
+  // Some API versions return no pagination object. Keep requesting while pages are full.
+  if (allRows.length >= effectiveLimit && totalPages == null) {
+    for (let pageNumber = 2; pageNumber <= 200; pageNumber += 1) {
+      const response = await fetchPage({ page: pageNumber, limit: API_PAGE_SIZE });
+      const rows = records(response, recordKeys);
+      allRows.push(...rows);
+      if (rows.length < effectiveLimit) break;
+    }
+  }
+  return allRows;
+}
+
+function extractPagination(payload) {
+  let current = payload;
+  for (let depth = 0; depth < 4 && current && typeof current === 'object'; depth += 1) {
+    const pagination = current.pagination ?? current.meta;
+    if (pagination && typeof pagination === 'object') return pagination;
+    current = current.data;
+  }
+  return {};
 }
 
 function populateClasses(payload) {
@@ -126,6 +171,7 @@ async function loadStudents() {
 }
 
 async function loadSubjectAttempts() {
+  const loadVersion = ++subjectLoadVersion;
   subjectAttemptRows = [];
   const subjectId = $('subjectTeacherSubject').value;
   $('subjectAttemptCount').textContent = subjectId ? 'Loading attempts...' : 'Select a subject';
@@ -138,22 +184,32 @@ async function loadSubjectAttempts() {
   const subjectExams = exams.filter((exam) => String(subjectIdOfExam(exam) ?? '') === String(subjectId));
   if (!subjectExams.length) {
     $('subjectAttemptsLoading').hidden = true;
-    $('subjectAttemptCount').textContent = '0 attempts';
-    $('subjectAttemptRows').innerHTML = '<tr><td colspan="5" class="cbt-empty">No CBT exams are available for this subject.</td></tr>';
+    if (examLoadError) {
+      $('subjectAttemptCount').textContent = 'Exam list unavailable';
+      $('subjectAttemptsError').textContent = examLoadError;
+      $('subjectAttemptsError').hidden = false;
+      $('subjectAttemptRows').innerHTML = '<tr><td colspan="5" class="cbt-empty">Could not load the exams for this subject.</td></tr>';
+    } else {
+      $('subjectAttemptCount').textContent = '0 attempts';
+      $('subjectAttemptRows').innerHTML = '<tr><td colspan="5" class="cbt-empty">No CBT exams are available for this subject.</td></tr>';
+    }
     return;
   }
   $('subjectAttemptsLoading').hidden = false;
   $('subjectAttemptRows').innerHTML = '';
   const results = await Promise.allSettled(subjectExams.map(async (exam) => ({
     exam,
-    response: await cbtAdminAPI.listAttempts(exam.exam_id ?? exam.examId ?? exam.id),
+    attempts: await loadAllPages(
+      (params) => cbtAdminAPI.listAttempts(exam.exam_id ?? exam.examId ?? exam.id, params),
+      ['attempts', 'results', 'items'],
+    ),
   })));
+  if (loadVersion !== subjectLoadVersion) return;
   $('subjectAttemptsLoading').hidden = true;
   const failures = results.filter((item) => item.status === 'rejected');
   subjectAttemptRows = results.flatMap((item) => {
     if (item.status !== 'fulfilled') return [];
-    const attempts = records(item.value.response, ['attempts', 'results', 'items']);
-    return attempts.map((attempt) => ({ exam: item.value.exam, attempt }));
+    return item.value.attempts.map((attempt) => ({ exam: item.value.exam, attempt }));
   });
   if (failures.length) {
     $('subjectAttemptsError').textContent = `Could not load attempts for ${failures.length} exam${failures.length === 1 ? '' : 's'}. Other available results are shown.`;
@@ -167,8 +223,10 @@ function renderSubjectAttempts() {
   const query = $('subjectTeacherSearch').value.trim().toLocaleLowerCase();
   const filtered = subjectAttemptRows.filter(({ exam, attempt }) => {
     const student = attempt.student ?? attempt.candidate ?? attempt;
-    const attemptClassId = student.class_id ?? student.classId ?? student.class?.class_id ?? student.class?.id ?? attempt.class_id ?? attempt.classId;
-    const className = student.class_name ?? student.className ?? student.class?.class_name ?? student.class?.name ?? attempt.class_name ?? attempt.className;
+    const assignedClassIds = classIdsOfExam(exam);
+    const attemptClassId = student.class_id ?? student.classId ?? student.class?.class_id ?? student.class?.id ?? attempt.class_id ?? attempt.classId ?? (assignedClassIds.length === 1 ? assignedClassIds[0] : undefined);
+    const examClassNames = exam.class_names ?? exam.classNames;
+    const className = student.class_name ?? student.className ?? student.class?.class_name ?? student.class?.name ?? attempt.class_name ?? attempt.className ?? (assignedClassIds.length === 1 && Array.isArray(examClassNames) ? examClassNames[0] : undefined);
     const matchesClass = !classId || String(attemptClassId ?? '') === String(classId);
     const haystack = `${fullName(student)} ${student.admission_number ?? student.admissionNumber ?? ''} ${className ?? ''} ${exam.title ?? exam.name ?? ''}`.toLocaleLowerCase();
     return matchesClass && (!query || haystack.includes(query));
